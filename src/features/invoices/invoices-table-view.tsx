@@ -60,14 +60,18 @@ export function InvoicesTableView({ rows }: { rows: InvoiceItem[] }) {
           <button
             type="button"
             onClick={() => setTab("all")}
-            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
               tab === "all"
-                ? "bg-[var(--panel)] text-[var(--ink)] shadow-2xs border border-[var(--line)]"
-                : "text-[var(--muted)] hover:text-[var(--ink)]"
+                ? "bg-indigo-600 text-white shadow-xs"
+                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
             }`}
           >
             <span>{t("invoices.allTabs", "الكل")}</span>
-            <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-200 dark:bg-slate-700">
+            <span
+              className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                tab === "all" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+              }`}
+            >
               {counts.all}
             </span>
           </button>
@@ -75,15 +79,19 @@ export function InvoicesTableView({ rows }: { rows: InvoiceItem[] }) {
           <button
             type="button"
             onClick={() => setTab("sale")}
-            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
               tab === "sale"
-                ? "bg-blue-600 text-white shadow-2xs font-extrabold"
-                : "text-[var(--muted)] hover:text-[var(--ink)]"
+                ? "bg-indigo-600 text-white shadow-xs"
+                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
             }`}
           >
             <ShoppingCart size={13} />
             <span>{t("invoices.saleTabs", "فواتير البيع")}</span>
-            <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-blue-900/40 text-white">
+            <span
+              className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                tab === "sale" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+              }`}
+            >
               {counts.sale}
             </span>
           </button>
@@ -91,15 +99,19 @@ export function InvoicesTableView({ rows }: { rows: InvoiceItem[] }) {
           <button
             type="button"
             onClick={() => setTab("purchase")}
-            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
               tab === "purchase"
-                ? "bg-purple-600 text-white shadow-2xs font-extrabold"
-                : "text-[var(--muted)] hover:text-[var(--ink)]"
+                ? "bg-indigo-600 text-white shadow-xs"
+                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
             }`}
           >
             <Truck size={13} />
             <span>{t("invoices.purchaseTabs", "فواتير الشراء")}</span>
-            <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-purple-900/40 text-white">
+            <span
+              className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                tab === "purchase" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+              }`}
+            >
               {counts.purchase}
             </span>
           </button>
@@ -107,15 +119,19 @@ export function InvoicesTableView({ rows }: { rows: InvoiceItem[] }) {
           <button
             type="button"
             onClick={() => setTab("sale_return")}
-            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
               tab === "sale_return"
-                ? "bg-amber-600 text-white shadow-2xs font-extrabold"
-                : "text-[var(--muted)] hover:text-[var(--ink)]"
+                ? "bg-indigo-600 text-white shadow-xs"
+                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
             }`}
           >
             <RotateCcw size={13} />
             <span>{t("invoices.saleReturnTabs", "مرتجع بيع")}</span>
-            <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-900/40 text-white">
+            <span
+              className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                tab === "sale_return" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+              }`}
+            >
               {counts.sale_return}
             </span>
           </button>
@@ -123,15 +139,19 @@ export function InvoicesTableView({ rows }: { rows: InvoiceItem[] }) {
           <button
             type="button"
             onClick={() => setTab("purchase_return")}
-            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
               tab === "purchase_return"
-                ? "bg-rose-600 text-white shadow-2xs font-extrabold"
-                : "text-[var(--muted)] hover:text-[var(--ink)]"
+                ? "bg-indigo-600 text-white shadow-xs"
+                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
             }`}
           >
             <ArrowDownLeft size={13} />
             <span>{t("invoices.purchaseReturnTabs", "مرتجع شراء")}</span>
-            <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-rose-900/40 text-white">
+            <span
+              className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                tab === "purchase_return" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+              }`}
+            >
               {counts.purchase_return}
             </span>
           </button>
@@ -184,22 +204,22 @@ export function InvoicesTableView({ rows }: { rows: InvoiceItem[] }) {
                 const localeCode = locale === "en" ? "en-US" : "ar-EG";
 
                 return (
-                  <tr key={row.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                  <tr key={row.id} className="hover:bg-slate-50/80 transition-colors">
                     <td>
-                      <span className="font-mono text-xs font-black px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700">
+                      <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-indigo-50/80 text-indigo-700 border border-indigo-200/90">
                         {row.number}
                       </span>
                     </td>
                     <td>
                       <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-black border ${
+                        className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold border ${
                           row.type === "sale"
-                            ? "bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-950 dark:text-blue-200 dark:border-blue-800"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                             : row.type === "purchase"
-                            ? "bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-950 dark:text-purple-200 dark:border-purple-800"
+                            ? "bg-purple-50 text-purple-700 border-purple-200"
                             : row.type === "sale_return"
-                            ? "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800"
-                            : "bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950 dark:text-rose-200 dark:border-rose-800"
+                            ? "bg-amber-50 text-amber-700 border-amber-200"
+                            : "bg-rose-50 text-rose-700 border-rose-200"
                         }`}
                       >
                         {row.type === "sale"

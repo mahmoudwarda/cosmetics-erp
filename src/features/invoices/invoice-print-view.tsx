@@ -370,7 +370,7 @@ export function InvoicePrintView({ data }: { data: InvoiceData }) {
                   className="rounded-lg object-contain border border-slate-300"
                 />
               ) : (
-                <div className="w-12 h-12 rounded-lg bg-slate-900 text-white flex items-center justify-center">
+                <div className="w-12 h-12 rounded-lg bg-indigo-600 text-white flex items-center justify-center">
                   <Truck size={24} />
                 </div>
               )}
@@ -397,7 +397,7 @@ export function InvoicePrintView({ data }: { data: InvoiceData }) {
           <div className="table-wrap my-6">
             <table>
               <thead>
-                <tr className="bg-slate-100 dark:bg-slate-800">
+                <tr className="bg-slate-50 text-slate-700">
                   <th className="w-16 text-center">فحص</th>
                   <th className="w-12 text-center">#</th>
                   <th>اسم الصنف ومواصفات البند</th>

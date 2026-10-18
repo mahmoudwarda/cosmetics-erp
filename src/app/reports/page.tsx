@@ -441,7 +441,7 @@ export default async function ReportsPage({
                 <span>المبيعات:</span>
                 <span className="text-indigo-600">{totalPeriodRevenue.toLocaleString("ar-EG")} ج.م</span>
               </div>
-              <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+              <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
                 <div className="h-full bg-indigo-600 rounded-full" style={{ width: "100%" }} />
               </div>
             </div>
@@ -451,7 +451,7 @@ export default async function ReportsPage({
                 <span>المشتريات:</span>
                 <span className="text-purple-600">{totalPeriodPurchases.toLocaleString("ar-EG")} ج.م</span>
               </div>
-              <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+              <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
                 <div
                   className="h-full bg-purple-600 rounded-full"
                   style={{
@@ -466,7 +466,7 @@ export default async function ReportsPage({
                 <span>مجمل الأرباح:</span>
                 <span className="text-emerald-600">+{totalPeriodGrossProfit.toLocaleString("ar-EG")} ج.م</span>
               </div>
-              <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+              <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
                 <div
                   className="h-full bg-emerald-500 rounded-full"
                   style={{

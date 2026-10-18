@@ -243,7 +243,7 @@ export default async function PartiesPage({
               {rows.length} {locale === "en" ? "Accounts" : "حساب"}
             </b>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center font-bold">
+          <div className="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold">
             <BookOpenText size={18} />
           </div>
         </div>

@@ -178,14 +178,14 @@ export function PartiesTabsView({
             onClick={() => setActiveTab("all")}
             className={`px-3.5 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
               activeTab === "all"
-                ? "bg-blue-600 text-white shadow-sm ring-2 ring-blue-600/20"
-                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--bg)] border border-[var(--line)]"
+                ? "bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-500/20"
+                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
             }`}
           >
             <span>{t("common.all", "الكل")}</span>
             <span
-              className={`px-2 py-0.5 rounded-full text-[11px] font-black ${
-                activeTab === "all" ? "bg-white text-blue-700" : "bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-100"
+              className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                activeTab === "all" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
               }`}
             >
               {parties.length}
@@ -197,15 +197,15 @@ export function PartiesTabsView({
             onClick={() => setActiveTab("customers")}
             className={`px-3.5 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
               activeTab === "customers"
-                ? "bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-600/20"
-                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--bg)] border border-[var(--line)]"
+                ? "bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-500/20"
+                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
             }`}
           >
             <Users size={14} className={activeTab === "customers" ? "text-white" : "text-indigo-600"} />
             <span>{t("parties.customers", "العملاء")}</span>
             <span
-              className={`px-2 py-0.5 rounded-full text-[11px] font-black ${
-                activeTab === "customers" ? "bg-white text-indigo-700" : "bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-100"
+              className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                activeTab === "customers" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
               }`}
             >
               {customers.length}
@@ -217,15 +217,15 @@ export function PartiesTabsView({
             onClick={() => setActiveTab("suppliers")}
             className={`px-3.5 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
               activeTab === "suppliers"
-                ? "bg-emerald-600 text-white shadow-sm ring-2 ring-emerald-600/20"
-                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--bg)] border border-[var(--line)]"
+                ? "bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-500/20"
+                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
             }`}
           >
             <Building2 size={14} className={activeTab === "suppliers" ? "text-white" : "text-emerald-600"} />
             <span>{t("parties.suppliers", "الموردون")}</span>
             <span
-              className={`px-2 py-0.5 rounded-full text-[11px] font-black ${
-                activeTab === "suppliers" ? "bg-white text-emerald-700" : "bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-100"
+              className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                activeTab === "suppliers" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
               }`}
             >
               {suppliers.length}
@@ -237,15 +237,15 @@ export function PartiesTabsView({
             onClick={() => setActiveTab("debtors")}
             className={`px-3.5 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
               activeTab === "debtors"
-                ? "bg-rose-600 text-white shadow-sm ring-2 ring-rose-600/20"
-                : "bg-[var(--panel)] text-rose-700 dark:text-rose-300 hover:bg-rose-50 border border-rose-200 dark:border-rose-900"
+                ? "bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-500/20"
+                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
             }`}
           >
             <AlertCircle size={14} className={activeTab === "debtors" ? "text-white" : "text-rose-600"} />
             <span>{t("parties.debtors", "عليهم مديونية / مستحقات")}</span>
             <span
-              className={`px-2 py-0.5 rounded-full text-[11px] font-black ${
-                activeTab === "debtors" ? "bg-white text-rose-700" : "bg-rose-100 dark:bg-rose-900 text-rose-800 dark:text-rose-100"
+              className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                activeTab === "debtors" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
               }`}
             >
               {debtors.length}
@@ -257,11 +257,11 @@ export function PartiesTabsView({
             onClick={() => setActiveTab("statement")}
             className={`px-3.5 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
               activeTab === "statement"
-                ? "bg-purple-700 text-white shadow-sm ring-2 ring-purple-700/20"
-                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--bg)] border border-[var(--line)]"
+                ? "bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-500/20"
+                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
             }`}
           >
-            <BookOpenText size={14} className={activeTab === "statement" ? "text-white" : "text-purple-600"} />
+            <BookOpenText size={14} className={activeTab === "statement" ? "text-white" : "text-indigo-600"} />
             <span>{t("parties.statement", "كشف الحساب المالي")}</span>
           </button>
         </div>
@@ -385,7 +385,7 @@ export function PartiesTabsView({
                                   ? p.type === "customer"
                                     ? "bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
                                     : "bg-rose-100 text-rose-800 border border-rose-300 dark:bg-rose-950 dark:text-rose-200 dark:border-rose-800"
-                                  : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200"
+                                  : "bg-slate-100 text-slate-700 border border-slate-200"
                               }`}
                             >
                               {isZero
@@ -793,12 +793,12 @@ export function PartiesTabsView({
           [عرض] MODAL: Party Full Details & Printable Sheet (Redesigned with High Contrast)
           ========================================================================= */}
       {viewingParty && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-          <div className="bg-[var(--panel)] border border-slate-300 dark:border-slate-700 rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden my-auto animate-in fade-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-[var(--panel)] border border-[var(--line)] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden my-auto animate-in fade-in zoom-in-95 duration-150">
             {/* Modal Header */}
             <div className="p-4 sm:p-5 border-b border-[var(--line)] flex items-center justify-between bg-[var(--bg)]">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold">
                   {viewingParty.type === "customer" ? <Users size={20} /> : <Building2 size={20} />}
                 </div>
                 <div>
@@ -833,7 +833,7 @@ export function PartiesTabsView({
                 <button
                   type="button"
                   onClick={() => setViewingParty(null)}
-                  className="w-8 h-8 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 grid place-items-center cursor-pointer font-bold"
+                  className="w-8 h-8 rounded-lg border border-[var(--line)] hover:bg-[var(--surface-muted)] text-[var(--ink)] grid place-items-center cursor-pointer font-bold"
                   title={t("common.close", "إغلاق")}
                 >
                   <X size={16} />
@@ -843,7 +843,7 @@ export function PartiesTabsView({
 
             {/* Modal Body / High Contrast Cards */}
             <div className="p-5 sm:p-6 space-y-4 max-h-[75vh] overflow-y-auto">
-              {/* Financial KPI Strip (Bright & Crisp Contrast) */}
+              {/* Financial KPI Strip */}
               {(() => {
                 const bal = balances[viewingParty.id] ?? Number(viewingParty.openingBalance);
                 const isDebit = bal > 0.005;
@@ -851,20 +851,20 @@ export function PartiesTabsView({
 
                 return (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 shadow-xs">
-                      <span className="text-xs text-slate-500 dark:text-slate-400 font-extrabold block mb-1">
+                    <div className="p-4 rounded-xl bg-[var(--panel)] border-2 border-[var(--line)] shadow-xs">
+                      <span className="text-xs text-[var(--muted)] font-extrabold block mb-1">
                         {t("parties.currentBalance", "الرصيد المالي الحالي")}
                       </span>
                       <b
                         className={`text-2xl font-black font-mono block ${
                           isDebit
                             ? viewingParty.type === "customer"
-                              ? "text-rose-600 dark:text-rose-400"
-                              : "text-emerald-700 dark:text-emerald-400"
+                              ? "text-rose-600"
+                              : "text-emerald-700"
                             : isCredit
                             ? viewingParty.type === "customer"
-                              ? "text-emerald-700 dark:text-emerald-400"
-                              : "text-rose-600 dark:text-rose-400"
+                              ? "text-emerald-700"
+                              : "text-rose-600"
                             : "text-slate-600"
                         }`}
                       >
@@ -875,12 +875,12 @@ export function PartiesTabsView({
                         className={`inline-block mt-2 px-2.5 py-1 rounded-md text-xs font-extrabold ${
                           isDebit
                             ? viewingParty.type === "customer"
-                              ? "bg-rose-100 text-rose-800 border border-rose-300 dark:bg-rose-950 dark:text-rose-200"
-                              : "bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200"
+                              ? "bg-rose-100 text-rose-800 border border-rose-300"
+                              : "bg-emerald-100 text-emerald-800 border border-emerald-300"
                             : isCredit
                             ? viewingParty.type === "customer"
-                              ? "bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200"
-                              : "bg-rose-100 text-rose-800 border border-rose-300 dark:bg-rose-950 dark:text-rose-200"
+                              ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                              : "bg-rose-100 text-rose-800 border border-rose-300"
                             : "bg-slate-100 text-slate-800 border border-slate-200"
                         }`}
                       >
@@ -896,17 +896,17 @@ export function PartiesTabsView({
                       </span>
                     </div>
 
-                    <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 shadow-xs">
-                      <span className="text-xs text-slate-500 dark:text-slate-400 font-extrabold block mb-1">
+                    <div className="p-4 rounded-xl bg-[var(--panel)] border-2 border-[var(--line)] shadow-xs">
+                      <span className="text-xs text-[var(--muted)] font-extrabold block mb-1">
                         {t("parties.openingBalance", "الرصيد الافتتاحي عند التسجيل")}
                       </span>
-                      <b className="text-2xl font-black text-slate-900 dark:text-white font-mono block">
+                      <b className="text-2xl font-black text-[var(--ink)] font-mono block">
                         {Number(viewingParty.openingBalance).toLocaleString(locale === "en" ? "en-US" : "ar-EG", {
                           minimumFractionDigits: 2,
                         })}{" "}
                         {t("common.egp", "ج.م")}
                       </b>
-                      <span className="block mt-2 text-xs text-slate-500 dark:text-slate-400 font-bold">
+                      <span className="block mt-2 text-xs text-[var(--muted)] font-bold">
                         {t("parties.registrationDate", "تاريخ التسجيل")}:{" "}
                         {new Date(viewingParty.createdAt).toLocaleDateString(locale === "en" ? "en-US" : "ar-EG", {
                           year: "numeric",
@@ -920,7 +920,7 @@ export function PartiesTabsView({
               })()}
 
               {/* Contact & Profile Information Card */}
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 space-y-3">
+              <div className="p-4 rounded-xl bg-[var(--surface-muted)] border border-[var(--line)] space-y-3">
                 <h4 className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                   {t("parties.contact", "بيانات الاتصال والعنوان")}
                 </h4>

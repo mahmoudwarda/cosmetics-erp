@@ -18,6 +18,9 @@ import {
   Clock,
   Package,
   Store,
+  CreditCard,
+  BarChart3,
+  Sparkles,
 } from "lucide-react";
 import { getSessionUserId } from "@/server/auth/session";
 import { db } from "@/server/db";
@@ -108,6 +111,7 @@ export default async function Home() {
   }[] = [];
   let lowStockProducts: { id: string; name: string; sku: string; stock: string; reorderLevel: string }[] = [];
   let activeBoxesWithBalance: { id: string; name: string; kind: string; balance: number }[] = [];
+  let topSellingProducts: { id: string; name: string; sku: string; stock: string; soldQty: number }[] = [];
 
   try {
     const [
@@ -121,6 +125,7 @@ export default async function Home() {
       latestInvoices,
       lowItems,
       ledgerEntries,
+      topSoldRows,
     ] = await Promise.all([
       db
         .select({ n: sql<number>`count(*)` })
@@ -196,6 +201,21 @@ export default async function Home() {
         .from(partyLedger)
         .innerJoin(parties, eq(parties.id, partyLedger.partyId))
         .where(isNull(parties.deletedAt)),
+      db
+        .select({
+          id: products.id,
+          name: products.name,
+          sku: products.sku,
+          stock: products.stock,
+          soldQty: sql<number>`coalesce(sum(${invoiceLines.quantity}), 0)`,
+        })
+        .from(invoiceLines)
+        .innerJoin(products, eq(products.id, invoiceLines.productId))
+        .innerJoin(invoices, eq(invoices.id, invoiceLines.invoiceId))
+        .where(eq(invoices.type, "sale"))
+        .groupBy(products.id, products.name, products.sku, products.stock)
+        .orderBy(desc(sql`sum(${invoiceLines.quantity})`))
+        .limit(4),
     ]);
 
     lowCount = Number(lowRows[0]?.n ?? 0);
@@ -243,6 +263,10 @@ export default async function Home() {
 
     recentInvoices = latestInvoices;
     lowStockProducts = lowItems;
+    topSellingProducts = topSoldRows.map((r) => ({
+      ...r,
+      soldQty: Number(r.soldQty),
+    }));
   } catch {
     /* database safety fallback */
   }
@@ -255,6 +279,9 @@ export default async function Home() {
   }).format(new Date());
 
   const todayMarginRate = todaySalesTotal > 0 ? Math.round((todayProfitTotal / todaySalesTotal) * 100) : 0;
+  const todaySalesCredit = Math.max(0, todaySalesTotal - todaySalesPaid);
+  const todayCashRatio = todaySalesTotal > 0 ? Math.round((todaySalesPaid / todaySalesTotal) * 100) : 100;
+  const todayCreditRatio = todaySalesTotal > 0 ? Math.round((todaySalesCredit / todaySalesTotal) * 100) : 0;
 
   const totalAssetsAtCost = totalCashBalance + inventoryCostValuation + customerReceivablesTotal;
   const totalLiabilities = supplierPayablesTotal;
@@ -274,7 +301,7 @@ export default async function Home() {
               className="w-12 h-12 rounded-xl object-contain border border-[var(--line)] bg-[var(--panel)] p-1 shadow-xs shrink-0"
             />
           ) : (
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-xs shrink-0 font-bold">
+            <div className="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-xs shrink-0 font-bold">
               <Store size={22} />
             </div>
           )}
@@ -296,11 +323,11 @@ export default async function Home() {
       </header>
 
       {/* Executive Net Liquidation Value & Total Capital Worth Banner */}
-      <section className="mb-5 p-5 md:p-6 bg-gradient-to-br from-[var(--panel)] to-[var(--bg)] border border-indigo-200/80 dark:border-indigo-900/60 rounded-2xl shadow-xs relative overflow-hidden">
+      <section className="mb-5 p-5 md:p-6 bg-gradient-to-br from-[var(--panel)] to-[var(--bg)] border border-indigo-100 rounded-2xl shadow-xs relative overflow-hidden">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 border-b border-[var(--line)]">
           <div className="space-y-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-indigo-50 text-indigo-700 border border-indigo-200">
                 {translate("dash.liquidationIndex", locale, "مؤشر التصفية الشامل للنشاط")}
               </span>
               <span className="text-xs text-[var(--muted)] font-semibold">
@@ -316,17 +343,17 @@ export default async function Home() {
           </div>
 
           <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-2 shrink-0">
-            <div className="p-3 bg-[var(--bg)] border border-indigo-200 dark:border-indigo-900 rounded-xl text-right lg:text-left">
+            <div className="p-3 bg-[var(--panel)] border border-indigo-200 rounded-xl text-right lg:text-left shadow-2xs">
               <span className="text-[11px] text-[var(--muted)] font-bold block mb-0.5">
                 {translate("dash.immediateLiquidationAtCost", locale, "صافي التصفية الفورية (بالتكلفة):")}
               </span>
-              <b className="text-2xl md:text-3xl font-black text-indigo-700 dark:text-indigo-400">
+              <b className="text-2xl md:text-3xl font-black text-indigo-700">
                 {netLiquidationAtCost.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs font-normal">{translate("common.egp", locale, "ج.م")}</small>
               </b>
             </div>
             <div className="text-xs text-[var(--muted)] font-medium">
               {translate("dash.liquidationAtRetail", locale, "التصفية بالبيع القطاعي:")}{" "}
-              <b className="text-emerald-600 dark:text-emerald-400 font-bold">
+              <b className="text-emerald-600 font-bold">
                 {netLiquidationAtRetail.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
               </b>
             </div>
@@ -339,10 +366,10 @@ export default async function Home() {
           <div className="p-3 bg-[var(--panel)] border border-[var(--line)] rounded-xl flex items-center justify-between shadow-2xs">
             <div>
               <span className="text-[11px] text-[var(--muted)] font-semibold flex items-center gap-1">
-                <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 flex items-center justify-center text-[10px] font-bold">+</span>
+                <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold">+</span>
                 <span>{translate("dash.cashboxLiquidity", locale, "سيولة الخزائن الفورية")}</span>
               </span>
-              <b className="text-base font-bold text-emerald-700 dark:text-emerald-400 block mt-0.5">
+              <b className="text-base font-bold text-emerald-700 block mt-0.5 font-mono">
                 {totalCashBalance.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
               </b>
               <small className="text-[10px] text-[var(--muted)]">
@@ -356,10 +383,10 @@ export default async function Home() {
           <div className="p-3 bg-[var(--panel)] border border-[var(--line)] rounded-xl flex items-center justify-between shadow-2xs">
             <div>
               <span className="text-[11px] text-[var(--muted)] font-semibold flex items-center gap-1">
-                <span className="w-4 h-4 rounded-full bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300 flex items-center justify-center text-[10px] font-bold">+</span>
+                <span className="w-4 h-4 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center text-[10px] font-bold">+</span>
                 <span>{translate("dash.inventoryAtCost", locale, "بضاعة المخزن (بالتكلفة)")}</span>
               </span>
-              <b className="text-base font-bold text-sky-700 dark:text-sky-400 block mt-0.5">
+              <b className="text-base font-bold text-sky-700 block mt-0.5 font-mono">
                 {inventoryCostValuation.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
               </b>
               <small className="text-[10px] text-[var(--muted)]">
@@ -373,10 +400,10 @@ export default async function Home() {
           <div className="p-3 bg-[var(--panel)] border border-[var(--line)] rounded-xl flex items-center justify-between shadow-2xs">
             <div>
               <span className="text-[11px] text-[var(--muted)] font-semibold flex items-center gap-1">
-                <span className="w-4 h-4 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 flex items-center justify-center text-[10px] font-bold">+</span>
+                <span className="w-4 h-4 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px] font-bold">+</span>
                 <span>{translate("dash.marketReceivables", locale, "فلوسنا بالسوق (آجل العملاء)")}</span>
               </span>
-              <b className="text-base font-bold text-indigo-700 dark:text-indigo-400 block mt-0.5">
+              <b className="text-base font-bold text-indigo-700 block mt-0.5 font-mono">
                 {customerReceivablesTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
               </b>
               <small className="text-[10px] text-[var(--muted)]">{locale === "en" ? "Receivables from customers" : "ديون مستحقة لنا بالخارج"}</small>
@@ -388,10 +415,10 @@ export default async function Home() {
           <div className="p-3 bg-[var(--panel)] border border-[var(--line)] rounded-xl flex items-center justify-between shadow-2xs">
             <div>
               <span className="text-[11px] text-[var(--muted)] font-semibold flex items-center gap-1">
-                <span className="w-4 h-4 rounded-full bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 flex items-center justify-center text-[10px] font-bold">−</span>
+                <span className="w-4 h-4 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center text-[10px] font-bold">−</span>
                 <span>{translate("dash.supplierPayables", locale, "مستحقات الموردين (علينا)")}</span>
               </span>
-              <b className="text-base font-bold text-rose-600 dark:text-rose-400 block mt-0.5">
+              <b className="text-base font-bold text-rose-600 block mt-0.5 font-mono">
                 {supplierPayablesTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
               </b>
               <small className="text-[10px] text-[var(--muted)]">{locale === "en" ? "Payable obligations" : "التزامات واجبة السداد"}</small>
@@ -407,11 +434,11 @@ export default async function Home() {
         <div className="p-3.5 bg-[var(--panel)] border border-[var(--line)] rounded-xl relative overflow-hidden shadow-2xs">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-xs text-[var(--muted)] font-bold">{translate("dash.todaySales", locale, "مبيعات اليوم")}</span>
-            <div className="w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
               <TrendingUp size={14} />
             </div>
           </div>
-          <b className="text-xl text-indigo-700 dark:text-indigo-400 block font-bold">
+          <b className="text-xl text-indigo-700 block font-bold font-mono">
             {todaySalesTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-[10px] text-[var(--muted)] font-normal">{translate("common.egp", locale, "ج.م")}</small>
           </b>
           <span className="text-[11px] text-[var(--muted)] block mt-0.5 font-medium">
@@ -423,14 +450,14 @@ export default async function Home() {
         <div className="p-3.5 bg-[var(--panel)] border border-[var(--line)] rounded-xl relative overflow-hidden shadow-2xs">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-xs text-[var(--muted)] font-bold">{translate("dash.todayProfit", locale, "أرباح اليوم")}</span>
-            <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
               <Coins size={14} />
             </div>
           </div>
-          <b className="text-xl text-emerald-600 dark:text-emerald-400 block font-bold">
+          <b className="text-xl text-emerald-600 block font-bold font-mono">
             +{todayProfitTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-[10px] text-[var(--muted)] font-normal">{translate("common.egp", locale, "ج.م")}</small>
           </b>
-          <span className="text-[11px] text-emerald-700 dark:text-emerald-500 block mt-0.5 font-semibold">
+          <span className="text-[11px] text-emerald-700 block mt-0.5 font-semibold">
             {locale === "en" ? `Margin: ${todayMarginRate}%` : `هامش: %${todayMarginRate}`}
           </span>
         </div>
@@ -439,11 +466,11 @@ export default async function Home() {
         <div className="p-3.5 bg-[var(--panel)] border border-[var(--line)] rounded-xl relative overflow-hidden shadow-2xs">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-xs text-[var(--muted)] font-bold">{translate("dash.todayPurchases", locale, "مشتريات اليوم")}</span>
-            <div className="w-7 h-7 rounded-lg bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
               <TrendingDown size={14} />
             </div>
           </div>
-          <b className="text-xl text-purple-700 dark:text-purple-400 block font-bold">
+          <b className="text-xl text-purple-700 block font-bold font-mono">
             {todayPurchasesTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-[10px] text-[var(--muted)] font-normal">{translate("common.egp", locale, "ج.م")}</small>
           </b>
           <span className="text-[11px] text-[var(--muted)] block mt-0.5 font-medium">
@@ -455,14 +482,14 @@ export default async function Home() {
         <div className="p-3.5 bg-[var(--panel)] border border-[var(--line)] rounded-xl relative overflow-hidden shadow-2xs">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-xs text-[var(--muted)] font-bold">{translate("dash.cashboxLiquidity", locale, "السيولة النقدية")}</span>
-            <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center">
               <Wallet size={14} />
             </div>
           </div>
-          <b className="text-xl text-[var(--ink)] block font-bold">
+          <b className="text-xl text-[var(--ink)] block font-bold font-mono">
             {totalCashBalance.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-[10px] text-[var(--muted)] font-normal">{translate("common.egp", locale, "ج.م")}</small>
           </b>
-          <span className="text-[11px] text-blue-700 dark:text-blue-400 block mt-0.5 font-medium">
+          <span className="text-[11px] text-sky-700 block mt-0.5 font-medium">
             {locale === "en" ? `In ${activeBoxesWithBalance.length} active cashboxes` : `في ${activeBoxesWithBalance.length} خزائن نشطة`}
           </span>
         </div>
@@ -471,11 +498,11 @@ export default async function Home() {
         <div className="p-3.5 bg-[var(--panel)] border border-[var(--line)] rounded-xl relative overflow-hidden shadow-2xs">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-xs text-[var(--muted)] font-bold">{translate("dash.inventoryAtCost", locale, "قيمة بضاعة المخزن")}</span>
-            <div className="w-7 h-7 rounded-lg bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
               <Package size={14} />
             </div>
           </div>
-          <b className="text-xl text-[var(--ink)] block font-bold">
+          <b className="text-xl text-[var(--ink)] block font-bold font-mono">
             {inventoryCostValuation.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-[10px] text-[var(--muted)] font-normal">{translate("common.egp", locale, "ج.م")}</small>
           </b>
           <span className="text-[11px] text-[var(--muted)] block mt-0.5 font-medium">
@@ -487,16 +514,145 @@ export default async function Home() {
         <div className="p-3.5 bg-[var(--panel)] border border-[var(--line)] rounded-xl relative overflow-hidden shadow-2xs">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-xs text-[var(--muted)] font-bold">{translate("dash.lowStockCount", locale, "نواقص المخزون")}</span>
-            <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${lowCount > 0 ? "bg-amber-50 dark:bg-amber-950/40 text-amber-600" : "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600"}`}>
+            <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${lowCount > 0 ? "bg-rose-50 text-rose-600" : "bg-emerald-50 text-emerald-600"}`}>
               {lowCount > 0 ? <AlertTriangle size={14} /> : <CheckCircle2 size={14} />}
             </div>
           </div>
-          <b className={`text-xl block font-bold ${lowCount > 0 ? "text-amber-600" : "text-emerald-600"}`}>
+          <b className={`text-xl block font-bold font-mono ${lowCount > 0 ? "text-rose-600" : "text-emerald-600"}`}>
             {lowCount.toLocaleString(localeCode)} <small className="text-[10px] font-normal">{locale === "en" ? "items" : "صنف"}</small>
           </b>
           <span className="text-[11px] block mt-0.5 font-medium">
             {lowCount > 0 ? (locale === "en" ? "Needs reordering" : "بحاجة لإعادة الطلب") : (locale === "en" ? "Stock levels healthy" : "مستويات المخزون ممتازة")}
           </span>
+        </div>
+      </div>
+
+      {/* Visual Analytics & Operational Insights (Dribbble ERP Inspiration) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-5">
+        {/* Card 1: Today Sales Payment Distribution (Cash vs Credit) */}
+        <div className="p-4 sm:p-5 bg-[var(--panel)] border border-[var(--line)] rounded-2xl shadow-2xs space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                <Coins size={16} />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-[var(--ink)]">
+                  {locale === "en" ? "Today's Revenue & Payment Split" : "توزيع تدفق مبيعات اليوم (نقدي وآجل)"}
+                </h3>
+                <p className="text-[11px] text-[var(--muted)]">
+                  {locale === "en" ? "Cash collections vs outstanding market receivables" : "مقارنة السيولة النقدية المحصلة فوراً مقابل مبيعات الآجل بالسوق"}
+                </p>
+              </div>
+            </div>
+            <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+              {locale === "en" ? `Margin: %${todayMarginRate}` : `هامش الربح: %${todayMarginRate}`}
+            </span>
+          </div>
+
+          {/* Visual Stacked Progress Bar */}
+          <div className="space-y-1.5">
+            <div className="h-3 rounded-full bg-slate-100 overflow-hidden flex">
+              <div
+                className="bg-emerald-500 h-full transition-all duration-500"
+                style={{ width: `${todayCashRatio}%` }}
+                title={locale === "en" ? `Cash: ${todayCashRatio}%` : `كاش: %${todayCashRatio}`}
+              />
+              <div
+                className="bg-indigo-500 h-full transition-all duration-500"
+                style={{ width: `${todayCreditRatio}%` }}
+                title={locale === "en" ? `Credit: ${todayCreditRatio}%` : `آجل: %${todayCreditRatio}`}
+              />
+            </div>
+            <div className="flex items-center justify-between text-[11px] text-[var(--muted)] font-medium">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span>{locale === "en" ? `Cash Collections (%${todayCashRatio})` : `تحصيل نقدي بالخزينة (%${todayCashRatio})`}</span>
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+                <span>{locale === "en" ? `Credit / Receivables (%${todayCreditRatio})` : `مبيعات بالآجل للسوق (%${todayCreditRatio})`}</span>
+              </span>
+            </div>
+          </div>
+
+          {/* Financial Breakdown Metric Strips */}
+          <div className="grid grid-cols-2 gap-3 pt-1">
+            <div className="p-3 bg-emerald-50/50 border border-emerald-200/60 rounded-xl">
+              <span className="text-[11px] text-emerald-800 font-bold block mb-0.5">
+                {locale === "en" ? "Cash Collected" : "المدفوع نقداً:"}
+              </span>
+              <b className="text-base font-bold text-emerald-700 font-mono block">
+                {todaySalesPaid.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
+              </b>
+            </div>
+            <div className="p-3 bg-indigo-50/50 border border-indigo-200/60 rounded-xl">
+              <span className="text-[11px] text-indigo-800 font-bold block mb-0.5">
+                {locale === "en" ? "Credit / Remaining" : "المتبقي آجل بالسوق:"}
+              </span>
+              <b className="text-base font-bold text-indigo-700 font-mono block">
+                {todaySalesCredit.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
+              </b>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 2: Top Selling / Fast Moving Products */}
+        <div className="p-4 sm:p-5 bg-[var(--panel)] border border-[var(--line)] rounded-2xl shadow-2xs space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+                <Package size={16} />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-[var(--ink)]">
+                  {locale === "en" ? "Fast-Moving & Top Products" : "الأصناف الأكثر طلباً ونشاطاً بالمبيعات"}
+                </h3>
+                <p className="text-[11px] text-[var(--muted)]">
+                  {locale === "en" ? "Top selling items with current inventory stock" : "معدل دوران المخزون والكميات المباعة"}
+                </p>
+              </div>
+            </div>
+            <Link href="/inventory" className="text-link text-xs">
+              <span>{locale === "en" ? "Full Catalog" : "دليل الأصناف"}</span>
+              <ArrowUpRight size={13} />
+            </Link>
+          </div>
+
+          <div className="space-y-2 pt-1">
+            {topSellingProducts.length ? (
+              topSellingProducts.map((p) => {
+                const stockNum = Number(p.stock);
+                return (
+                  <div
+                    key={p.id}
+                    className="p-2.5 border border-[var(--line)] rounded-xl flex items-center justify-between hover:bg-[var(--surface-muted)] transition-colors"
+                  >
+                    <div className="min-w-0 pr-2">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <b className="text-xs font-bold text-[var(--ink)] truncate max-w-[180px]">{p.name}</b>
+                        <span className="font-mono text-[10px] text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                          {p.sku}
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-[var(--muted)] font-medium">
+                        {locale === "en" ? `Warehouse stock: ${stockNum.toLocaleString(localeCode)} pcs` : `المخزون بالمستودع: ${stockNum.toLocaleString(localeCode)} قطعة`}
+                      </span>
+                    </div>
+                    <div className="text-left shrink-0">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono">
+                        {p.soldQty.toLocaleString(localeCode)} {locale === "en" ? "sold" : "مباع"}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="text-center py-6 text-xs text-[var(--muted)]">
+                {locale === "en" ? "No sales recorded yet to calculate top products" : "لا توجد حركات بيع مسجلة بعد لتحديد الأصناف الأكثر طلباً"}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -532,9 +688,9 @@ export default async function Home() {
                 {recentInvoices.length ? (
                   recentInvoices.map((i) => {
                     return (
-                      <tr key={i.number} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                      <tr key={i.number} className="hover:bg-slate-50/80 transition-colors">
                         <td>
-                          <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                          <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-indigo-50/80 text-indigo-700 border border-indigo-200">
                             {i.number}
                           </span>
                         </td>
@@ -542,10 +698,10 @@ export default async function Home() {
                           <span
                             className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold border ${
                               i.type === "sale"
-                                ? "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800"
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                                 : i.type === "purchase"
-                                ? "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800"
-                                : "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800"
+                                ? "bg-purple-50 text-purple-700 border-purple-200"
+                                : "bg-amber-50 text-amber-700 border-amber-200"
                             }`}
                           >
                             {i.type === "sale"
@@ -614,7 +770,7 @@ export default async function Home() {
                   className="p-3 border border-[var(--line)] rounded-xl flex items-center justify-between hover:bg-[var(--surface-muted)] transition-colors shadow-2xs"
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-[var(--primary)] flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-indigo-50 text-[var(--primary)] flex items-center justify-center">
                       <Wallet size={16} />
                     </div>
                     <div>
@@ -629,7 +785,7 @@ export default async function Home() {
                     </div>
                   </div>
                   <div className="text-left">
-                    <b className="text-sm font-bold text-emerald-600 dark:text-emerald-400 block font-mono">
+                    <b className="text-sm font-bold text-emerald-600 block font-mono">
                       {box.balance.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
                     </b>
                   </div>
@@ -660,7 +816,7 @@ export default async function Home() {
                     <div>
                       <div className="flex items-center gap-2 mb-0.5">
                         <b className="text-xs text-[var(--ink)] block font-bold">{p.name}</b>
-                        <span className="font-mono text-[10px] text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.2 rounded border border-slate-200 dark:border-slate-700">{p.sku}</span>
+                        <span className="font-mono text-[10px] text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">{p.sku}</span>
                       </div>
                       <small className="text-[11px] text-[var(--muted)]">
                         {locale === "en" ? `Reorder level: ${Number(p.reorderLevel).toLocaleString(localeCode)} pcs` : `حد الطلب: ${Number(p.reorderLevel).toLocaleString(localeCode)} قطعة`}

@@ -42,7 +42,7 @@ const modules = [
   { id: "finance", key: "nav.finance", icon: Coins, color: "text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40" },
   { id: "parties", key: "nav.parties", icon: Users, color: "text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40" },
   { id: "users", key: "nav.users", icon: ShieldCheck, color: "text-violet-600 bg-violet-50 dark:bg-violet-950/40" },
-  { id: "settings", key: "nav.settings", icon: Settings, color: "text-slate-600 bg-slate-100 dark:bg-slate-800" },
+  { id: "settings", key: "nav.settings", icon: Settings, color: "text-slate-600 bg-slate-100" },
   { id: "reports", key: "nav.reports", icon: BarChart3, color: "text-rose-600 bg-rose-50 dark:bg-rose-950/40" },
 ] as const;
 
@@ -415,7 +415,7 @@ export default async function UsersPage() {
 
                   <div className="flex items-center gap-2">
                     {role.isSystem && (
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
                         {locale === "en" ? "System Role" : "دور نظام قياسي"}
                       </span>
                     )}

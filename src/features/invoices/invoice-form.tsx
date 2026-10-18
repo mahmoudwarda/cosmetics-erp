@@ -955,7 +955,7 @@ export function InvoiceForm({
                           const cur = parseInt(line.quantity, 10) || 1;
                           if (cur > 1) updateLineQuantity(index, String(cur - 1));
                         }}
-                        className="w-6 h-6 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center cursor-pointer font-bold"
+                        className="w-6 h-6 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 flex items-center justify-center cursor-pointer font-bold"
                         title="إنقاص الكمية بواحد"
                       >
                         <Minus size={11} />
@@ -975,7 +975,7 @@ export function InvoiceForm({
                           const cur = parseInt(line.quantity, 10) || 1;
                           updateLineQuantity(index, String(cur + 1));
                         }}
-                        className="w-6 h-6 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center cursor-pointer font-bold"
+                        className="w-6 h-6 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 flex items-center justify-center cursor-pointer font-bold"
                         title="زيادة الكمية بواحد"
                       >
                         <Plus size={11} />

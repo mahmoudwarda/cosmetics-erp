@@ -149,15 +149,19 @@ export function InventoryTabsView({
           <button
             type="button"
             onClick={() => setActiveTab("products")}
-            className={`px-4 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
               activeTab === "products"
-                ? "bg-[var(--primary)] text-white shadow-xs"
-                : "text-[var(--muted)] hover:text-[var(--ink)]"
+                ? "bg-indigo-600 text-white shadow-xs"
+                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
             }`}
           >
             <Package size={14} />
             <span>{t("inventory.productsTab")}</span>
-            <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-indigo-900/40 text-white">
+            <span
+              className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                activeTab === "products" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+              }`}
+            >
               {products.length}
             </span>
           </button>
@@ -165,15 +169,19 @@ export function InventoryTabsView({
           <button
             type="button"
             onClick={() => setActiveTab("categories")}
-            className={`px-4 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
               activeTab === "categories"
-                ? "bg-[var(--primary)] text-white shadow-xs"
-                : "text-[var(--muted)] hover:text-[var(--ink)]"
+                ? "bg-indigo-600 text-white shadow-xs"
+                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
             }`}
           >
             <FolderTree size={14} />
             <span>{t("inventory.categoriesTab")}</span>
-            <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-indigo-900/40 text-white">
+            <span
+              className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                activeTab === "categories" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+              }`}
+            >
               {categories.length}
             </span>
           </button>
@@ -181,15 +189,19 @@ export function InventoryTabsView({
           <button
             type="button"
             onClick={() => setActiveTab("units")}
-            className={`px-4 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
               activeTab === "units"
-                ? "bg-[var(--primary)] text-white shadow-xs"
-                : "text-[var(--muted)] hover:text-[var(--ink)]"
+                ? "bg-indigo-600 text-white shadow-xs"
+                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
             }`}
           >
             <Boxes size={14} />
             <span>{t("inventory.unitsTab")}</span>
-            <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-indigo-900/40 text-white">
+            <span
+              className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                activeTab === "units" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+              }`}
+            >
               {units.length}
             </span>
           </button>
@@ -370,7 +382,7 @@ export function InventoryTabsView({
                     }
 
                     return (
-                      <tr key={p.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                      <tr key={p.id} className="hover:bg-slate-50/80 transition-colors">
                         <td>
                           <b className="text-[var(--ink)] block font-bold">{p.name}</b>
                           {unit && (
@@ -380,14 +392,14 @@ export function InventoryTabsView({
                           )}
                         </td>
                         <td>
-                          <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 block w-fit mb-1">
+                          <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 block w-fit mb-1">
                             {p.sku}
                           </span>
                           {p.barcode && <span className="text-[11px] text-[var(--muted)] font-mono block">{p.barcode}</span>}
                         </td>
                         <td>
                           {catName ? (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-indigo-50/70 text-indigo-700 border border-indigo-200/70">
                               {catName}
                             </span>
                           ) : (
@@ -654,7 +666,7 @@ export function InventoryTabsView({
                           )}
                         </td>
                         <td className="text-center">
-                          <span className="font-mono font-bold text-xs px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                          <span className="font-mono font-bold text-xs px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 border border-slate-200">
                             {count} {locale === "en" ? "items" : "صنف"}
                           </span>
                         </td>
@@ -801,7 +813,7 @@ export function InventoryTabsView({
                           {Number(u.factor)} {t("common.pieces")}
                         </td>
                         <td className="text-center">
-                          <span className="font-mono font-bold text-xs px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                          <span className="font-mono font-bold text-xs px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 border border-slate-200">
                             {count} {locale === "en" ? "items" : "صنف"}
                           </span>
                         </td>
