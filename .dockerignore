@@ -1,0 +1,14 @@
+node_modules
+.next
+.next-bundle
+.next-build*
+work
+data/pgdata
+data/postgres
+data/*.log
+*.zip
+*.ps1
+.git
+.github
+Dockerfile*
+.env.local
