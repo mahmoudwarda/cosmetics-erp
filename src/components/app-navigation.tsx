@@ -218,7 +218,7 @@ export function AppNavigation({
                 className="w-full py-1.5 px-3 rounded-lg border border-[var(--line)] bg-[var(--bg)] hover:bg-[var(--panel)] text-[var(--ink)] text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-2xs transition-all"
                 title={locale === "ar" ? "Switch to English" : "التحويل إلى العربية"}
               >
-                <Globe size={14} className="text-indigo-600 dark:text-indigo-400" />
+                <Globe size={14} className="text-indigo-600" />
                 <span>{locale === "ar" ? "🌐 Switch to English" : "🌐 التحويل إلى العربية"}</span>
               </button>
             </form>

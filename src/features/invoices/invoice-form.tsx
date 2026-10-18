@@ -536,8 +536,8 @@ export function InvoiceForm({
     <form action={handleAction} className="invoice-form space-y-4">
       {/* Error Banner with prominent alert styling */}
       {formError && (
-        <div className="p-3.5 bg-rose-50 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-800 rounded-xl text-rose-800 dark:text-rose-200 text-xs font-bold flex items-center gap-2.5 shadow-sm animate-in fade-in" role="alert">
-          <ShieldAlert size={18} className="shrink-0 text-rose-600 dark:text-rose-400" />
+        <div className="p-3.5 bg-rose-50 border border-rose-300 rounded-xl text-rose-800 text-xs font-bold flex items-center gap-2.5 animate-in fade-in" role="alert">
+          <ShieldAlert size={18} className="shrink-0 text-rose-600" />
           <span className="flex-1">{formError}</span>
         </div>
       )}
@@ -712,10 +712,10 @@ export function InvoiceForm({
       </div>
 
       {/* Barcode & QR Code Fast Scanner Bar */}
-      <div className="p-3 bg-[var(--panel)] border border-[var(--line)] rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
+      <div className="p-3 bg-[var(--panel)] border border-[var(--line)] rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="flex items-center gap-2 w-full sm:w-auto flex-1">
           <div className="relative flex-1 max-w-md">
-            <Barcode size={16} className={`absolute ${locale === "ar" ? "right-3" : "left-3"} top-1/2 -translate-y-1/2 text-indigo-600 dark:text-indigo-400 pointer-events-none`} />
+            <Barcode size={16} className={`absolute ${locale === "ar" ? "right-3" : "left-3"} top-1/2 -translate-y-1/2 text-indigo-600 pointer-events-none`} />
             <input
               type="text"
               value={barcodeQuery}
@@ -744,8 +744,8 @@ export function InvoiceForm({
           <div
             className={`text-xs font-bold px-3 py-2 rounded-lg flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 animate-in fade-in ${
               scanFeedback.type === "success"
-                ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300"
-                : "bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-300"
+                ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                : "bg-amber-50 text-amber-700 border border-amber-200"
             }`}
           >
             <div className="flex items-center gap-1.5">
@@ -793,7 +793,7 @@ export function InvoiceForm({
           <span className="flex items-center justify-between text-xs font-bold text-[var(--ink)] mb-1.5">
             <span>{t("invoices.unitPackage", "الوحدة / التعبئة")}</span>
             {selectedUnitFactor > 1 && (
-              <span className="text-[10px] text-indigo-700 dark:text-indigo-400 font-bold">
+              <span className="text-[10px] text-indigo-700 font-bold">
                 {selectedUnitFactor} {t("common.pieces", "قطع بالعبوة")}
               </span>
             )}
@@ -826,7 +826,7 @@ export function InvoiceForm({
                 const cur = parseInt(quantity, 10) || 1;
                 if (cur > 1) setQuantity(String(cur - 1));
               }}
-              className="w-8 h-[34px] flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer shrink-0 font-bold text-sm"
+              className="w-8 h-[34px] flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-200 transition-colors cursor-pointer shrink-0 font-bold text-sm"
               title={locale === "en" ? "Decrement quantity by 1" : "إنقاص الكمية بواحد"}
             >
               <Minus size={13} />
@@ -848,7 +848,7 @@ export function InvoiceForm({
                 const cur = parseInt(quantity, 10) || 1;
                 setQuantity(String(cur + 1));
               }}
-              className="w-8 h-[34px] flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer shrink-0 font-bold text-sm"
+              className="w-8 h-[34px] flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-200 transition-colors cursor-pointer shrink-0 font-bold text-sm"
               title={locale === "en" ? "Increment quantity by 1" : "زيادة الكمية بواحد"}
             >
               <Plus size={13} />
@@ -864,7 +864,7 @@ export function InvoiceForm({
           )}
           <button
             type="button"
-            className="primary flex items-center justify-center gap-1.5 h-[38px] px-4 font-bold w-full cursor-pointer shadow-xs"
+            className="primary flex items-center justify-center gap-1.5 h-[38px] px-4 font-bold w-full cursor-pointer"
             onClick={addLine}
           >
             <Plus size={15} />
@@ -893,11 +893,11 @@ export function InvoiceForm({
               const totalPieces = (parseInt(line.quantity, 10) || 0) * factor;
 
               return (
-                <tr key={`${line.productId}-${index}`} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                <tr key={`${line.productId}-${index}`} className="transition-colors">
                   <td className="font-bold text-[var(--ink)]">
                     <div>{line.name}</div>
                     {factor > 1 && (
-                      <span className="text-[10px] text-indigo-700 dark:text-indigo-400 font-bold block mt-0.5">
+                      <span className="text-[10px] text-indigo-700 font-bold block mt-0.5">
                         عبوة: {line.unitName ?? "كرتونة"} ({factor} قطعة)
                       </span>
                     )}
@@ -995,7 +995,7 @@ export function InvoiceForm({
                           <span className="font-mono font-bold text-sm text-[var(--ink)] px-2 py-1 bg-[var(--bg)] border border-[var(--line)] rounded-md">
                             {Number(line.unitPrice).toFixed(2)} ج.م
                           </span>
-                          <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-bold mt-0.5">
+                          <span className="text-[10px] text-emerald-700 font-bold mt-0.5">
                             سعر الوحدة المعتمد
                           </span>
                         </div>
@@ -1092,11 +1092,11 @@ export function InvoiceForm({
 
           <div className="text-left text-xs font-bold">
             {paymentMode === "cash" ? (
-              <span className="text-emerald-700 dark:text-emerald-400">{t("invoices.cashDesc", "سداد الفاتورة بالكامل نقداً في الخزينة")}</span>
+              <span className="text-emerald-700">{t("invoices.cashDesc", "سداد الفاتورة بالكامل نقداً في الخزينة")}</span>
             ) : paymentMode === "credit" ? (
-              <span className="text-rose-600 dark:text-rose-400">{t("invoices.creditDesc", "تسجيل كامل الفاتورة كمديونية آجلة على الحساب")}</span>
+              <span className="text-rose-600">{t("invoices.creditDesc", "تسجيل كامل الفاتورة كمديونية آجلة على الحساب")}</span>
             ) : (
-              <span className="text-indigo-600 dark:text-indigo-400">{t("invoices.partialDesc", "تحصيل دفعة نقدية وترحيل الباقي في الذمة")}</span>
+              <span className="text-indigo-700">{t("invoices.partialDesc", "تحصيل دفعة نقدية وترحيل الباقي في الذمة")}</span>
             )}
           </div>
         </div>
@@ -1146,7 +1146,7 @@ export function InvoiceForm({
                   setPaymentMode("cash");
                   setPaid(total.toFixed(2));
                 }}
-                className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold hover:underline cursor-pointer"
+                className="text-[10px] text-indigo-700 font-bold hover:underline cursor-pointer"
               >
                 {t("invoices.payFull", "سداد كامل")}
               </button>
@@ -1178,7 +1178,7 @@ export function InvoiceForm({
           </div>
           <div className="text-left">
             <span className="text-xs text-[var(--muted)] font-semibold block mb-0.5">{t("invoices.netTotal", "الصافي النهائي المطلوب")}:</span>
-            <b className="text-2xl font-black text-indigo-700 dark:text-indigo-400">{total.toFixed(2)} {t("common.egp", "ج.م")}</b>
+            <b className="text-2xl font-black text-indigo-700">{total.toFixed(2)} {t("common.egp", "ج.م")}</b>
           </div>
         </div>
       </div>
@@ -1186,7 +1186,7 @@ export function InvoiceForm({
       {/* Protected Submit Button (Anti-Double-Click & Validation Ready) */}
       <div className="flex justify-end pt-2">
         <button
-          className="primary px-8 py-3 text-sm min-w-[220px] font-black cursor-pointer shadow-md rounded-xl"
+          className="primary px-8 py-3 text-sm min-w-[220px] font-black cursor-pointer rounded-xl"
           type="submit"
           disabled={lines.length === 0 || isSubmitting}
         >

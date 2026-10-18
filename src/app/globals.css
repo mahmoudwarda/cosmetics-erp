@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 /* ==========================================================================
    Cosmetics ERP (لمسة جمال) - Design System V2 & Anti-Slop Foundation
    Arabic-First (RTL), High-Density, Tactile Business ERP Palette
@@ -57,14 +59,14 @@ div[data-nextjs-toast-wrapper] {
   /* Modal Floating Surfaces */
   --modal-bg: #ffffff;
   --modal-border: #cbd5e1;
-  --modal-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.08);
-  --backdrop: rgba(15, 23, 42, 0.55);
+  --modal-shadow: none;
+  --backdrop: rgba(15, 23, 42, 0.4);
 
-  /* Clean Rest Elevations */
-  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
-  --shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.08);
-  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  /* Zero Shadows - Clean Crisp Flat Borders */
+  --shadow-sm: none;
+  --shadow: none;
+  --shadow-md: none;
+  --shadow-lg: none;
 
   /* Semantic Status Tokens (High Contrast, Vivid ERP) */
   --status-paid-text: #15803d;
@@ -131,53 +133,7 @@ div[data-nextjs-toast-wrapper] {
   --brand-strong: #0f172a;
 }
 
-/* Dark Mode Palette */
-:root[data-theme="dark"],
-:root[data-theme="system"] {
-  @media (prefers-color-scheme: dark) {
-    --ink: #f8fafc;
-    --ink-secondary: #cbd5e1;
-    --muted: #94a3b8;
-    --muted-light: #64748b;
-    --line: #1e293b;
-    --line-strong: #334155;
-    --bg: #090d16;
-    --surface-muted: #111827;
-    --panel: #161e2e;
-    --card-bg: #161e2e;
-
-    --input-bg: #0f172a;
-    --input-border: #334155;
-    --input-border-focus: #6366f1;
-    --input-focus-ring: rgba(99, 102, 241, 0.25);
-
-    --modal-bg: #161e2e;
-    --modal-border: #334155;
-    --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-    --backdrop: rgba(0, 0, 0, 0.75);
-
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
-    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6);
-
-    --primary-soft: rgba(99, 102, 241, 0.15);
-    --primary-border: rgba(99, 102, 241, 0.35);
-
-    --status-paid-text: #34d399;
-    --status-paid-bg: rgba(5, 150, 105, 0.15);
-    --status-paid-border: rgba(5, 150, 105, 0.35);
-
-    --status-partial-text: #fbbf24;
-    --status-partial-bg: rgba(217, 119, 6, 0.15);
-    --status-partial-border: rgba(217, 119, 6, 0.35);
-
-    --status-unpaid-text: #fb7185;
-    --status-unpaid-bg: rgba(225, 29, 72, 0.15);
-    --status-unpaid-border: rgba(225, 29, 72, 0.35);
-  }
-}
-
+/* Optional manual dark theme override */
 :root[data-theme="dark"] {
   --ink: #f8fafc;
   --ink-secondary: #cbd5e1;
@@ -225,8 +181,13 @@ div[data-nextjs-toast-wrapper] {
    Base & Reset
    ========================================================================== */
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+  box-shadow: none !important;
+  --tw-shadow: 0 0 #0000 !important;
+  --tw-shadow-colored: 0 0 #0000 !important;
 }
 
 html, body {
@@ -617,13 +578,14 @@ body:has(.global-navigation.is-collapsed) .dashboard-main {
 
 .primary:hover:not(:disabled),
 .btn-primary:hover:not(:disabled) {
-  background: var(--primary-hover);
+  background: var(--primary);
+  color: #ffffff;
 }
 
 .primary:active:not(:disabled),
 .btn-primary:active:not(:disabled) {
   transform: translateY(1px);
-  background: var(--primary-active);
+  background: var(--primary);
 }
 
 .primary:disabled,
@@ -639,13 +601,14 @@ body:has(.global-navigation.is-collapsed) .dashboard-main {
   background: var(--panel);
   color: var(--ink);
   border: 1px solid var(--line-strong);
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
 }
 
 .secondary:hover,
 .btn-secondary:hover {
-  background: var(--bg);
-  border-color: var(--ink-secondary);
+  background: var(--panel);
+  color: var(--ink);
+  border-color: var(--line-strong);
 }
 
 .secondary:active,
@@ -1162,7 +1125,7 @@ tbody tr:last-child td {
 }
 
 tbody tr:hover td {
-  background-color: var(--surface-muted);
+  background-color: transparent;
 }
 
 .table-empty {

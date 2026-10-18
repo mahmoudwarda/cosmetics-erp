@@ -169,7 +169,7 @@ export function InvoicePrintView({ data }: { data: InvoiceData }) {
 
             <div className="paper-meta text-left">
               <strong className="block text-base font-black text-[var(--ink)]">
-                رقم الفاتورة: <span className="font-mono text-indigo-700 dark:text-indigo-400">{invoice.number}</span>
+                رقم الفاتورة: <span className="font-mono text-indigo-700">{invoice.number}</span>
               </strong>
               <span className="block text-xs text-[var(--muted)] mt-1">التاريخ: {dateFormatted}</span>
               <span className="block text-xs text-[var(--muted)]">الطرف: <b className="text-[var(--ink)]">{party?.name ?? "عميل صالة نقدي"}</b></span>
@@ -385,7 +385,7 @@ export function InvoicePrintView({ data }: { data: InvoiceData }) {
                 كود الإذن: {invoice.number}
               </strong>
               <span className="block text-xs text-[var(--muted)]">تاريخ ووقت التحضير: {dateFormatted}</span>
-              <span className="block text-xs font-bold text-indigo-700 dark:text-indigo-400">
+              <span className="block text-xs font-bold text-indigo-700">
                 اسم المستلم: {party?.name ?? "عميل صالة"}
               </span>
               {party?.phone && <span className="block text-xs text-[var(--muted)]">هاتف التواصل: {party.phone}</span>}
@@ -413,7 +413,7 @@ export function InvoicePrintView({ data }: { data: InvoiceData }) {
                     </td>
                     <td className="text-center text-xs text-[var(--muted)] font-mono">{idx + 1}</td>
                     <td className="font-bold text-[var(--ink)] text-sm">{line.description}</td>
-                    <td className="text-center font-mono font-black text-base text-indigo-700 dark:text-indigo-400">
+                    <td className="text-center font-mono font-black text-base text-indigo-700">
                       {Number(line.quantity).toLocaleString("ar-EG")} قطعة
                     </td>
                     <td className="text-center text-xs font-semibold text-emerald-700">

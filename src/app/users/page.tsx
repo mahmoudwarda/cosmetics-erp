@@ -37,13 +37,13 @@ import { CloseDisclosureButton } from "@/components/close-disclosure-button";
 import { translate, Locale } from "@/lib/i18n";
 
 const modules = [
-  { id: "inventory", key: "nav.inventory", icon: Boxes, color: "text-amber-600 bg-amber-50 dark:bg-amber-950/40" },
-  { id: "invoices", key: "nav.invoices", icon: Receipt, color: "text-blue-600 bg-blue-50 dark:bg-blue-950/40" },
-  { id: "finance", key: "nav.finance", icon: Coins, color: "text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40" },
-  { id: "parties", key: "nav.parties", icon: Users, color: "text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40" },
-  { id: "users", key: "nav.users", icon: ShieldCheck, color: "text-violet-600 bg-violet-50 dark:bg-violet-950/40" },
-  { id: "settings", key: "nav.settings", icon: Settings, color: "text-slate-600 bg-slate-100" },
-  { id: "reports", key: "nav.reports", icon: BarChart3, color: "text-rose-600 bg-rose-50 dark:bg-rose-950/40" },
+  { id: "inventory", key: "nav.inventory", icon: Boxes, color: "text-amber-700 bg-amber-50 border border-amber-200" },
+  { id: "invoices", key: "nav.invoices", icon: Receipt, color: "text-blue-700 bg-blue-50 border border-blue-200" },
+  { id: "finance", key: "nav.finance", icon: Coins, color: "text-emerald-700 bg-emerald-50 border border-emerald-200" },
+  { id: "parties", key: "nav.parties", icon: Users, color: "text-indigo-700 bg-indigo-50 border border-indigo-200" },
+  { id: "users", key: "nav.users", icon: ShieldCheck, color: "text-violet-700 bg-violet-50 border border-violet-200" },
+  { id: "settings", key: "nav.settings", icon: Settings, color: "text-slate-700 bg-slate-100 border border-slate-200" },
+  { id: "reports", key: "nav.reports", icon: BarChart3, color: "text-rose-700 bg-rose-50 border border-rose-200" },
 ] as const;
 
 const actions = [
@@ -107,32 +107,32 @@ export default async function UsersPage() {
 
       {/* Users & Roles KPI Strip */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
-        <div className="p-4 bg-[var(--panel)] border border-[var(--line)] rounded-xl flex items-center justify-between shadow-xs">
+        <div className="p-4 bg-[var(--panel)] border border-[var(--line)] rounded-xl flex items-center justify-between">
           <div>
             <span className="text-xs text-[var(--muted)] font-semibold block mb-1">{translate("users.totalUsers", locale)}</span>
             <b className="text-2xl text-[var(--ink)]">{userRows.length.toLocaleString(localeCode)} {locale === "en" ? "Users" : "مستخدم"}</b>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 flex items-center justify-center font-bold">
+          <div className="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 flex items-center justify-center font-bold">
             <Users size={18} />
           </div>
         </div>
 
-        <div className="p-4 bg-[var(--panel)] border border-[var(--line)] rounded-xl flex items-center justify-between shadow-xs">
+        <div className="p-4 bg-[var(--panel)] border border-[var(--line)] rounded-xl flex items-center justify-between">
           <div>
             <span className="text-xs text-[var(--muted)] font-semibold block mb-1">{translate("users.activeUsers", locale)}</span>
-            <b className="text-2xl text-emerald-600 font-bold">{activeUsersCount.toLocaleString(localeCode)} {locale === "en" ? "Active" : "نشط"}</b>
+            <b className="text-2xl text-emerald-700 font-bold">{activeUsersCount.toLocaleString(localeCode)} {locale === "en" ? "Active" : "نشط"}</b>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 flex items-center justify-center font-bold">
+          <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center font-bold">
             <CheckCircle2 size={18} />
           </div>
         </div>
 
-        <div className="p-4 bg-[var(--panel)] border border-[var(--line)] rounded-xl flex items-center justify-between shadow-xs">
+        <div className="p-4 bg-[var(--panel)] border border-[var(--line)] rounded-xl flex items-center justify-between">
           <div>
             <span className="text-xs text-[var(--muted)] font-semibold block mb-1">{translate("users.roles", locale)}</span>
             <b className="text-2xl text-[var(--ink)]">{roleRows.length.toLocaleString(localeCode)} {locale === "en" ? "Roles" : "دور وظيفي"}</b>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-violet-50 dark:bg-violet-950/40 text-violet-600 flex items-center justify-center font-bold">
+          <div className="w-10 h-10 rounded-lg bg-violet-50 text-violet-700 border border-violet-200 flex items-center justify-center font-bold">
             <ShieldCheck size={18} />
           </div>
         </div>
@@ -204,16 +204,16 @@ export default async function UsersPage() {
             <tbody>
               {userRows.length ? (
                 userRows.map(({ user, roleName }) => (
-                  <tr key={user.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                  <tr key={user.id} className="transition-colors">
                     <td>
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-bold text-xs flex items-center justify-center shrink-0 border border-indigo-200/60">
+                        <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 font-bold text-xs flex items-center justify-center shrink-0 border border-indigo-200">
                           {user.name.charAt(0)}
                         </div>
                         <div>
                           <b className="text-[var(--ink)] block font-bold text-sm">{user.name}</b>
                           {user.id === currentUserId && (
-                            <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold block">
+                            <span className="text-[10px] text-indigo-700 font-bold block">
                               {translate("users.currentAccount", locale)}
                             </span>
                           )}
@@ -226,7 +226,7 @@ export default async function UsersPage() {
                       </span>
                     </td>
                     <td>
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border-indigo-800">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
                         <Shield size={12} />
                         <span>{roleName}</span>
                       </span>
@@ -235,8 +235,8 @@ export default async function UsersPage() {
                       <span
                         className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold ${
                           user.active
-                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800"
-                            : "bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800"
+                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                            : "bg-rose-50 text-rose-700 border border-rose-200"
                         }`}
                       >
                         {user.active ? <CheckCircle2 size={12} /> : <XCircle size={12} />}
@@ -247,7 +247,7 @@ export default async function UsersPage() {
                       <div className="flex items-center gap-1.5 justify-center flex-nowrap">
                         {/* Edit User Details */}
                         <details className="row-editor">
-                          <summary className="h-8 px-2.5 rounded-lg border border-sky-200 dark:border-sky-800 bg-sky-50 dark:bg-sky-950/50 text-sky-700 dark:text-sky-300 hover:bg-sky-600 hover:text-white inline-flex items-center gap-1 text-xs font-extrabold transition-all shadow-2xs cursor-pointer flex-nowrap whitespace-nowrap">
+                          <summary className="h-8 px-2.5 rounded-lg border border-sky-200 bg-sky-50 text-sky-700 inline-flex items-center gap-1 text-xs font-bold cursor-pointer flex-nowrap whitespace-nowrap">
                             <Edit size={13} />
                             <span>{translate("users.editUser", locale)}</span>
                           </summary>
@@ -278,7 +278,7 @@ export default async function UsersPage() {
 
                         {/* Reset Password */}
                         <details className="row-editor">
-                          <summary className="h-8 px-2.5 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 hover:bg-amber-600 hover:text-white inline-flex items-center gap-1 text-xs font-extrabold transition-all shadow-2xs cursor-pointer flex-nowrap whitespace-nowrap">
+                          <summary className="h-8 px-2.5 rounded-lg border border-amber-200 bg-amber-50 text-amber-700 inline-flex items-center gap-1 text-xs font-bold cursor-pointer flex-nowrap whitespace-nowrap">
                             <KeyRound size={13} />
                             <span>{translate("users.password", locale)}</span>
                           </summary>
@@ -305,10 +305,10 @@ export default async function UsersPage() {
                           <form action={toggleUserActive} className="inline-flex">
                             <input type="hidden" name="id" value={user.id} />
                             <button
-                              className={`h-8 px-2.5 rounded-lg border text-xs font-extrabold inline-flex items-center gap-1 transition-all shadow-2xs cursor-pointer flex-nowrap whitespace-nowrap ${
+                              className={`h-8 px-2.5 rounded-lg border text-xs font-bold inline-flex items-center gap-1 cursor-pointer flex-nowrap whitespace-nowrap ${
                                 user.active
-                                  ? "border-rose-200 dark:border-rose-900 bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 hover:bg-rose-600 hover:text-white"
-                                  : "border-emerald-200 dark:border-emerald-900 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-600 hover:text-white"
+                                  ? "border-rose-200 bg-rose-50 text-rose-700"
+                                  : "border-emerald-200 bg-emerald-50 text-emerald-700"
                               }`}
                               title={user.active ? (locale === "en" ? "Suspend user account" : "إيقاف الحساب مؤقتاً") : (locale === "en" ? "Activate user account" : "تفعيل الحساب مجدداً")}
                             >
@@ -397,12 +397,12 @@ export default async function UsersPage() {
 
             return (
               <details
-                className="group border border-[var(--line)] rounded-xl bg-[var(--panel)] overflow-hidden shadow-xs hover:border-[var(--line-strong)] transition-all"
+                className="group border border-[var(--line)] rounded-xl bg-[var(--panel)] overflow-hidden"
                 key={role.id}
               >
-                <summary className="p-4 flex items-center justify-between cursor-pointer list-none select-none hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                <summary className="p-4 flex items-center justify-between cursor-pointer list-none select-none bg-[var(--panel)]">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 flex items-center justify-center font-bold shrink-0 border border-indigo-200/60">
+                    <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold shrink-0 border border-indigo-200">
                       <ShieldCheck size={18} />
                     </div>
                     <div>
@@ -419,7 +419,7 @@ export default async function UsersPage() {
                         {locale === "en" ? "System Role" : "دور نظام قياسي"}
                       </span>
                     )}
-                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border-indigo-800">
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
                       {roleGrants.size} {translate("users.permissionsActive", locale)}
                     </span>
                   </div>
@@ -433,7 +433,7 @@ export default async function UsersPage() {
                       {modules.map(({ id, key, icon: Icon, color }) => (
                         <div
                           key={id}
-                          className="p-3.5 rounded-xl border border-[var(--line)] bg-[var(--panel)] shadow-2xs space-y-2.5"
+                          className="p-3.5 rounded-xl border border-[var(--line)] bg-[var(--panel)] space-y-2.5"
                         >
                           <div className="flex items-center gap-2 pb-2 border-b border-[var(--line)]">
                             <div className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 ${color}`}>
@@ -448,10 +448,10 @@ export default async function UsersPage() {
                               return (
                                 <label
                                   key={act.id}
-                                  className={`flex items-center gap-1.5 p-1.5 rounded-lg border transition-all cursor-pointer select-none ${
+                                  className={`flex items-center gap-1.5 p-1.5 rounded-lg border cursor-pointer select-none ${
                                     isChecked
-                                      ? "bg-indigo-50/60 border-indigo-200 text-indigo-900 dark:bg-indigo-950/40 dark:border-indigo-800 dark:text-indigo-200 font-bold"
-                                      : "border-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-[var(--ink-secondary)]"
+                                      ? "bg-indigo-50/80 border-indigo-200 text-indigo-900 font-bold"
+                                      : "border-transparent text-[var(--ink-secondary)]"
                                   }`}
                                 >
                                   <input

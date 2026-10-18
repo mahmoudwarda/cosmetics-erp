@@ -316,7 +316,7 @@ export function PartiesTabsView({
                     const isZero = !isDebit && !isCredit;
 
                     return (
-                      <tr key={p.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
+                      <tr key={p.id} className="transition-colors">
                         <td>
                           <b className="text-[var(--ink)] block font-bold text-sm">{p.name}</b>
                           {p.address && (
@@ -328,12 +328,12 @@ export function PartiesTabsView({
                         </td>
                         <td className="text-center">
                           {p.type === "customer" ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-300 dark:bg-blue-950 dark:text-blue-200 dark:border-blue-800">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
                               <Users size={12} />
                               <span>{t("parties.customer", "عميل")}</span>
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                               <Building2 size={12} />
                               <span>{t("parties.supplier", "مورد")}</span>
                             </span>
@@ -361,12 +361,12 @@ export function PartiesTabsView({
                               className={`text-sm block font-black font-mono ${
                                 isDebit
                                   ? p.type === "customer"
-                                    ? "text-rose-600 dark:text-rose-400"
-                                    : "text-emerald-700 dark:text-emerald-400"
+                                    ? "text-rose-600"
+                                    : "text-emerald-700"
                                   : isCredit
                                   ? p.type === "customer"
-                                    ? "text-emerald-700 dark:text-emerald-400"
-                                    : "text-rose-600 dark:text-rose-400"
+                                    ? "text-emerald-700"
+                                    : "text-rose-600"
                                   : "text-slate-600"
                               }`}
                             >
@@ -376,15 +376,15 @@ export function PartiesTabsView({
                               {t("common.egp", "ج.م")}
                             </b>
                             <span
-                              className={`inline-block px-2 py-0.5 rounded text-[11px] font-extrabold ${
+                              className={`inline-block px-2 py-0.5 rounded text-[11px] font-bold ${
                                 isDebit
                                   ? p.type === "customer"
-                                    ? "bg-rose-100 text-rose-800 border border-rose-300 dark:bg-rose-950 dark:text-rose-200 dark:border-rose-800"
-                                    : "bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
+                                    ? "bg-rose-50 text-rose-700 border border-rose-200"
+                                    : "bg-emerald-50 text-emerald-700 border border-emerald-200"
                                   : isCredit
                                   ? p.type === "customer"
-                                    ? "bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
-                                    : "bg-rose-100 text-rose-800 border border-rose-300 dark:bg-rose-950 dark:text-rose-200 dark:border-rose-800"
+                                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                    : "bg-rose-50 text-rose-700 border border-rose-200"
                                   : "bg-slate-100 text-slate-700 border border-slate-200"
                               }`}
                             >
@@ -407,7 +407,7 @@ export function PartiesTabsView({
                             <button
                               type="button"
                               onClick={() => setViewingParty(p)}
-                              className="h-8 px-2.5 rounded-lg border border-indigo-300 dark:border-indigo-700 bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-200 hover:bg-indigo-600 hover:text-white inline-flex items-center gap-1 text-xs font-extrabold transition-all shadow-2xs shrink-0 cursor-pointer"
+                              className="h-8 px-2.5 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 inline-flex items-center gap-1 text-xs font-bold shrink-0 cursor-pointer"
                               title={t("parties.viewDetails", "عرض التفاصيل الكاملة وطباعة كشف الحساب")}
                             >
                               <Eye size={13} />
@@ -417,7 +417,7 @@ export function PartiesTabsView({
                             {/* [كشف حساب] Immediate Statement Tab Link (no date restriction) */}
                             <Link
                               href={`/parties?tab=statement&partyId=${p.id}`}
-                              className="h-8 px-2.5 rounded-lg border border-sky-300 dark:border-sky-700 bg-sky-50 dark:bg-sky-950/70 text-sky-700 dark:text-sky-200 hover:bg-sky-600 hover:text-white inline-flex items-center gap-1 text-xs font-extrabold transition-all shadow-2xs shrink-0"
+                              className="h-8 px-2.5 rounded-lg border border-sky-200 bg-sky-50 text-sky-700 inline-flex items-center gap-1 text-xs font-bold shrink-0"
                               title={t("parties.statementBtn", "استعراض كشف الحساب الكامل للعميل/المورد")}
                             >
                               <BookOpenText size={13} />
@@ -427,7 +427,7 @@ export function PartiesTabsView({
                             {/* [قبض نقدية / صرف] Quick Cash Movement */}
                             {canCheck("create") && (
                               <details className="row-editor">
-                                <summary className="h-8 px-2.5 rounded-lg border border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-200 hover:bg-emerald-600 hover:text-white inline-flex items-center gap-1 text-xs font-extrabold transition-all shadow-2xs shrink-0 cursor-pointer">
+                                <summary className="h-8 px-2.5 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 inline-flex items-center gap-1 text-xs font-bold shrink-0 cursor-pointer">
                                   <Coins size={13} />
                                   <span>{p.type === "customer" ? t("parties.cashReceipt", "قبض نقدية") : t("parties.cashPayment", "صرف نقدية")}</span>
                                 </summary>
@@ -465,7 +465,7 @@ export function PartiesTabsView({
                             {/* [تعديل] Edit Party */}
                             {canCheck("edit") && (
                               <details className="row-editor">
-                                <summary className="h-8 px-2.5 rounded-lg border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-200 hover:bg-amber-600 hover:text-white inline-flex items-center gap-1 text-xs font-extrabold transition-all shadow-2xs shrink-0 cursor-pointer">
+                                <summary className="h-8 px-2.5 rounded-lg border border-amber-200 bg-amber-50 text-amber-700 inline-flex items-center gap-1 text-xs font-bold shrink-0 cursor-pointer">
                                   <Edit size={13} />
                                   <span>{t("common.edit", "تعديل")}</span>
                                 </summary>
@@ -510,7 +510,7 @@ export function PartiesTabsView({
                                 <input type="hidden" name="id" value={p.id} />
                                 <ConfirmSubmitButton
                                   confirmMessage={`هل أنت متأكد من رغبتك في حذف الحساب «${p.name}»؟`}
-                                  className="h-8 px-2.5 rounded-lg border border-rose-300 dark:border-rose-800 bg-rose-50 dark:bg-rose-950/70 text-rose-700 dark:text-rose-200 hover:bg-rose-600 hover:text-white inline-flex items-center gap-1 text-xs font-extrabold transition-all shadow-2xs shrink-0 cursor-pointer"
+                                  className="h-8 px-2.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 inline-flex items-center gap-1 text-xs font-bold shrink-0 cursor-pointer"
                                   title={t("common.delete", "حذف")}
                                   ariaLabel={`حذف الحساب ${p.name}`}
                                 >
@@ -921,18 +921,18 @@ export function PartiesTabsView({
 
               {/* Contact & Profile Information Card */}
               <div className="p-4 rounded-xl bg-[var(--surface-muted)] border border-[var(--line)] space-y-3">
-                <h4 className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                <h4 className="text-xs font-black text-slate-700 uppercase tracking-wider">
                   {t("parties.contact", "بيانات الاتصال والعنوان")}
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                   <div>
-                    <span className="text-slate-500 dark:text-slate-400 block mb-0.5 font-bold">
+                    <span className="text-slate-600 block mb-0.5 font-bold">
                       {t("parties.phone", "رقم الهاتف")}:
                     </span>
                     {viewingParty.phone ? (
                       <a
                         href={`tel:${viewingParty.phone}`}
-                        className="font-mono font-black text-indigo-700 dark:text-indigo-400 hover:underline inline-flex items-center gap-1.5 text-sm"
+                        className="font-mono font-black text-indigo-700 hover:underline inline-flex items-center gap-1.5 text-sm"
                         dir="ltr"
                       >
                         <Phone size={14} className="text-indigo-600" />
@@ -944,11 +944,11 @@ export function PartiesTabsView({
                   </div>
 
                   <div>
-                    <span className="text-slate-500 dark:text-slate-400 block mb-0.5 font-bold">
+                    <span className="text-slate-600 block mb-0.5 font-bold">
                       {t("parties.email", "البريد الإلكتروني")}:
                     </span>
                     {viewingParty.email ? (
-                      <span className="font-mono text-slate-800 dark:text-slate-200 inline-flex items-center gap-1.5 font-bold">
+                      <span className="font-mono text-slate-800 inline-flex items-center gap-1.5 font-bold">
                         <Mail size={13} className="text-slate-400" />
                         <span>{viewingParty.email}</span>
                       </span>
@@ -958,11 +958,11 @@ export function PartiesTabsView({
                   </div>
 
                   <div className="sm:col-span-2">
-                    <span className="text-slate-500 dark:text-slate-400 block mb-0.5 font-bold">
+                    <span className="text-slate-600 block mb-0.5 font-bold">
                       {t("parties.address", "العنوان والمقر")}:
                     </span>
                     {viewingParty.address ? (
-                      <span className="text-slate-900 dark:text-slate-100 font-bold inline-flex items-center gap-1.5">
+                      <span className="text-slate-900 font-bold inline-flex items-center gap-1.5">
                         <MapPin size={14} className="text-rose-500 shrink-0" />
                         <span>{viewingParty.address}</span>
                       </span>
@@ -981,7 +981,7 @@ export function PartiesTabsView({
                       {t("parties.statement", "سجل القيود المالية المسجلة")} ({statementEntries.length})
                     </h4>
                   </div>
-                  <div className="table-wrap max-h-56 overflow-y-auto border border-slate-200 dark:border-slate-700 rounded-lg">
+                  <div className="table-wrap max-h-56 overflow-y-auto border border-slate-200 rounded-lg">
                     <table>
                       <thead>
                         <tr>
@@ -1019,19 +1019,19 @@ export function PartiesTabsView({
                   </div>
                 </div>
               ) : (
-                <div className="p-4 rounded-xl bg-indigo-50/90 dark:bg-indigo-950/70 border-2 border-indigo-200 dark:border-indigo-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shadow-xs">
+                <div className="p-4 rounded-xl bg-indigo-50 border-2 border-indigo-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                   <div>
-                    <b className="text-xs font-black text-indigo-900 dark:text-indigo-100 block">
+                    <b className="text-xs font-black text-indigo-900 block">
                       هل ترغب في فحص قيود الفواتير وسندات القبض تفصيلياً؟
                     </b>
-                    <span className="text-[11px] text-indigo-700 dark:text-indigo-300 font-bold">
+                    <span className="text-[11px] text-indigo-700 font-bold">
                       يمكنك فتح كشف الحساب المالي الكامل وتصديره أو طباعته بتقرير محاسبي رسمي.
                     </span>
                   </div>
                   <Link
                     href={`/parties?tab=statement&partyId=${viewingParty.id}`}
                     onClick={() => setViewingParty(null)}
-                    className="h-8 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs inline-flex items-center justify-center gap-1.5 shrink-0 shadow-xs transition-colors"
+                    className="h-8 px-4 rounded-lg bg-indigo-600 text-white font-black text-xs inline-flex items-center justify-center gap-1.5 shrink-0"
                   >
                     <BookOpenText size={14} />
                     <span>{t("parties.openFullStatement", "فتح كشف الحساب الكامل")}</span>

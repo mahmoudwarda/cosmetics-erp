@@ -248,16 +248,16 @@ export function InvoicesTableView({ rows }: { rows: InvoiceItem[] }) {
                     <td className="font-black text-[var(--ink)] font-mono">
                       {Number(row.total).toLocaleString(localeCode, { minimumFractionDigits: 2 })} {t("common.egp", "ج.م")}
                     </td>
-                    <td className="text-emerald-700 dark:text-emerald-400 font-bold font-mono">
+                    <td className="text-emerald-700 font-bold font-mono">
                       {Number(row.paid).toLocaleString(localeCode, { minimumFractionDigits: 2 })} {t("common.egp", "ج.م")}
                     </td>
                     <td className="font-bold">
                       {remaining > 0 ? (
-                        <span className="text-rose-600 dark:text-rose-400 font-black font-mono">
+                        <span className="text-rose-600 font-black font-mono">
                           {remaining.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {t("common.egp", "ج.م")}
                         </span>
                       ) : (
-                        <span className="text-emerald-700 dark:text-emerald-400 text-xs font-bold px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800">
+                        <span className="text-emerald-700 text-xs font-bold px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200">
                           {t("invoices.settled", "خالص")}
                         </span>
                       )}
@@ -273,7 +273,7 @@ export function InvoicesTableView({ rows }: { rows: InvoiceItem[] }) {
                     </td>
                     <td>
                       <Link
-                        className="h-8 px-3 rounded-lg border border-sky-300 dark:border-sky-700 bg-sky-50 dark:bg-sky-950/70 text-sky-700 dark:text-sky-200 hover:bg-sky-600 hover:text-white inline-flex items-center gap-1.5 text-xs font-extrabold transition-all shadow-2xs shrink-0"
+                        className="h-8 px-3 rounded-lg border border-sky-200 bg-sky-50 text-sky-700 inline-flex items-center gap-1.5 text-xs font-bold shrink-0"
                         href={`/invoices/${row.id}`}
                         title={t("invoices.openPrint", "فتح وطباعة")}
                       >

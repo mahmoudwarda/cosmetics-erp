@@ -217,7 +217,7 @@ export function InventoryTabsView({
             <form action={saveProductAction} className="form-grid">
               <CloseDisclosureButton title={t("inventory.addProduct")} />
               {initialBarcode && (
-                <div className="wide-field p-2.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 rounded-lg text-xs font-bold text-amber-800 dark:text-amber-300">
+                <div className="wide-field p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-xs font-bold text-amber-800">
                   {t("inventory.barcodeScannedPrompt")}: «{initialBarcode}»
                 </div>
               )}
@@ -234,7 +234,7 @@ export function InventoryTabsView({
                       const rnd = Math.floor(100 + Math.random() * 900);
                       setSkuInput(`SKN-${String(products.length + 1).padStart(3, "0")}-${rnd}`);
                     }}
-                    className="text-[11px] text-indigo-600 dark:text-indigo-400 hover:underline font-bold inline-flex items-center gap-1 cursor-pointer"
+                    className="text-[11px] text-indigo-700 hover:underline font-bold inline-flex items-center gap-1 cursor-pointer"
                     title={t("inventory.generateSku")}
                   >
                     <Sparkles size={11} />
@@ -382,11 +382,11 @@ export function InventoryTabsView({
                     }
 
                     return (
-                      <tr key={p.id} className="hover:bg-slate-50/80 transition-colors">
+                      <tr key={p.id} className="transition-colors">
                         <td>
                           <b className="text-[var(--ink)] block font-bold">{p.name}</b>
                           {unit && (
-                            <span className="text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold block mt-0.5">
+                            <span className="text-[11px] text-indigo-700 font-semibold block mt-0.5">
                               {t("inventory.unitPrefix")} {unit.name}
                             </span>
                           )}
@@ -431,7 +431,7 @@ export function InventoryTabsView({
                             <div className="flex items-center gap-1.5 flex-nowrap">
                               {canCheck("edit") && (
                                 <details className="row-editor">
-                                  <summary className="h-8 px-2.5 rounded-lg border border-indigo-200 dark:border-indigo-900 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-600 hover:text-white transition-all inline-flex items-center gap-1 text-xs font-bold shadow-2xs cursor-pointer flex-nowrap whitespace-nowrap">
+                                  <summary className="h-8 px-2.5 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 inline-flex items-center gap-1 text-xs font-bold cursor-pointer flex-nowrap whitespace-nowrap">
                                     <Edit size={12} />
                                     <span>{t("common.edit")}</span>
                                   </summary>
@@ -523,7 +523,7 @@ export function InventoryTabsView({
 
                               {canCheck("edit") && (
                                 <details className="row-editor">
-                                  <summary className="h-8 px-2.5 rounded-lg border border-sky-200 dark:border-sky-900 bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 hover:bg-sky-600 hover:text-white transition-all inline-flex items-center gap-1 text-xs font-bold shadow-2xs cursor-pointer flex-nowrap whitespace-nowrap">
+                                  <summary className="h-8 px-2.5 rounded-lg border border-sky-200 bg-sky-50 text-sky-700 inline-flex items-center gap-1 text-xs font-bold cursor-pointer flex-nowrap whitespace-nowrap">
                                     <SlidersHorizontal size={12} />
                                     <span>{t("inventory.adjustStock")}</span>
                                   </summary>
@@ -563,7 +563,7 @@ export function InventoryTabsView({
                                   <input type="hidden" name="id" value={p.id} />
                                   <ConfirmSubmitButton
                                     confirmMessage={locale === "en" ? `Are you sure you want to permanently delete "${p.name}"?` : `هل أنت متأكد من رغبتك في حذف الصنف «${p.name}» نهائياً من المستودع؟`}
-                                    className="h-8 px-2.5 rounded-lg border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 hover:bg-rose-600 hover:text-white transition-all inline-flex items-center gap-1 text-xs font-bold shadow-2xs cursor-pointer flex-nowrap whitespace-nowrap"
+                                    className="h-8 px-2.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 inline-flex items-center gap-1 text-xs font-bold cursor-pointer flex-nowrap whitespace-nowrap"
                                     title={t("common.delete")}
                                     ariaLabel={`${t("common.delete")} ${p.name}`}
                                   >
@@ -636,7 +636,7 @@ export function InventoryTabsView({
                     const isEditing = editingCatId === c.id;
 
                     return (
-                      <tr key={c.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                      <tr key={c.id} className="transition-colors">
                         <td className="text-center font-mono text-xs text-[var(--muted)]">{idx + 1}</td>
                         <td>
                           {isEditing ? (
@@ -676,7 +676,7 @@ export function InventoryTabsView({
                               <button
                                 type="button"
                                 onClick={() => setEditingCatId(c.id)}
-                                className="h-8 px-2.5 rounded-lg border border-indigo-200 dark:border-indigo-900 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-600 hover:text-white transition-all inline-flex items-center gap-1.5 text-xs font-extrabold shadow-2xs cursor-pointer flex-nowrap whitespace-nowrap"
+                                className="h-8 px-2.5 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 inline-flex items-center gap-1.5 text-xs font-bold cursor-pointer flex-nowrap whitespace-nowrap"
                               >
                                 <Edit size={12} />
                                 <span>{t("common.edit")}</span>
@@ -688,7 +688,7 @@ export function InventoryTabsView({
                                 <input type="hidden" name="id" value={c.id} />
                                 <ConfirmSubmitButton
                                   confirmMessage={locale === "en" ? `Are you sure you want to delete category "${c.name}"?` : `هل أنت متأكد من رغبتك في حذف قسم «${c.name}»؟`}
-                                  className="h-8 px-2.5 rounded-lg border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 hover:bg-rose-600 hover:text-white transition-all inline-flex items-center gap-1.5 text-xs font-extrabold shadow-2xs cursor-pointer flex-nowrap whitespace-nowrap"
+                                  className="h-8 px-2.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 inline-flex items-center gap-1.5 text-xs font-bold cursor-pointer flex-nowrap whitespace-nowrap"
                                   title={t("common.delete")}
                                   ariaLabel={`${t("common.delete")} ${c.name}`}
                                 >
@@ -773,7 +773,7 @@ export function InventoryTabsView({
                     const isEditing = editingUnitId === u.id;
 
                     return (
-                      <tr key={u.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                      <tr key={u.id} className="transition-colors">
                         <td className="text-center font-mono text-xs text-[var(--muted)]">{idx + 1}</td>
                         <td>
                           {isEditing ? (
@@ -809,7 +809,7 @@ export function InventoryTabsView({
                             <b className="text-sm font-bold text-[var(--ink)]">{u.name}</b>
                           )}
                         </td>
-                        <td className="text-center font-mono font-bold text-sm text-indigo-700 dark:text-indigo-400">
+                        <td className="text-center font-mono font-bold text-sm text-indigo-700">
                           {Number(u.factor)} {t("common.pieces")}
                         </td>
                         <td className="text-center">
@@ -823,7 +823,7 @@ export function InventoryTabsView({
                               <button
                                 type="button"
                                 onClick={() => setEditingUnitId(u.id)}
-                                className="h-8 px-2.5 rounded-lg border border-indigo-200 dark:border-indigo-900 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-600 hover:text-white transition-all inline-flex items-center gap-1.5 text-xs font-extrabold shadow-2xs cursor-pointer flex-nowrap whitespace-nowrap"
+                                className="h-8 px-2.5 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 inline-flex items-center gap-1.5 text-xs font-bold cursor-pointer flex-nowrap whitespace-nowrap"
                               >
                                 <Edit size={12} />
                                 <span>{t("common.edit")}</span>
@@ -835,7 +835,7 @@ export function InventoryTabsView({
                                 <input type="hidden" name="id" value={u.id} />
                                 <ConfirmSubmitButton
                                   confirmMessage={locale === "en" ? `Are you sure you want to delete unit "${u.name}"? It will be unlinked from existing products.` : `هل أنت متأكد من حذف وحدة «${u.name}»؟ سيتم فك ارتباطها عن الأصناف المسجلة.`}
-                                  className="h-8 px-2.5 rounded-lg border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 hover:bg-rose-600 hover:text-white transition-all inline-flex items-center gap-1.5 text-xs font-extrabold shadow-2xs cursor-pointer flex-nowrap whitespace-nowrap"
+                                  className="h-8 px-2.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 inline-flex items-center gap-1.5 text-xs font-bold cursor-pointer flex-nowrap whitespace-nowrap"
                                   title={t("common.delete")}
                                   ariaLabel={`${t("common.delete")} ${u.name}`}
                                 >

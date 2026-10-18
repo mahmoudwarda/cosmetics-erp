@@ -406,7 +406,7 @@ export default async function ReportsPage({
                 />
               </svg>
               <div className="absolute text-center">
-                <span className="text-sm font-black text-indigo-700 dark:text-indigo-400">%{cashCollectionRate}</span>
+                <span className="text-sm font-black text-indigo-700">%{cashCollectionRate}</span>
                 <span className="block text-[9px] text-[var(--muted)] font-semibold">نقداً</span>
               </div>
             </div>
@@ -415,12 +415,12 @@ export default async function ReportsPage({
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 shrink-0" />
                 <span className="text-[var(--ink)]">نقدي فوري (كاش):</span>
-                <b className="text-indigo-700 dark:text-indigo-400">{totalPeriodPaid.toLocaleString("ar-EG")} ج.م</b>
+                <b className="text-indigo-700">{totalPeriodPaid.toLocaleString("ar-EG")} ج.م</b>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 shrink-0" />
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-300 shrink-0" />
                 <span className="text-[var(--muted)]">آجل على الحساب:</span>
-                <b className="text-rose-600 dark:text-rose-400">{totalPeriodRemaining.toLocaleString("ar-EG")} ج.م</b>
+                <b className="text-rose-600">{totalPeriodRemaining.toLocaleString("ar-EG")} ج.م</b>
               </div>
             </div>
           </div>
@@ -494,11 +494,11 @@ export default async function ReportsPage({
             </div>
             <div className="flex justify-between items-center p-2 rounded-lg bg-[var(--bg)] border border-[var(--line)]">
               <span className="font-semibold text-[var(--muted)]">القيمة التقديرية بالبيع القطاعي:</span>
-              <b className="font-bold text-emerald-600 dark:text-emerald-400">{inventoryRetailValuation.toLocaleString("ar-EG")} ج.م</b>
+              <b className="font-bold text-emerald-700">{inventoryRetailValuation.toLocaleString("ar-EG")} ج.م</b>
             </div>
             <div className="flex justify-between items-center p-2 rounded-lg bg-[var(--bg)] border border-[var(--line)]">
               <span className="font-semibold text-[var(--muted)]">إجمالي وحدات المخزن:</span>
-              <b className="font-bold text-indigo-700 dark:text-indigo-400">{Number(invCapital.totalPieces).toLocaleString("ar-EG")} قطعة</b>
+              <b className="font-bold text-indigo-700">{Number(invCapital.totalPieces).toLocaleString("ar-EG")} قطعة</b>
             </div>
           </div>
         </div>
@@ -531,7 +531,7 @@ export default async function ReportsPage({
               <tbody>
                 {topCustomers.length ? (
                   topCustomers.map((c) => (
-                    <tr key={c.partyId} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40">
+                    <tr key={c.partyId} className="transition-colors">
                       <td>
                         <b className="text-[var(--ink)] text-xs block">{c.partyName}</b>
                       </td>
@@ -543,7 +543,7 @@ export default async function ReportsPage({
                       <td className="text-center text-xs font-bold text-[var(--muted)]">
                         {c.invoicesCount} فاتورة
                       </td>
-                      <td className="text-left font-bold text-xs text-indigo-700 dark:text-indigo-400">
+                      <td className="text-left font-bold text-xs text-indigo-700">
                         {Number(c.totalPurchased).toLocaleString("ar-EG")} ج.م
                       </td>
                     </tr>
@@ -585,7 +585,7 @@ export default async function ReportsPage({
               <tbody>
                 {topSuppliers.length ? (
                   topSuppliers.map((s) => (
-                    <tr key={s.partyId} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40">
+                    <tr key={s.partyId} className="transition-colors">
                       <td>
                         <b className="text-[var(--ink)] text-xs block">{s.partyName}</b>
                       </td>
@@ -597,7 +597,7 @@ export default async function ReportsPage({
                       <td className="text-center text-xs font-bold text-[var(--muted)]">
                         {s.invoicesCount} أمر توريد
                       </td>
-                      <td className="text-left font-bold text-xs text-purple-700 dark:text-purple-400">
+                      <td className="text-left font-bold text-xs text-purple-700">
                         {Number(s.totalSupplied).toLocaleString("ar-EG")} ج.م
                       </td>
                     </tr>
@@ -636,17 +636,17 @@ export default async function ReportsPage({
               const barWidth = Math.max(5, Math.round((rev / maxRevenue) * 100));
 
               return (
-                <article className="p-3.5 rounded-xl bg-[var(--bg)] border border-[var(--line)] shadow-2xs" key={item.name}>
+                <article className="p-3.5 rounded-xl bg-[var(--bg)] border border-[var(--line)]" key={item.name}>
                   <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-[var(--ink)] text-sm">{item.name}</span>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold border border-indigo-200 dark:border-indigo-800">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 font-bold border border-indigo-200">
                         مساهمة: %{contribution}
                       </span>
                     </div>
                     <div className="text-xs font-bold text-[var(--ink)] flex items-center gap-3">
                       <span>المبيعات: {rev.toLocaleString("ar-EG")} ج.م</span>
-                      <span className="text-emerald-600 dark:text-emerald-400">الربح: {profit.toLocaleString("ar-EG")} ج.م (%{margin})</span>
+                      <span className="text-emerald-700">الربح: {profit.toLocaleString("ar-EG")} ج.م (%{margin})</span>
                       <span className="text-[var(--muted)] font-normal">
                         ({Number(item.quantity).toLocaleString("ar-EG")} قطعة · {item.count} فاتورة)
                       </span>
@@ -704,23 +704,23 @@ export default async function ReportsPage({
                   const margin = rev > 0 ? Math.round((profit / rev) * 100) : 0;
 
                   return (
-                    <tr key={item.name} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                    <tr key={item.name} className="transition-colors">
                       <td className="text-center font-bold text-[var(--muted)]">{index + 1}</td>
                       <td className="font-bold text-[var(--ink)]">{item.name}</td>
                       <td className="text-center font-semibold">
                         {Number(item.quantity).toLocaleString("ar-EG")} قطعة
                       </td>
-                      <td className="text-center font-bold text-indigo-700 dark:text-indigo-400">
+                      <td className="text-center font-bold text-indigo-700">
                         {rev.toLocaleString("ar-EG")} ج.م
                       </td>
-                      <td className="text-center font-medium text-slate-500 dark:text-slate-400">
+                      <td className="text-center font-medium text-slate-600">
                         {cost.toLocaleString("ar-EG")} ج.م
                       </td>
-                      <td className="text-center font-bold text-emerald-600 dark:text-emerald-400">
+                      <td className="text-center font-bold text-emerald-700">
                         +{profit.toLocaleString("ar-EG")} ج.م
                       </td>
                       <td className="text-center">
-                        <span className="inline-block px-2 py-0.5 rounded text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800">
+                        <span className="inline-block px-2 py-0.5 rounded text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                           %{margin}
                         </span>
                       </td>
