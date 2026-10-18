@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
 };
 
-import { I18nProvider, Locale } from "@/lib/i18n";
+import { I18nProvider, Locale } from "@/lib/i18n-client";
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   let organizationName = "لمسة جمال",

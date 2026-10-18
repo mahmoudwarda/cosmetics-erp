@@ -11,7 +11,7 @@ import {
   CheckSquare,
   Building,
 } from "lucide-react";
-import { useI18n } from "@/lib/i18n";
+import { useI18n } from "@/lib/i18n-client";
 
 type InvoiceData = {
   invoice: {

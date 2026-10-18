@@ -28,7 +28,7 @@ import {
 import { CloseDisclosureButton } from "@/components/close-disclosure-button";
 import { ConfirmSubmitButton } from "@/components/confirm-submit-button";
 import { localLogoUrl } from "@/server/services/branding";
-import { useI18n } from "@/lib/i18n";
+import { useI18n } from "@/lib/i18n-client";
 
 type PartyItem = {
   id: string;

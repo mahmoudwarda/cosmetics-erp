@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { CloseDisclosureButton } from "@/components/close-disclosure-button";
 import { ConfirmSubmitButton } from "@/components/confirm-submit-button";
-import { useI18n } from "@/lib/i18n";
+import { useI18n } from "@/lib/i18n-client";
 
 type Product = {
   id: string;

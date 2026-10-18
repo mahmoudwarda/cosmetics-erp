@@ -23,7 +23,7 @@ import {
 import { signOut } from "@/features/auth/actions";
 import { toggleLocale } from "@/features/settings/actions";
 import { NetworkShareDialog } from "@/components/network-share-dialog";
-import { useI18n, Locale } from "@/lib/i18n";
+import { useI18n, Locale } from "@/lib/i18n-client";
 
 const items = [
   { href: "/", labelKey: "nav.dashboard", defaultLabel: "لوحة التحكم", module: "reports", Icon: Gauge },

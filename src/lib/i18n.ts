@@ -1,7 +1,3 @@
-"use client";
-
-import React, { createContext, useContext, ReactNode } from "react";
-
 export type Locale = "ar" | "en";
 
 export const translations = {
@@ -634,48 +630,7 @@ export const translations = {
 
 export type TranslationKey = keyof typeof translations.ar;
 
-interface I18nContextValue {
-  locale: Locale;
-  t: (key: TranslationKey | string, fallback?: string) => string;
-  isRtl: boolean;
-}
-
-const I18nContext = createContext<I18nContextValue>({
-  locale: "ar",
-  t: (key, fallback) => (translations.ar[key as TranslationKey] as string) || fallback || String(key),
-  isRtl: true,
-});
-
-export function I18nProvider({
-  locale = "ar",
-  children,
-}: {
-  locale?: Locale;
-  children: ReactNode;
-}) {
-  const t = (key: TranslationKey | string, fallback?: string): string => {
-    const dict = translations[locale] || translations.ar;
-    const val = (dict as Record<string, string>)[key];
-    if (val) return val;
-    const arVal = (translations.ar as Record<string, string>)[key];
-    if (arVal) return arVal;
-    return fallback || String(key);
-  };
-
-  const isRtl = locale === "ar";
-
-  return (
-    <I18nContext.Provider value={{ locale, t, isRtl }}>
-      {children}
-    </I18nContext.Provider>
-  );
-}
-
-export function useI18n() {
-  return useContext(I18nContext);
-}
-
-// Server-side translation helper
+// Server-side & universal translation helper
 export function translate(key: string, locale: Locale = "ar", fallback?: string): string {
   const dict = translations[locale] || translations.ar;
   return (dict as Record<string, string>)[key] || (translations.ar as Record<string, string>)[key] || fallback || key;

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Printer, Search, ShoppingCart, Truck, RotateCcw, ArrowDownLeft, X, Eye } from "lucide-react";
-import { useI18n } from "@/lib/i18n";
+import { useI18n } from "@/lib/i18n-client";
 
 type InvoiceItem = {
   invoice: {
