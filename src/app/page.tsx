@@ -361,7 +361,7 @@ export default async function Home() {
         </div>
 
         {/* 4 Pillars of Capital / Liquidation Equation */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 pt-4">
           {/* Pillar 1: Cash in Hand */}
           <div className="p-3 bg-[var(--panel)] border border-[var(--line)] rounded-xl flex items-center justify-between shadow-2xs">
             <div>
@@ -429,7 +429,7 @@ export default async function Home() {
       </section>
 
       {/* 6 High-Performance Enterprise Operational KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-5">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-5">
         {/* Card 1: Today Sales */}
         <div className="p-3.5 bg-[var(--panel)] border border-[var(--line)] rounded-xl relative overflow-hidden shadow-2xs">
           <div className="flex items-center justify-between mb-1.5">
@@ -750,7 +750,7 @@ export default async function Home() {
         </article>
 
         {/* Operational Side Column */}
-        <div className="flex flex-col gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-5">
           {/* Active Cashboxes with Exact Real Balances */}
           <article className="panel mb-0">
             <div className="panel-title">

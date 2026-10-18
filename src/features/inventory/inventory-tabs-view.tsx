@@ -348,7 +348,7 @@ export function InventoryTabsView({
 
           {/* Products Table */}
           <div className="table-wrap">
-            <table>
+            <table className="w-full min-w-[800px]">
               <thead>
                 <tr>
                   <th>{t("inventory.colProduct")}</th>

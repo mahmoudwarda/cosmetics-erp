@@ -182,7 +182,7 @@ export function InvoicesTableView({ rows }: { rows: InvoiceItem[] }) {
 
       {/* Invoices Table */}
       <div className="table-wrap">
-        <table>
+        <table className="w-full min-w-[760px]">
           <thead>
             <tr>
               <th>{t("invoices.colNumber", "رقم الفاتورة")}</th>

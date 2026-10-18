@@ -146,10 +146,14 @@ export function AppNavigation({
                 <Store size={22} strokeWidth={2} />
               </span>
             )}
-            <div className="flex flex-col">
-              <span className="brand-name">{organizationName}</span>
-              <span className="brand-sub">نظام إدارة المستودع والمبيعات</span>
-            </div>
+            {!collapsed && (
+              <div className="flex flex-col min-w-0 overflow-hidden">
+                <span className="brand-name font-bold text-xs truncate max-w-[140px]">{organizationName}</span>
+                <span className="brand-sub text-[10px] text-[var(--muted)] truncate">
+                  {locale === "en" ? "Warehouse & Sales ERP" : "نظام إدارة المستودع والمبيعات"}
+                </span>
+              </div>
+            )}
           </Link>
 
           {/* Desktop Collapse Toggle Button */}
@@ -158,7 +162,17 @@ export function AppNavigation({
             type="button"
             aria-label={collapsed ? "توسيع الشريط الجانبي" : "طي الشريط الجانبي"}
             title={collapsed ? "توسيع الشريط الجانبي" : "طي الشريط الجانبي"}
-            onClick={() => setCollapsed(!collapsed)}
+            onClick={() => {
+              const next = !collapsed;
+              setCollapsed(next);
+              if (typeof document !== "undefined") {
+                if (next) {
+                  document.body.classList.add("sidebar-collapsed");
+                } else {
+                  document.body.classList.remove("sidebar-collapsed");
+                }
+              }
+            }}
           >
             {collapsed ? <PanelRightOpen size={16} /> : <PanelRightClose size={16} />}
           </button>
