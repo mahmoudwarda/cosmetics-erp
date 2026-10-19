@@ -31,10 +31,9 @@ export function LoginForm({ error }: { error?: string }) {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Username Field */}
-        <div className="field-wrap text-right">
-          <label htmlFor="login-username" className="flex items-center justify-between text-xs font-bold text-[var(--ink)]">
-            <span>اسم المستخدم</span>
-            <span className="text-[11px] font-normal text-[var(--muted)]">مطلوب</span>
+        <div className="text-right space-y-1.5">
+          <label htmlFor="login-username" className="block text-xs font-bold text-slate-700">
+            اسم المستخدم
           </label>
           <div className="relative flex items-center">
             <input
@@ -44,18 +43,17 @@ export function LoginForm({ error }: { error?: string }) {
               autoComplete="username"
               required
               disabled={isPending}
-              placeholder="أدخل اسم المستخدم (مثال: admin)"
-              className="w-full h-10 pe-10 ps-3 border border-[var(--input-border)] rounded-lg bg-[var(--input-bg)] text-[var(--ink)] text-sm focus:outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary-soft)] transition-all disabled:opacity-50"
+              placeholder="اسم المستخدم"
+              className="w-full h-11 ps-11 pe-4 border border-slate-300 rounded-xl bg-slate-50/50 text-slate-900 text-sm focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100/60 transition-all disabled:opacity-50"
             />
-            <User size={17} className="absolute start-3 text-[var(--muted)] pointer-events-none" />
+            <User size={18} className="absolute start-3.5 text-slate-400 pointer-events-none" />
           </div>
         </div>
 
         {/* Password Field with Visibility Toggle */}
-        <div className="field-wrap text-right">
-          <label htmlFor="login-password" className="flex items-center justify-between text-xs font-bold text-[var(--ink)]">
-            <span>كلمة المرور</span>
-            <span className="text-[11px] font-normal text-[var(--muted)]">مطلوب</span>
+        <div className="text-right space-y-1.5">
+          <label htmlFor="login-password" className="block text-xs font-bold text-slate-700">
+            كلمة المرور
           </label>
           <div className="relative flex items-center">
             <input
@@ -66,16 +64,16 @@ export function LoginForm({ error }: { error?: string }) {
               required
               disabled={isPending}
               placeholder="••••••••"
-              className="w-full h-10 pe-10 ps-10 border border-[var(--input-border)] rounded-lg bg-[var(--input-bg)] text-[var(--ink)] text-sm focus:outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary-soft)] transition-all disabled:opacity-50"
+              className="w-full h-11 ps-11 pe-11 border border-slate-300 rounded-xl bg-slate-50/50 text-slate-900 text-sm focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100/60 transition-all disabled:opacity-50"
             />
-            <Lock size={17} className="absolute start-3 text-[var(--muted)] pointer-events-none" />
+            <Lock size={18} className="absolute start-3.5 text-slate-400 pointer-events-none" />
             <button
               type="button"
-              className="absolute end-2 p-2 text-[var(--muted)] hover:text-[var(--ink)] rounded-md transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+              className="absolute end-2 p-2 text-slate-400 hover:text-slate-700 rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer"
               onClick={() => setShowPassword((prev) => !prev)}
               aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
             >
-              {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
         </div>
@@ -84,7 +82,7 @@ export function LoginForm({ error }: { error?: string }) {
         <button
           type="submit"
           disabled={isPending}
-          className="primary w-full h-11 mt-2 text-sm font-bold flex items-center justify-center gap-2 rounded-lg shadow-sm transition-all"
+          className="w-full h-12 mt-2 text-sm font-bold flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer active:scale-97 transition-all border-0 disabled:opacity-50"
         >
           {isPending ? (
             <>
