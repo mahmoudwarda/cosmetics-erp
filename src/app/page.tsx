@@ -323,18 +323,18 @@ export default async function Home() {
       </header>
 
       {/* Executive Net Liquidation Value & Total Capital Worth Banner */}
-      <section className="mb-5 p-5 md:p-6 bg-gradient-to-br from-[var(--panel)] to-[var(--bg)] border border-indigo-100 rounded-2xl shadow-xs relative overflow-hidden">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 border-b border-[var(--line)]">
-          <div className="space-y-1">
+      <section className="mb-6 p-6 md:p-7 bg-gradient-to-br from-indigo-50/80 via-[var(--panel)] to-sky-50/60 border border-indigo-200 rounded-2xl relative overflow-hidden">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5 pb-5 border-b border-indigo-100">
+          <div className="space-y-1.5">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-indigo-50 text-indigo-700 border border-indigo-200">
+              <span className="px-3 py-1 rounded-full text-xs font-black bg-indigo-100 text-indigo-800 border border-indigo-200">
                 {translate("dash.liquidationIndex", locale, "مؤشر التصفية الشامل للنشاط")}
               </span>
               <span className="text-xs text-[var(--muted)] font-semibold">
                 {translate("dash.liquidationSubtitle", locale, "حساب صافي رأس المال المسترد في حال تصفية أو إغلاق المشروع اليوم")}
               </span>
             </div>
-            <h2 className="text-lg md:text-xl font-black text-[var(--ink)]">
+            <h2 className="text-xl md:text-2xl font-black text-[var(--ink)]">
               {translate("dash.liquidationTitle", locale, "صافي قيمة تصفية المشروع الحالية (حقوق الملكية)")}
             </h2>
             <p className="text-xs text-[var(--muted)] max-w-2xl leading-relaxed">
@@ -342,18 +342,18 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-2 shrink-0">
-            <div className="p-3 bg-[var(--panel)] border border-indigo-200 rounded-xl text-right lg:text-left shadow-2xs">
-              <span className="text-[11px] text-[var(--muted)] font-bold block mb-0.5">
+          <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-2.5 shrink-0">
+            <div className="p-4 bg-[var(--panel)] border-2 border-indigo-200 rounded-2xl text-right lg:text-left min-w-[240px]">
+              <span className="text-xs text-[var(--muted)] font-bold block mb-1">
                 {translate("dash.immediateLiquidationAtCost", locale, "صافي التصفية الفورية (بالتكلفة):")}
               </span>
-              <b className="text-2xl md:text-3xl font-black text-indigo-700">
-                {netLiquidationAtCost.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs font-normal">{translate("common.egp", locale, "ج.م")}</small>
+              <b className="text-3xl md:text-4xl font-black text-indigo-700 font-mono tracking-tight block">
+                {netLiquidationAtCost.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-sm font-bold text-indigo-600/70">{translate("common.egp", locale, "ج.م")}</small>
               </b>
             </div>
-            <div className="text-xs text-[var(--muted)] font-medium">
-              {translate("dash.liquidationAtRetail", locale, "التصفية بالبيع القطاعي:")}{" "}
-              <b className="text-emerald-600 font-bold">
+            <div className="text-xs text-emerald-800 font-semibold flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 rounded-xl">
+              <span>{translate("dash.liquidationAtRetail", locale, "التصفية بالبيع القطاعي:")}</span>
+              <b className="text-emerald-700 font-black font-mono text-sm">
                 {netLiquidationAtRetail.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
               </b>
             </div>
@@ -361,191 +361,235 @@ export default async function Home() {
         </div>
 
         {/* 4 Pillars of Capital / Liquidation Equation */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 pt-4">
-          {/* Pillar 1: Cash in Hand */}
-          <div className="p-3 bg-[var(--panel)] border border-[var(--line)] rounded-xl flex items-center justify-between shadow-2xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 pt-5">
+          {/* Pillar 1: Cash in Hand - EMERALD THEME */}
+          <div className="p-4 bg-emerald-50/80 border border-emerald-200 rounded-2xl flex items-center justify-between">
             <div>
-              <span className="text-[11px] text-[var(--muted)] font-semibold flex items-center gap-1">
-                <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold">+</span>
+              <span className="text-xs font-bold text-emerald-800 flex items-center gap-1.5">
+                <span className="w-5 h-5 rounded-full bg-emerald-200 text-emerald-800 flex items-center justify-center text-xs font-black">+</span>
                 <span>{translate("dash.cashboxLiquidity", locale, "سيولة الخزائن الفورية")}</span>
               </span>
-              <b className="text-base font-bold text-emerald-700 block mt-0.5 font-mono">
-                {totalCashBalance.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
+              <b className="text-xl md:text-2xl font-black text-emerald-800 block mt-1.5 font-mono">
+                {totalCashBalance.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs font-bold text-emerald-700/80">{translate("common.egp", locale, "ج.م")}</small>
               </b>
-              <small className="text-[10px] text-[var(--muted)]">
+              <small className="text-[11px] text-emerald-700 font-medium">
                 {locale === "en" ? `In ${activeBoxesWithBalance.length} cashboxes` : `في ${activeBoxesWithBalance.length} خزائن نقدية`}
               </small>
             </div>
-            <Wallet size={18} className="text-emerald-600/50" />
+            <div className="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+              <Wallet size={22} />
+            </div>
           </div>
 
-          {/* Pillar 2: Inventory at Cost */}
-          <div className="p-3 bg-[var(--panel)] border border-[var(--line)] rounded-xl flex items-center justify-between shadow-2xs">
+          {/* Pillar 2: Inventory at Cost - AMBER THEME */}
+          <div className="p-4 bg-amber-50/80 border border-amber-200 rounded-2xl flex items-center justify-between">
             <div>
-              <span className="text-[11px] text-[var(--muted)] font-semibold flex items-center gap-1">
-                <span className="w-4 h-4 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center text-[10px] font-bold">+</span>
+              <span className="text-xs font-bold text-amber-900 flex items-center gap-1.5">
+                <span className="w-5 h-5 rounded-full bg-amber-200 text-amber-900 flex items-center justify-center text-xs font-black">+</span>
                 <span>{translate("dash.inventoryAtCost", locale, "بضاعة المخزن (بالتكلفة)")}</span>
               </span>
-              <b className="text-base font-bold text-sky-700 block mt-0.5 font-mono">
-                {inventoryCostValuation.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
+              <b className="text-xl md:text-2xl font-black text-amber-900 block mt-1.5 font-mono">
+                {inventoryCostValuation.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs font-bold text-amber-800/80">{translate("common.egp", locale, "ج.م")}</small>
               </b>
-              <small className="text-[10px] text-[var(--muted)]">
+              <small className="text-[11px] text-amber-800 font-medium">
                 {totalStockUnits.toLocaleString(localeCode)} {locale === "en" ? `pcs (${totalProductsCount} items)` : `قطعة (${totalProductsCount} صنف)`}
               </small>
             </div>
-            <Package size={18} className="text-sky-600/50" />
+            <div className="w-11 h-11 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+              <Package size={22} />
+            </div>
           </div>
 
-          {/* Pillar 3: Customer Receivables */}
-          <div className="p-3 bg-[var(--panel)] border border-[var(--line)] rounded-xl flex items-center justify-between shadow-2xs">
+          {/* Pillar 3: Customer Receivables - SKY THEME */}
+          <div className="p-4 bg-sky-50/80 border border-sky-200 rounded-2xl flex items-center justify-between">
             <div>
-              <span className="text-[11px] text-[var(--muted)] font-semibold flex items-center gap-1">
-                <span className="w-4 h-4 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px] font-bold">+</span>
+              <span className="text-xs font-bold text-sky-900 flex items-center gap-1.5">
+                <span className="w-5 h-5 rounded-full bg-sky-200 text-sky-900 flex items-center justify-center text-xs font-black">+</span>
                 <span>{translate("dash.marketReceivables", locale, "فلوسنا بالسوق (آجل العملاء)")}</span>
               </span>
-              <b className="text-base font-bold text-indigo-700 block mt-0.5 font-mono">
-                {customerReceivablesTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
+              <b className="text-xl md:text-2xl font-black text-sky-900 block mt-1.5 font-mono">
+                {customerReceivablesTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs font-bold text-sky-800/80">{translate("common.egp", locale, "ج.م")}</small>
               </b>
-              <small className="text-[10px] text-[var(--muted)]">{locale === "en" ? "Receivables from customers" : "ديون مستحقة لنا بالخارج"}</small>
+              <small className="text-[11px] text-sky-800 font-medium">
+                {locale === "en" ? "Receivables from customers" : "ديون مستحقة لنا بالخارج"}
+              </small>
             </div>
-            <Clock size={18} className="text-indigo-600/50" />
+            <div className="w-11 h-11 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
+              <Clock size={22} />
+            </div>
           </div>
 
-          {/* Pillar 4: Supplier Payables */}
-          <div className="p-3 bg-[var(--panel)] border border-[var(--line)] rounded-xl flex items-center justify-between shadow-2xs">
+          {/* Pillar 4: Supplier Payables - ROSE THEME */}
+          <div className="p-4 bg-rose-50/80 border border-rose-200 rounded-2xl flex items-center justify-between">
             <div>
-              <span className="text-[11px] text-[var(--muted)] font-semibold flex items-center gap-1">
-                <span className="w-4 h-4 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center text-[10px] font-bold">−</span>
+              <span className="text-xs font-bold text-rose-900 flex items-center gap-1.5">
+                <span className="w-5 h-5 rounded-full bg-rose-200 text-rose-900 flex items-center justify-center text-xs font-black">−</span>
                 <span>{translate("dash.supplierPayables", locale, "مستحقات الموردين (علينا)")}</span>
               </span>
-              <b className="text-base font-bold text-rose-600 block mt-0.5 font-mono">
-                {supplierPayablesTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
+              <b className="text-xl md:text-2xl font-black text-rose-700 block mt-1.5 font-mono">
+                {supplierPayablesTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs font-bold text-rose-600/80">{translate("common.egp", locale, "ج.م")}</small>
               </b>
-              <small className="text-[10px] text-[var(--muted)]">{locale === "en" ? "Payable obligations" : "التزامات واجبة السداد"}</small>
+              <small className="text-[11px] text-rose-800 font-medium">
+                {locale === "en" ? "Payable obligations" : "التزامات واجبة السداد"}
+              </small>
             </div>
-            <Landmark size={18} className="text-rose-600/50" />
+            <div className="w-11 h-11 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
+              <Landmark size={22} />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 6 High-Performance Enterprise Operational KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-5">
-        {/* Card 1: Today Sales */}
-        <div className="p-3.5 bg-[var(--panel)] border border-[var(--line)] rounded-xl relative overflow-hidden shadow-2xs">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs text-[var(--muted)] font-bold">{translate("dash.todaySales", locale, "مبيعات اليوم")}</span>
-            <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
-              <TrendingUp size={14} />
+      {/* 6 High-Performance Enterprise Operational KPI Cards (Themed & Enlarged) */}
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3.5 mb-6">
+        {/* Card 1: Today Sales - BLUE THEME */}
+        <div className="p-4 bg-blue-50/70 border border-blue-200 rounded-2xl relative overflow-hidden flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-blue-900 font-bold">{translate("dash.todaySales", locale, "مبيعات اليوم")}</span>
+            <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center">
+              <TrendingUp size={16} />
             </div>
           </div>
-          <b className="text-xl text-indigo-700 block font-bold font-mono">
-            {todaySalesTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-[10px] text-[var(--muted)] font-normal">{translate("common.egp", locale, "ج.م")}</small>
-          </b>
-          <span className="text-[11px] text-[var(--muted)] block mt-0.5 font-medium">
-            {todaySalesCount} {locale === "en" ? "sales invoices" : "فاتورة بيع"}
-          </span>
+          <div>
+            <b className="text-2xl lg:text-3xl text-blue-900 block font-black font-mono tracking-tight">
+              {todaySalesTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs text-blue-700/80 font-bold">{translate("common.egp", locale, "ج.م")}</small>
+            </b>
+            <span className="text-xs text-blue-700 font-semibold block mt-1">
+              {todaySalesCount} {locale === "en" ? "sales invoices" : "فاتورة بيع"}
+            </span>
+          </div>
         </div>
 
-        {/* Card 2: Today Gross Profit */}
-        <div className="p-3.5 bg-[var(--panel)] border border-[var(--line)] rounded-xl relative overflow-hidden shadow-2xs">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs text-[var(--muted)] font-bold">{translate("dash.todayProfit", locale, "أرباح اليوم")}</span>
-            <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <Coins size={14} />
+        {/* Card 2: Today Gross Profit - EMERALD THEME */}
+        <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-2xl relative overflow-hidden flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-emerald-900 font-bold">{translate("dash.todayProfit", locale, "أرباح اليوم")}</span>
+            <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+              <Coins size={16} />
             </div>
           </div>
-          <b className="text-xl text-emerald-600 block font-bold font-mono">
-            +{todayProfitTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-[10px] text-[var(--muted)] font-normal">{translate("common.egp", locale, "ج.م")}</small>
-          </b>
-          <span className="text-[11px] text-emerald-700 block mt-0.5 font-semibold">
-            {locale === "en" ? `Margin: ${todayMarginRate}%` : `هامش: %${todayMarginRate}`}
-          </span>
+          <div>
+            <b className="text-2xl lg:text-3xl text-emerald-800 block font-black font-mono tracking-tight">
+              +{todayProfitTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs text-emerald-700/80 font-bold">{translate("common.egp", locale, "ج.م")}</small>
+            </b>
+            <span className="text-xs text-emerald-800 font-bold block mt-1">
+              {locale === "en" ? `Margin: ${todayMarginRate}%` : `هامش: %${todayMarginRate}`}
+            </span>
+          </div>
         </div>
 
-        {/* Card 3: Today Purchases */}
-        <div className="p-3.5 bg-[var(--panel)] border border-[var(--line)] rounded-xl relative overflow-hidden shadow-2xs">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs text-[var(--muted)] font-bold">{translate("dash.todayPurchases", locale, "مشتريات اليوم")}</span>
-            <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
-              <TrendingDown size={14} />
+        {/* Card 3: Today Purchases - PURPLE THEME */}
+        <div className="p-4 bg-purple-50/70 border border-purple-200 rounded-2xl relative overflow-hidden flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-purple-900 font-bold">{translate("dash.todayPurchases", locale, "مشتريات اليوم")}</span>
+            <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center">
+              <TrendingDown size={16} />
             </div>
           </div>
-          <b className="text-xl text-purple-700 block font-bold font-mono">
-            {todayPurchasesTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-[10px] text-[var(--muted)] font-normal">{translate("common.egp", locale, "ج.م")}</small>
-          </b>
-          <span className="text-[11px] text-[var(--muted)] block mt-0.5 font-medium">
-            {todayPurchasesCount} {locale === "en" ? "purchase orders" : "أمر توريد"}
-          </span>
+          <div>
+            <b className="text-2xl lg:text-3xl text-purple-900 block font-black font-mono tracking-tight">
+              {todayPurchasesTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs text-purple-700/80 font-bold">{translate("common.egp", locale, "ج.م")}</small>
+            </b>
+            <span className="text-xs text-purple-700 font-semibold block mt-1">
+              {todayPurchasesCount} {locale === "en" ? "purchase orders" : "أمر توريد"}
+            </span>
+          </div>
         </div>
 
-        {/* Card 4: Cash Liquidity */}
-        <div className="p-3.5 bg-[var(--panel)] border border-[var(--line)] rounded-xl relative overflow-hidden shadow-2xs">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs text-[var(--muted)] font-bold">{translate("dash.cashboxLiquidity", locale, "السيولة النقدية")}</span>
-            <div className="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center">
-              <Wallet size={14} />
+        {/* Card 4: Cash Liquidity - TEAL THEME */}
+        <div className="p-4 bg-teal-50/70 border border-teal-200 rounded-2xl relative overflow-hidden flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-teal-900 font-bold">{translate("dash.cashboxLiquidity", locale, "السيولة النقدية")}</span>
+            <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center">
+              <Wallet size={16} />
             </div>
           </div>
-          <b className="text-xl text-[var(--ink)] block font-bold font-mono">
-            {totalCashBalance.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-[10px] text-[var(--muted)] font-normal">{translate("common.egp", locale, "ج.م")}</small>
-          </b>
-          <span className="text-[11px] text-sky-700 block mt-0.5 font-medium">
-            {locale === "en" ? `In ${activeBoxesWithBalance.length} active cashboxes` : `في ${activeBoxesWithBalance.length} خزائن نشطة`}
-          </span>
+          <div>
+            <b className="text-2xl lg:text-3xl text-teal-900 block font-black font-mono tracking-tight">
+              {totalCashBalance.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs text-teal-700/80 font-bold">{translate("common.egp", locale, "ج.م")}</small>
+            </b>
+            <span className="text-xs text-teal-700 font-semibold block mt-1">
+              {locale === "en" ? `In ${activeBoxesWithBalance.length} active cashboxes` : `في ${activeBoxesWithBalance.length} خزائن نشطة`}
+            </span>
+          </div>
         </div>
 
-        {/* Card 5: Inventory Valuation */}
-        <div className="p-3.5 bg-[var(--panel)] border border-[var(--line)] rounded-xl relative overflow-hidden shadow-2xs">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs text-[var(--muted)] font-bold">{translate("dash.inventoryAtCost", locale, "قيمة بضاعة المخزن")}</span>
-            <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
-              <Package size={14} />
+        {/* Card 5: Inventory Valuation - AMBER THEME */}
+        <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-2xl relative overflow-hidden flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-amber-900 font-bold">{translate("dash.inventoryAtCost", locale, "قيمة بضاعة المخزن")}</span>
+            <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
+              <Package size={16} />
             </div>
           </div>
-          <b className="text-xl text-[var(--ink)] block font-bold font-mono">
-            {inventoryCostValuation.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-[10px] text-[var(--muted)] font-normal">{translate("common.egp", locale, "ج.م")}</small>
-          </b>
-          <span className="text-[11px] text-[var(--muted)] block mt-0.5 font-medium">
-            {totalStockUnits.toLocaleString(localeCode)} {locale === "en" ? `pcs (${totalProductsCount} items)` : `قطعة (${totalProductsCount} صنف)`}
-          </span>
+          <div>
+            <b className="text-2xl lg:text-3xl text-amber-900 block font-black font-mono tracking-tight">
+              {inventoryCostValuation.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs text-amber-800/80 font-bold">{translate("common.egp", locale, "ج.م")}</small>
+            </b>
+            <span className="text-xs text-amber-800 font-semibold block mt-1">
+              {totalStockUnits.toLocaleString(localeCode)} {locale === "en" ? `pcs (${totalProductsCount} items)` : `قطعة (${totalProductsCount} صنف)`}
+            </span>
+          </div>
         </div>
 
-        {/* Card 6: Reorder Alert */}
-        <div className="p-3.5 bg-[var(--panel)] border border-[var(--line)] rounded-xl relative overflow-hidden shadow-2xs">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs text-[var(--muted)] font-bold">{translate("dash.lowStockCount", locale, "نواقص المخزون")}</span>
-            <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${lowCount > 0 ? "bg-rose-50 text-rose-600" : "bg-emerald-50 text-emerald-600"}`}>
-              {lowCount > 0 ? <AlertTriangle size={14} /> : <CheckCircle2 size={14} />}
+        {/* Card 6: Reorder Alert - ROSE / EMERALD THEME */}
+        <div
+          className={`p-4 border rounded-2xl relative overflow-hidden flex flex-col justify-between ${
+            lowCount > 0 ? "bg-rose-50/70 border-rose-200" : "bg-emerald-50/70 border-emerald-200"
+          }`}
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className={`text-xs font-bold ${lowCount > 0 ? "text-rose-900" : "text-emerald-900"}`}>
+              {translate("dash.lowStockCount", locale, "نواقص المخزون")}
+            </span>
+            <div
+              className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+                lowCount > 0 ? "bg-rose-100 text-rose-700" : "bg-emerald-100 text-emerald-700"
+              }`}
+            >
+              {lowCount > 0 ? <AlertTriangle size={16} /> : <CheckCircle2 size={16} />}
             </div>
           </div>
-          <b className={`text-xl block font-bold font-mono ${lowCount > 0 ? "text-rose-600" : "text-emerald-600"}`}>
-            {lowCount.toLocaleString(localeCode)} <small className="text-[10px] font-normal">{locale === "en" ? "items" : "صنف"}</small>
-          </b>
-          <span className="text-[11px] block mt-0.5 font-medium">
-            {lowCount > 0 ? (locale === "en" ? "Needs reordering" : "بحاجة لإعادة الطلب") : (locale === "en" ? "Stock levels healthy" : "مستويات المخزون ممتازة")}
-          </span>
+          <div>
+            <b
+              className={`text-2xl lg:text-3xl block font-black font-mono tracking-tight ${
+                lowCount > 0 ? "text-rose-700" : "text-emerald-800"
+              }`}
+            >
+              {lowCount.toLocaleString(localeCode)} <small className="text-xs font-bold">{locale === "en" ? "items" : "صنف"}</small>
+            </b>
+            <span
+              className={`text-xs block mt-1 font-semibold ${
+                lowCount > 0 ? "text-rose-800" : "text-emerald-800"
+              }`}
+            >
+              {lowCount > 0
+                ? (locale === "en" ? "Needs reordering" : "بحاجة لإعادة الطلب")
+                : (locale === "en" ? "Stock levels healthy" : "المستويات ممتازة")}
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Visual Analytics & Operational Insights (Dribbble ERP Inspiration) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-5">
+      {/* Visual Analytics & Operational Insights */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
         {/* Card 1: Today Sales Payment Distribution (Cash vs Credit) */}
-        <div className="p-4 sm:p-5 bg-[var(--panel)] border border-[var(--line)] rounded-2xl shadow-2xs space-y-4">
+        <div className="p-5 bg-[var(--panel)] border border-[var(--line)] rounded-2xl space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-                <Coins size={16} />
+              <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                <Coins size={18} />
               </div>
               <div>
                 <h3 className="text-sm font-bold text-[var(--ink)]">
                   {locale === "en" ? "Today's Revenue & Payment Split" : "توزيع تدفق مبيعات اليوم (نقدي وآجل)"}
                 </h3>
-                <p className="text-[11px] text-[var(--muted)]">
+                <p className="text-xs text-[var(--muted)]">
                   {locale === "en" ? "Cash collections vs outstanding market receivables" : "مقارنة السيولة النقدية المحصلة فوراً مقابل مبيعات الآجل بالسوق"}
                 </p>
               </div>
             </div>
-            <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
               {locale === "en" ? `Margin: %${todayMarginRate}` : `هامش الربح: %${todayMarginRate}`}
             </span>
           </div>
@@ -564,7 +608,7 @@ export default async function Home() {
                 title={locale === "en" ? `Credit: ${todayCreditRatio}%` : `آجل: %${todayCreditRatio}`}
               />
             </div>
-            <div className="flex items-center justify-between text-[11px] text-[var(--muted)] font-medium">
+            <div className="flex items-center justify-between text-xs text-[var(--muted)] font-medium">
               <span className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
                 <span>{locale === "en" ? `Cash Collections (%${todayCashRatio})` : `تحصيل نقدي بالخزينة (%${todayCashRatio})`}</span>
@@ -576,46 +620,46 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* Financial Breakdown Metric Strips */}
-          <div className="grid grid-cols-2 gap-3 pt-1">
-            <div className="p-3 bg-emerald-50/50 border border-emerald-200/60 rounded-xl">
-              <span className="text-[11px] text-emerald-800 font-bold block mb-0.5">
+          {/* Financial Breakdown Metric Strips (Enlarged & Themed) */}
+          <div className="grid grid-cols-2 gap-3.5 pt-1">
+            <div className="p-4 bg-emerald-50/80 border border-emerald-200 rounded-xl">
+              <span className="text-xs text-emerald-900 font-bold block mb-1">
                 {locale === "en" ? "Cash Collected" : "المدفوع نقداً:"}
               </span>
-              <b className="text-base font-bold text-emerald-700 font-mono block">
-                {todaySalesPaid.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
+              <b className="text-xl md:text-2xl font-black text-emerald-800 font-mono block">
+                {todaySalesPaid.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs font-bold text-emerald-700/80">{translate("common.egp", locale, "ج.م")}</small>
               </b>
             </div>
-            <div className="p-3 bg-indigo-50/50 border border-indigo-200/60 rounded-xl">
-              <span className="text-[11px] text-indigo-800 font-bold block mb-0.5">
+            <div className="p-4 bg-indigo-50/80 border border-indigo-200 rounded-xl">
+              <span className="text-xs text-indigo-900 font-bold block mb-1">
                 {locale === "en" ? "Credit / Remaining" : "المتبقي آجل بالسوق:"}
               </span>
-              <b className="text-base font-bold text-indigo-700 font-mono block">
-                {todaySalesCredit.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
+              <b className="text-xl md:text-2xl font-black text-indigo-800 font-mono block">
+                {todaySalesCredit.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs font-bold text-indigo-700/80">{translate("common.egp", locale, "ج.م")}</small>
               </b>
             </div>
           </div>
         </div>
 
         {/* Card 2: Top Selling / Fast Moving Products */}
-        <div className="p-4 sm:p-5 bg-[var(--panel)] border border-[var(--line)] rounded-2xl shadow-2xs space-y-3">
+        <div className="p-5 bg-[var(--panel)] border border-[var(--line)] rounded-2xl space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
-                <Package size={16} />
+              <div className="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
+                <Package size={18} />
               </div>
               <div>
                 <h3 className="text-sm font-bold text-[var(--ink)]">
                   {locale === "en" ? "Fast-Moving & Top Products" : "الأصناف الأكثر طلباً ونشاطاً بالمبيعات"}
                 </h3>
-                <p className="text-[11px] text-[var(--muted)]">
+                <p className="text-xs text-[var(--muted)]">
                   {locale === "en" ? "Top selling items with current inventory stock" : "معدل دوران المخزون والكميات المباعة"}
                 </p>
               </div>
             </div>
             <Link href="/inventory" className="text-link text-xs">
               <span>{locale === "en" ? "Full Catalog" : "دليل الأصناف"}</span>
-              <ArrowUpRight size={13} />
+              <ArrowUpRight size={14} />
             </Link>
           </div>
 
@@ -626,21 +670,21 @@ export default async function Home() {
                 return (
                   <div
                     key={p.id}
-                    className="p-2.5 border border-[var(--line)] rounded-xl flex items-center justify-between hover:bg-[var(--surface-muted)] transition-colors"
+                    className="p-3 border border-[var(--line)] rounded-xl flex items-center justify-between bg-[var(--surface-muted)]/50"
                   >
                     <div className="min-w-0 pr-2">
                       <div className="flex items-center gap-2 mb-0.5">
                         <b className="text-xs font-bold text-[var(--ink)] truncate max-w-[180px]">{p.name}</b>
-                        <span className="font-mono text-[10px] text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                        <span className="font-mono text-[10px] text-slate-700 bg-slate-200/70 px-1.5 py-0.5 rounded border border-slate-300">
                           {p.sku}
                         </span>
                       </div>
-                      <span className="text-[11px] text-[var(--muted)] font-medium">
+                      <span className="text-xs text-[var(--muted)] font-medium">
                         {locale === "en" ? `Warehouse stock: ${stockNum.toLocaleString(localeCode)} pcs` : `المخزون بالمستودع: ${stockNum.toLocaleString(localeCode)} قطعة`}
                       </span>
                     </div>
                     <div className="text-left shrink-0">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono">
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-800 border border-indigo-200 font-mono">
                         {p.soldQty.toLocaleString(localeCode)} {locale === "en" ? "sold" : "مباع"}
                       </span>
                     </div>
@@ -655,6 +699,7 @@ export default async function Home() {
           </div>
         </div>
       </div>
+
 
       {/* High-Density Content Split */}
       <section className="content-grid">
@@ -767,15 +812,23 @@ export default async function Home() {
               {activeBoxesWithBalance.map((box) => (
                 <div
                   key={box.id}
-                  className="p-3 border border-[var(--line)] rounded-xl flex items-center justify-between hover:bg-[var(--surface-muted)] transition-colors shadow-2xs"
+                  className="p-3 border border-[var(--line)] rounded-xl flex items-center justify-between hover:bg-[var(--surface-muted)] transition-colors"
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-indigo-50 text-[var(--primary)] flex items-center justify-center">
+                    <div
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold shrink-0 ${
+                        box.kind === "cash"
+                          ? "bg-teal-50 text-teal-700 border border-teal-200"
+                          : box.kind === "bank"
+                          ? "bg-blue-50 text-blue-700 border border-blue-200"
+                          : "bg-purple-50 text-purple-700 border border-purple-200"
+                      }`}
+                    >
                       <Wallet size={16} />
                     </div>
                     <div>
                       <span className="text-xs font-bold text-[var(--ink)] block">{box.name}</span>
-                      <small className="text-[11px] text-[var(--muted)]">
+                      <small className="text-[11px] text-[var(--muted)] font-medium">
                         {box.kind === "cash"
                           ? (locale === "en" ? "Cash Box" : "صندوق نقدي")
                           : box.kind === "bank"
@@ -785,7 +838,7 @@ export default async function Home() {
                     </div>
                   </div>
                   <div className="text-left">
-                    <b className="text-sm font-bold text-emerald-600 block font-mono">
+                    <b className="text-sm font-bold text-emerald-700 block font-mono">
                       {box.balance.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
                     </b>
                   </div>

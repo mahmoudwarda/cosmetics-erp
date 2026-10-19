@@ -156,13 +156,29 @@ export function AppNavigation({
             )}
           </Link>
 
-          {/* Desktop Collapse Toggle Button */}
+          {/* Responsive Sidebar Close/Collapse Toggle Button */}
           <button
-            className="nav-toggle hidden lg:grid"
+            className="nav-toggle"
             type="button"
-            aria-label={collapsed ? "توسيع الشريط الجانبي" : "طي الشريط الجانبي"}
-            title={collapsed ? "توسيع الشريط الجانبي" : "طي الشريط الجانبي"}
+            aria-label={
+              mobileOpen
+                ? (locale === "en" ? "Close menu" : "إغلاق القائمة")
+                : collapsed
+                ? (locale === "en" ? "Expand sidebar" : "توسيع الشريط الجانبي")
+                : (locale === "en" ? "Collapse sidebar" : "طي / إغلاق الشريط الجانبي")
+            }
+            title={
+              mobileOpen
+                ? (locale === "en" ? "Close menu" : "إغلاق القائمة")
+                : collapsed
+                ? (locale === "en" ? "Expand sidebar" : "توسيع الشريط الجانبي")
+                : (locale === "en" ? "Collapse sidebar" : "طي / إغلاق الشريط الجانبي")
+            }
             onClick={() => {
+              if (mobileOpen) {
+                setMobileOpen(false);
+                return;
+              }
               const next = !collapsed;
               setCollapsed(next);
               if (typeof document !== "undefined") {
@@ -174,17 +190,7 @@ export function AppNavigation({
               }
             }}
           >
-            {collapsed ? <PanelRightOpen size={16} /> : <PanelRightClose size={16} />}
-          </button>
-
-          {/* Mobile Close Button */}
-          <button
-            className="nav-toggle lg:hidden"
-            type="button"
-            aria-label="إغلاق القائمة"
-            onClick={() => setMobileOpen(false)}
-          >
-            <X size={18} />
+            {collapsed ? <PanelRightOpen size={18} /> : <X size={18} />}
           </button>
         </div>
 
