@@ -62,41 +62,67 @@ export default async function FinancePage() {
         </div>
       </header>
 
-      {/* Cashbox Balance Cards */}
-      <section className="kpis">
+      {/* Cashbox Balance Cards (Themed & Enlarged) */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         {boxes.map((box) => {
           const balance = Number(box.openingBalance) + (totals.get(box.id) ?? 0);
+          const isBank = box.kind === "bank";
+          const isWallet = box.kind === "wallet";
+          const themeClasses = isBank
+            ? "bg-blue-50/70 border-blue-200 text-blue-950"
+            : isWallet
+            ? "bg-purple-50/70 border-purple-200 text-purple-950"
+            : "bg-teal-50/70 border-teal-200 text-teal-950";
+          const iconClasses = isBank
+            ? "bg-blue-100 text-blue-700"
+            : isWallet
+            ? "bg-purple-100 text-purple-700"
+            : "bg-teal-100 text-teal-700";
+          const balanceColor = isBank
+            ? "text-blue-900"
+            : isWallet
+            ? "text-purple-900"
+            : "text-teal-900";
+
           return (
-            <article className="kpi" key={box.id}>
-              <div className="kpi-head">
-                <span className="font-bold text-[var(--ink)]">{box.name}</span>
-                <div className="icon">
-                  {box.kind === "bank" ? (
-                    <Landmark size={15} className="text-indigo-600" />
-                  ) : box.kind === "wallet" ? (
-                    <Wallet size={15} className="text-emerald-600" />
+            <article
+              className={`p-5 rounded-2xl border ${themeClasses} flex flex-col justify-between`}
+              key={box.id}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-bold text-sm">{box.name}</span>
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold ${iconClasses}`}>
+                  {isBank ? (
+                    <Landmark size={18} />
+                  ) : isWallet ? (
+                    <Wallet size={18} />
                   ) : (
-                    <Banknote size={15} className="text-amber-600" />
+                    <Banknote size={18} />
                   )}
                 </div>
               </div>
-              <strong>
-                {balance.toLocaleString("ar-EG")} <small>ج.م</small>
-              </strong>
-              <p className="muted">
-                {box.kind === "cash" ? "صندوق كاشير نقدي" : box.kind === "bank" ? "حساب بنكي" : "محفظة إلكترونية"} · رصيد فعلي
-              </p>
+              <div>
+                <strong className={`text-2xl lg:text-3xl font-black font-mono tracking-tight block ${balanceColor}`}>
+                  {balance.toLocaleString("ar-EG")} <small className="text-xs font-bold opacity-80">ج.م</small>
+                </strong>
+                <p className="text-xs font-medium opacity-75 mt-1">
+                  {box.kind === "cash" ? "صندوق كاشير نقدي" : isBank ? "حساب بنكي معتمد" : "محفظة إلكترونية"} · رصيد فعلي
+                </p>
+              </div>
             </article>
           );
         })}
       </section>
 
-      {/* Action Buttons for Finance Operations */}
+      {/* Action Buttons for Finance Operations (Themed & Interactive Transformation) */}
       {canCreate && (
         <div className="flex items-center gap-3 mb-6 flex-wrap">
-          <details className="editor">
-            <summary className="primary">
-              <Plus size={15} />
+          {/* Button 1: Add Cashbox / Bank */}
+          <details className="group editor" name="finance-action-modal">
+            <summary className="h-10 px-4 rounded-xl font-bold text-xs inline-flex items-center gap-2 border border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 group-open:bg-emerald-600 group-open:text-white group-open:border-emerald-700 group-open:ring-2 group-open:ring-emerald-400 group-open:ring-offset-2 active:scale-95 transition-all cursor-pointer select-none">
+              <span className="w-5 h-5 rounded-lg bg-emerald-200/80 group-open:bg-emerald-500 text-emerald-800 group-open:text-white flex items-center justify-center transition-colors">
+                <Plus size={13} className="transition-transform duration-200 group-open:rotate-45" />
+              </span>
               <span>إضافة صندوق نقدية / بنك</span>
             </summary>
             <form action={createCashbox} className="form-grid">
@@ -117,13 +143,18 @@ export default async function FinancePage() {
                 الرصيد الافتتاحي المبدئي (ج.م)
                 <input name="openingBalance" type="number" min="0" step="0.01" defaultValue="0" required />
               </label>
-              <button className="primary">حفظ الصندوق وتفعيله</button>
+              <button className="primary w-full py-2.5 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white border-0 cursor-pointer active:scale-98 transition-all">
+                حفظ الصندوق وتفعيله
+              </button>
             </form>
           </details>
 
-          <details className="editor">
-            <summary className="primary">
-              <Receipt size={15} />
+          {/* Button 2: Record Income / Expense */}
+          <details className="group editor" name="finance-action-modal">
+            <summary className="h-10 px-4 rounded-xl font-bold text-xs inline-flex items-center gap-2 border border-indigo-300 bg-indigo-50 text-indigo-800 hover:bg-indigo-100 group-open:bg-indigo-600 group-open:text-white group-open:border-indigo-700 group-open:ring-2 group-open:ring-indigo-400 group-open:ring-offset-2 active:scale-95 transition-all cursor-pointer select-none">
+              <span className="w-5 h-5 rounded-lg bg-indigo-200/80 group-open:bg-indigo-500 text-indigo-800 group-open:text-white flex items-center justify-center transition-colors">
+                <Receipt size={13} className="transition-transform duration-200 group-open:scale-110" />
+              </span>
               <span>تسجيل دخل أو مصروف</span>
             </summary>
             <form action={addCashTransaction} className="form-grid">
@@ -157,13 +188,18 @@ export default async function FinancePage() {
                 ملاحظات وتفاصيل إضافية
                 <input name="notes" placeholder="ملاحظات توضيحية لدفتر الحسابات" />
               </label>
-              <button className="primary">تسجيل الحركة وترحيلها</button>
+              <button className="primary w-full py-2.5 rounded-xl font-bold bg-indigo-600 hover:bg-indigo-700 text-white border-0 cursor-pointer active:scale-98 transition-all">
+                تسجيل الحركة وترحيلها
+              </button>
             </form>
           </details>
 
-          <details className="editor">
-            <summary className="secondary">
-              <ArrowLeftRight size={15} />
+          {/* Button 3: Transfer between Cashboxes */}
+          <details className="group editor" name="finance-action-modal">
+            <summary className="h-10 px-4 rounded-xl font-bold text-xs inline-flex items-center gap-2 border border-purple-300 bg-purple-50 text-purple-800 hover:bg-purple-100 group-open:bg-purple-600 group-open:text-white group-open:border-purple-700 group-open:ring-2 group-open:ring-purple-400 group-open:ring-offset-2 active:scale-95 transition-all cursor-pointer select-none">
+              <span className="w-5 h-5 rounded-lg bg-purple-200/80 group-open:bg-purple-500 text-purple-800 group-open:text-white flex items-center justify-center transition-colors">
+                <ArrowLeftRight size={13} className="transition-transform duration-300 group-open:rotate-180" />
+              </span>
               <span>تحويل مالي بين الصناديق</span>
             </summary>
             <form action={transferCash} className="form-grid">
@@ -196,7 +232,9 @@ export default async function FinancePage() {
                 ملاحظات التحويل
                 <input name="notes" placeholder="مثال: إيداع نقدي في البنك، تغذية عهدة الكاشير" />
               </label>
-              <button className="primary">تنفيذ التحويل المالي</button>
+              <button className="primary w-full py-2.5 rounded-xl font-bold bg-purple-600 hover:bg-purple-700 text-white border-0 cursor-pointer active:scale-98 transition-all">
+                تنفيذ التحويل المالي
+              </button>
             </form>
           </details>
         </div>

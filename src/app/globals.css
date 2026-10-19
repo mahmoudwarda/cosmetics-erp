@@ -583,9 +583,12 @@ body:has(.global-navigation.is-collapsed) .dashboard-main {
 }
 
 .primary:active:not(:disabled),
-.btn-primary:active:not(:disabled) {
-  transform: translateY(1px);
-  background: var(--primary);
+.btn-primary:active:not(:disabled),
+.secondary:active:not(:disabled),
+.btn-secondary:active:not(:disabled),
+summary:active {
+  transform: scale(0.96) translateY(1px);
+  transition: transform 0.06s ease;
 }
 
 .primary:disabled,
@@ -609,11 +612,6 @@ body:has(.global-navigation.is-collapsed) .dashboard-main {
   background: var(--panel);
   color: var(--ink);
   border-color: var(--line-strong);
-}
-
-.secondary:active,
-.btn-secondary:active {
-  transform: translateY(1px);
 }
 
 .btn-outline {
@@ -906,6 +904,10 @@ body:has(.global-navigation.is-collapsed) .dashboard-main {
   background: var(--primary);
   color: #ffffff;
   border-color: var(--primary-active);
+}
+
+.editor[open] > summary {
+  filter: brightness(0.96);
 }
 
 /* Solid Backdrop */
