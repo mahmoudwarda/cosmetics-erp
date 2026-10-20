@@ -13,9 +13,9 @@ services:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U cosmetics -d cosmetics_erp"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      interval: 3s
+      timeout: 3s
+      retries: 10
 
   web:
     build:
@@ -24,13 +24,14 @@ services:
     container_name: cosmetics_app
     restart: unless-stopped
     ports:
-      - "3001:3001"
+      - "3000:3000"
+      - "3001:3000"
     environment:
       DATABASE_URL: postgres://cosmetics:cosmetics_password_secure@db:5432/cosmetics_erp
       AUTH_SECRET: ${AUTH_SECRET:-cosmetics-erp-super-secret-key-32chars}
       SESSION_COOKIE_SECURE: "false"
       HOST: "0.0.0.0"
-      PORT: "3001"
+      PORT: "3000"
       UPLOADS_DIR: "./data/uploads"
       BACKUP_DIR: "./data/backups"
     depends_on:

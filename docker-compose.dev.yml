@@ -1,0 +1,49 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: cosmetics_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: cosmetics
+      POSTGRES_PASSWORD: cosmetics_password_secure
+      POSTGRES_DB: cosmetics_erp
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cosmetics -d cosmetics_erp"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  web-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: cosmetics_app_dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgres://cosmetics:cosmetics_password_secure@db:5432/cosmetics_erp
+      AUTH_SECRET: cosmetics-erp-super-secret-key-32chars
+      SESSION_COOKIE_SECURE: "false"
+      HOST: "0.0.0.0"
+      PORT: "3000"
+      UPLOADS_DIR: "./data/uploads"
+      BACKUP_DIR: "./data/backups"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next-bundle
+      - app_uploads:/app/data/uploads
+      - app_backups:/app/data/backups
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  app_uploads:
+  app_backups:

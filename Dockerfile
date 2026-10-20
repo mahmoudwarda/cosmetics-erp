@@ -21,7 +21,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 COPY package.json package-lock.json ./
-RUN npm ci --include=dev
+RUN npm config set fetch-retries 5 \
+    && npm config set fetch-retry-mintimeout 20000 \
+    && npm config set fetch-retry-maxtimeout 120000 \
+    && npm config set fetch-timeout 300000 \
+    && (npm ci --include=dev || npm install --include=dev)
 
 # ------------------------------------------------------------------------------
 # 3. Builder Stage
@@ -47,7 +51,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV HOST=0.0.0.0
-ENV PORT=3001
+ENV PORT=3000
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client \
@@ -74,11 +78,11 @@ RUN mkdir -p /app/data/uploads /app/data/backups && \
     chown -R nextjs:nodejs /app
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
 
 USER nextjs
 
-EXPOSE 3001
+EXPOSE 3000
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["npm", "run", "start"]
