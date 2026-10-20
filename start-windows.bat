@@ -49,6 +49,8 @@ if errorlevel 1 (
 if "%FRESH_DB%"=="1" call npm run db:seed
 if errorlevel 1 exit /b 1
 
+call scripts\sync-network.bat
+
 if not exist ".next-bundle\BUILD_ID" (
   echo Production build missing. Building locally; this may take a few minutes the first time.
   call npm run build

@@ -38,6 +38,7 @@ services:
       db:
         condition: service_healthy
     volumes:
+      - ./data/network:/app/data/network
       - app_uploads:/app/data/uploads
       - app_backups:/app/data/backups
 

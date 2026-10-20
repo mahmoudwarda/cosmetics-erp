@@ -12,6 +12,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
+    "network:sync": "bash scripts/sync-network.sh",
+    "network:watch": "bash scripts/sync-network.sh --watch",
     "test": "vitest run"
   },
   "dependencies": {
