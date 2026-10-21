@@ -27,8 +27,15 @@ export async function saveSettings(formData: FormData) {
     if (!extension || file.size > 3 * 1024 * 1024) throw new Error("LOGO_MUST_BE_PNG_JPG_WEBP_UNDER_3MB");
     const fileName = `${randomUUID()}.${extension}`;
     const uploadDirectory = path.resolve(process.cwd(), process.env.UPLOADS_DIR || "data/uploads");
+    const bytes = Buffer.from(await file.arrayBuffer());
+    const hasValidSignature = file.type === "image/png"
+      ? bytes.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))
+      : file.type === "image/jpeg"
+      ? bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff
+      : bytes.length >= 12 && bytes.toString("ascii", 0, 4) === "RIFF" && bytes.toString("ascii", 8, 12) === "WEBP";
+    if (!hasValidSignature) throw new Error("INVALID_LOGO_FILE_CONTENT");
     await mkdir(uploadDirectory, { recursive: true });
-    await writeFile(path.join(uploadDirectory, fileName), Buffer.from(await file.arrayBuffer()));
+    await writeFile(path.join(uploadDirectory, fileName), bytes, { flag: "wx" });
     logoPath = `/api/uploads/${fileName}`;
   }
   const values = {
@@ -51,8 +58,9 @@ export async function saveAppearance(formData: FormData) {
 }
 
 export async function toggleLocale() {
+  await requirePermission("settings", "edit");
   const [current] = await db.select({ locale: settings.locale }).from(settings).where(eq(settings.id, 1)).limit(1);
   const nextLocale = current?.locale === "en" ? "ar" : "en";
-  await db.update(settings).set({ locale: nextLocale, updatedAt: new Date() }).where(eq(settings.id, 1));
+  await db.insert(settings).values({ id: 1, locale: nextLocale }).onConflictDoUpdate({ target: settings.id, set: { locale: nextLocale, updatedAt: new Date() } });
   revalidatePath("/", "layout");
 }

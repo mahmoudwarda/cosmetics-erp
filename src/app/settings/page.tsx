@@ -46,7 +46,7 @@ export default async function SettingsPage() {
           </div>
         </div>
 
-        <form action={saveSettings} encType="multipart/form-data" className="form-grid">
+        <form action={saveSettings} className="form-grid">
           <label>
             اسم المؤسسة / المتجر
             <input name="organizationName" defaultValue={row?.organizationName ?? "لمسة جمال"} required />

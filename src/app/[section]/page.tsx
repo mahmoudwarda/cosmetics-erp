@@ -36,7 +36,7 @@ export default async function Section({ params }: { params: Promise<{ section: s
           <div className="panel-title">
             <div>
               <h3>سجل الفواتير</h3>
-              <p>أحدث ١٠٠ عملية مسجلة</p>
+              <p>أحدث 100 عملية مسجلة</p>
             </div>
             <span className="date-pill">{rows.length} فاتورة</span>
           </div>
@@ -58,9 +58,9 @@ export default async function Section({ params }: { params: Promise<{ section: s
                     <tr key={x.id}>
                       <td className="font-bold">{x.number}</td>
                       <td>{x.type}</td>
-                      <td>{new Date(x.createdAt).toLocaleDateString("ar-EG")}</td>
-                      <td className="font-bold">{Number(x.total).toLocaleString("ar-EG")} ج.م</td>
-                      <td className="font-semibold text-emerald-600">{Number(x.paid).toLocaleString("ar-EG")} ج.م</td>
+                      <td>{new Date(x.createdAt).toLocaleDateString("en-US")}</td>
+                      <td className="font-bold">{Number(x.total).toLocaleString("en-US")} ج.م</td>
+                      <td className="font-semibold text-emerald-600">{Number(x.paid).toLocaleString("en-US")} ج.م</td>
                       <td>
                         <span className={`status ${x.status}`}>{x.status}</span>
                       </td>
@@ -112,7 +112,7 @@ export default async function Section({ params }: { params: Promise<{ section: s
                       <td>{x.type === "customer" ? "عميل" : "مورد"}</td>
                       <td className="font-mono text-xs">{x.phone || "—"}</td>
                       <td className="text-xs">{x.email || "—"}</td>
-                      <td className="font-bold">{Number(x.openingBalance).toLocaleString("ar-EG")} ج.م</td>
+                      <td className="font-bold">{Number(x.openingBalance).toLocaleString("en-US")} ج.م</td>
                     </tr>
                   ))
                 ) : (
@@ -152,7 +152,7 @@ export default async function Section({ params }: { params: Promise<{ section: s
               <span>إجمالي السيولة النقدية</span>
             </div>
             <strong>
-              {total.toLocaleString("ar-EG")} <small>ج.م</small>
+              {total.toLocaleString("en-US")} <small>ج.م</small>
             </strong>
           </article>
         </section>
@@ -178,7 +178,7 @@ export default async function Section({ params }: { params: Promise<{ section: s
                     <tr key={x.id}>
                       <td className="font-bold">{x.name}</td>
                       <td>{x.kind}</td>
-                      <td className="font-bold">{Number(x.openingBalance).toLocaleString("ar-EG")} ج.م</td>
+                      <td className="font-bold">{Number(x.openingBalance).toLocaleString("en-US")} ج.م</td>
                     </tr>
                   ))
                 ) : (
@@ -205,9 +205,9 @@ export default async function Section({ params }: { params: Promise<{ section: s
                 {txs.length ? (
                   txs.map((x) => (
                     <tr key={x.id}>
-                      <td className="text-xs">{new Date(x.createdAt).toLocaleString("ar-EG")}</td>
+                      <td className="text-xs">{new Date(x.createdAt).toLocaleString("en-US")}</td>
                       <td>{x.kind}</td>
-                      <td className="font-bold">{Number(x.amount).toLocaleString("ar-EG")} ج.م</td>
+                      <td className="font-bold">{Number(x.amount).toLocaleString("en-US")} ج.م</td>
                       <td className="text-xs">{x.notes || x.category || "—"}</td>
                     </tr>
                   ))

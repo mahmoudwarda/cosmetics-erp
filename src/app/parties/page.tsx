@@ -96,7 +96,17 @@ export default async function PartiesPage({
 
   // Handle Statement Query if partyId is provided or tab is statement
   const selectedParty = query.partyId ? rows.find((p) => p.id === query.partyId) : undefined;
-  let statementEntries: any[] = [];
+  type StatementEntry = typeof partyLedger.$inferSelect | {
+    id: string;
+    partyId: string;
+    invoiceId: string | null;
+    kind: string;
+    debit: string;
+    credit: string;
+    notes: string | null;
+    createdAt: Date;
+  };
+  let statementEntries: (StatementEntry & { balance: number })[] = [];
 
   if (selectedParty) {
     const rawEntries = await db
@@ -122,7 +132,7 @@ export default async function PartiesPage({
         ]
       : rawEntries;
 
-    const computed = ledger.reduce<{ balance: number; rows: any[] }>(
+    const computed = ledger.reduce<{ balance: number; rows: (StatementEntry & { balance: number })[] }>(
       (state, entry) => {
         const balance =
           state.balance +
@@ -266,6 +276,7 @@ export default async function PartiesPage({
         </div>
 
         <PartiesTabsView
+          key={`${query.tab ?? (selectedParty ? "statement" : "all")}:${selectedParty?.id ?? ""}`}
           parties={rows}
           cashboxes={boxes}
           balances={balances}

@@ -20,11 +20,11 @@ if (-not (Test-Path "$pgdata\PG_VERSION")) {
     & $initdb -D $pgdata -U cosmetics -A trust -E UTF8
     
     Write-Host "Starting database to create database schema..." -ForegroundColor Yellow
-    & $pgctl -D $pgdata -l $logfile -o "-h 127.0.0.1 -p 5432" start
+    & $pgctl -D $pgdata -l $logfile -o "-h 127.0.0.1 -p 55432" start
     Start-Sleep -Seconds 3
     
     $createdb = Join-Path $pgroot "bin\createdb.exe"
-    & $createdb -h 127.0.0.1 -p 5432 -U cosmetics cosmetics_erp
+    & $createdb -h 127.0.0.1 -p 55432 -U cosmetics cosmetics_erp
     Write-Host "Database created successfully!" -ForegroundColor Green
     exit 0
 }
@@ -42,7 +42,7 @@ if (Test-Path $pidFile) {
 # Start server if not running
 $status = & $pgctl -D $pgdata status 2>&1
 if ($status -like "*no server running*") {
-    & $pgctl -D $pgdata -l $logfile -o "-h 127.0.0.1 -p 5432" start
+    & $pgctl -D $pgdata -l $logfile -o "-h 127.0.0.1 -p 55432" start
     Start-Sleep -Seconds 2
 }
 

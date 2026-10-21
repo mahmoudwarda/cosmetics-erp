@@ -20,7 +20,7 @@ export default async function InvoicesPage() {
     .limit(1);
 
   const locale = (settingsRow?.locale ?? "ar") as Locale;
-  const localeCode = locale === "en" ? "en-US" : "ar-EG";
+  const localeCode = "en-US";
 
   const rows = await db
     .select({ invoice: invoices, partyName: parties.name })
@@ -78,7 +78,7 @@ export default async function InvoicesPage() {
             </div>
           </div>
           <b className="text-2xl text-indigo-700 dark:text-indigo-400 block mb-1 font-bold">
-            {totalSales.toLocaleString(localeCode, { minimumFractionDigits: 2 })}{" "}
+            {totalSales.toLocaleString(localeCode, { maximumFractionDigits: 2 })}{" "}
             <small className="text-xs text-[var(--muted)] font-normal">{translate("common.egp", locale, "ج.م")}</small>
           </b>
           <span className="text-[11px] text-[var(--muted)] font-medium">{locale === "en" ? "Gross Invoices Value" : "قيمة الفواتير بالقائمة"}</span>
@@ -92,7 +92,7 @@ export default async function InvoicesPage() {
             </div>
           </div>
           <b className="text-2xl text-emerald-600 dark:text-emerald-400 block mb-1 font-bold">
-            {totalPaid.toLocaleString(localeCode, { minimumFractionDigits: 2 })}{" "}
+            {totalPaid.toLocaleString(localeCode, { maximumFractionDigits: 2 })}{" "}
             <small className="text-xs text-[var(--muted)] font-normal">{translate("common.egp", locale, "ج.م")}</small>
           </b>
           <span className="text-[11px] text-emerald-700 dark:text-emerald-500 font-semibold">
@@ -108,7 +108,7 @@ export default async function InvoicesPage() {
             </div>
           </div>
           <b className="text-2xl text-rose-600 dark:text-rose-400 block mb-1 font-bold">
-            {totalRemaining.toLocaleString(localeCode, { minimumFractionDigits: 2 })}{" "}
+            {totalRemaining.toLocaleString(localeCode, { maximumFractionDigits: 2 })}{" "}
             <small className="text-xs text-[var(--muted)] font-normal">{translate("common.egp", locale, "ج.م")}</small>
           </b>
           <span className="text-[11px] text-rose-700 dark:text-rose-400 font-medium">

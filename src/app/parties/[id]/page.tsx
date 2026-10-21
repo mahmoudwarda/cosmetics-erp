@@ -7,6 +7,7 @@ import { db } from "@/server/db";
 import { invoices, parties, partyLedger } from "@/server/db/schema";
 import { PrintButton } from "@/components/print-button";
 import { requirePermission } from "@/server/permissions";
+import { formatAmount } from "@/lib/number-format";
 
 export default async function PartyStatement({
   params,
@@ -101,7 +102,7 @@ export default async function PartyStatement({
           <div className="text-left">
             <span className="text-xs text-[var(--muted)] block mb-1">الرصيد الصافي الحالي</span>
             <span className={`text-xl font-extrabold ${finalBalance > 0 ? "text-indigo-700" : finalBalance < 0 ? "text-rose-600" : "text-emerald-700"}`}>
-              {finalBalance.toLocaleString("ar-EG", { minimumFractionDigits: 2 })} ج.م
+              {finalBalance.toLocaleString("en-US", { maximumFractionDigits: 2 })} ج.م
             </span>
           </div>
         </div>
@@ -140,7 +141,7 @@ export default async function PartyStatement({
                 rows.map((entry) => (
                   <tr key={entry.id}>
                     <td className="text-xs text-[var(--muted)]">
-                      {new Date(entry.createdAt).toLocaleString("ar-EG")}
+                      {new Date(entry.createdAt).toLocaleString("en-US")}
                     </td>
                     <td className="font-semibold text-[var(--ink)]">
                       {entry.notes ??
@@ -162,13 +163,13 @@ export default async function PartyStatement({
                       )}
                     </td>
                     <td className="text-center font-semibold">
-                      {entry.debit > 0 ? `${entry.debit.toFixed(2)} ج.م` : "—"}
+                      {entry.debit > 0 ? `${formatAmount(entry.debit)} ج.م` : "—"}
                     </td>
                     <td className="text-center font-semibold">
-                      {entry.credit > 0 ? `${entry.credit.toFixed(2)} ج.م` : "—"}
+                      {entry.credit > 0 ? `${formatAmount(entry.credit)} ج.م` : "—"}
                     </td>
                     <td className="text-center font-bold text-[var(--ink)]">
-                      {entry.balance.toFixed(2)} ج.م
+                      {formatAmount(entry.balance)} ج.م
                     </td>
                   </tr>
                 ))

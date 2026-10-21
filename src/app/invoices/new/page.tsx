@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, isNull, sql } from "drizzle-orm";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { getSessionUserId } from "@/server/auth/session";
 import { db } from "@/server/db";
-import { cashboxes, parties, products, settings, units } from "@/server/db/schema";
+import { cashboxes, parties, partyLedger, products, settings, units } from "@/server/db/schema";
 import { InvoiceForm } from "@/features/invoices/invoice-form";
 import { requirePermission } from "@/server/permissions";
 import { translate, Locale } from "@/lib/i18n";
@@ -21,7 +21,7 @@ export default async function NewInvoicePage() {
 
   const locale = (settingsRow?.locale ?? "ar") as Locale;
 
-  const [items, accounts, boxes, unitList] = await Promise.all([
+  const [items, accounts, boxes, unitList, ledgerBalances] = await Promise.all([
     db
       .select({
         id: products.id,
@@ -49,7 +49,9 @@ export default async function NewInvoicePage() {
       .select({ id: units.id, name: units.name, factor: units.factor })
       .from(units)
       .orderBy(units.factor),
+    db.select({ partyId: partyLedger.partyId, balance: sql<string>`coalesce(sum(${partyLedger.debit} - ${partyLedger.credit}), 0)` }).from(partyLedger).groupBy(partyLedger.partyId),
   ]);
+  const partyBalances = Object.fromEntries(ledgerBalances.map(({ partyId, balance }) => [partyId, Number(balance)]));
 
   return (
     <main className="main standalone">
@@ -65,7 +67,7 @@ export default async function NewInvoicePage() {
       </header>
 
       <section className="panel">
-        <InvoiceForm products={items} parties={accounts} cashboxes={boxes} units={unitList} />
+        <InvoiceForm products={items} parties={accounts} cashboxes={boxes} units={unitList} partyBalances={partyBalances} />
       </section>
     </main>
   );

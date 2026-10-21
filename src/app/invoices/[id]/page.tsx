@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { and, desc, eq, inArray, isNull } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
 import { ArrowRight, Edit3, Store } from "lucide-react";
 import { getSessionUserId } from "@/server/auth/session";
@@ -11,6 +11,7 @@ import {
   invoiceLines,
   invoices,
   parties,
+  partyLedger,
   permissions,
   products,
   settings,
@@ -39,7 +40,7 @@ export default async function InvoiceDetails({ params }: { params: Promise<{ id:
   if (!row) notFound();
   const lines = await db.select().from(invoiceLines).where(eq(invoiceLines.invoiceId, id));
 
-  const [editGrant, activeProducts, originalProducts, activeCashboxes, invoiceCash, activeParties, allUnits] = await Promise.all([
+  const [editGrant, activeProducts, originalProducts, activeCashboxes, invoiceCash, activeParties, allUnits, ledgerBalances, invoiceLedgerRows] = await Promise.all([
     db
       .select({ id: permissions.id })
       .from(users)
@@ -100,6 +101,8 @@ export default async function InvoiceDetails({ params }: { params: Promise<{ id:
       .select({ id: units.id, name: units.name, factor: units.factor })
       .from(units)
       .orderBy(units.factor),
+    db.select({ partyId: partyLedger.partyId, balance: sql<string>`coalesce(sum(${partyLedger.debit} - ${partyLedger.credit}), 0)` }).from(partyLedger).groupBy(partyLedger.partyId),
+    db.select({ debit: partyLedger.debit, credit: partyLedger.credit }).from(partyLedger).where(eq(partyLedger.invoiceId, id)),
   ]);
 
   const productOptions = [
@@ -110,6 +113,11 @@ export default async function InvoiceDetails({ params }: { params: Promise<{ id:
   const invoiceLogo = localLogoUrl(row.org?.logoPath);
   const invoice = row.invoice;
   const remaining = Math.max(0, Number(invoice.total) - Number(invoice.paid));
+  const partyBalances = Object.fromEntries(ledgerBalances.map(({ partyId, balance }) => [partyId, Number(balance)]));
+  if (invoice.partyId) {
+    const invoiceBalanceEffect = invoiceLedgerRows.reduce((sum, entry) => sum + Number(entry.debit) - Number(entry.credit), 0);
+    partyBalances[invoice.partyId] = (partyBalances[invoice.partyId] ?? 0) - invoiceBalanceEffect;
+  }
 
   return (
     <main className="main standalone">
@@ -131,6 +139,7 @@ export default async function InvoiceDetails({ params }: { params: Promise<{ id:
                 parties={activeParties}
                 cashboxes={activeCashboxes}
                 units={allUnits}
+                partyBalances={partyBalances}
                 initial={{
                   id: invoice.id,
                   type: invoice.type,

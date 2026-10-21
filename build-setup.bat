@@ -1,14 +1,10 @@
 @echo off
 chcp 65001 >nul
 cd /d "%~dp0"
-echo Compiling Cosmetics-Setup.exe with Inno Setup...
-"C:\Users\Rafal\AppData\Local\Programs\Inno Setup 6\ISCC.exe" "%~dp0installer.iss"
-if %errorlevel% equ 0 (
-    echo.
-    echo ========================================================
-    echo      SUCCESS! Installer created in dist-installer
-    echo ========================================================
-) else (
-    echo.
-    echo Build failed with error %errorlevel%
-)
+echo Building the production app and Windows installer...
+call npm run build
+if errorlevel 1 exit /b 1
+powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\package-windows.ps1"
+if errorlevel 1 exit /b 1
+echo Installer created under dist-installer\Cosmetics-ERP-Setup.exe
+pause

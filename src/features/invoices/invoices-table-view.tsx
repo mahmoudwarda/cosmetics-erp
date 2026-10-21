@@ -201,7 +201,7 @@ export function InvoicesTableView({ rows }: { rows: InvoiceItem[] }) {
               filtered.map(({ invoice: row, partyName }) => {
                 const remaining = Math.max(0, Number(row.total) - Number(row.paid));
                 const dateObj = new Date(row.createdAt);
-                const localeCode = locale === "en" ? "en-US" : "ar-EG";
+                const localeCode = "en-US";
 
                 return (
                   <tr key={row.id} className="hover:bg-slate-50/80 transition-colors">
@@ -246,15 +246,15 @@ export function InvoicesTableView({ rows }: { rows: InvoiceItem[] }) {
                       })}
                     </td>
                     <td className="font-black text-[var(--ink)] font-mono">
-                      {Number(row.total).toLocaleString(localeCode, { minimumFractionDigits: 2 })} {t("common.egp", "ج.م")}
+                      {Number(row.total).toLocaleString(localeCode, { maximumFractionDigits: 2 })} {t("common.egp", "ج.م")}
                     </td>
                     <td className="text-emerald-700 font-bold font-mono">
-                      {Number(row.paid).toLocaleString(localeCode, { minimumFractionDigits: 2 })} {t("common.egp", "ج.م")}
+                      {Number(row.paid).toLocaleString(localeCode, { maximumFractionDigits: 2 })} {t("common.egp", "ج.م")}
                     </td>
                     <td className="font-bold">
                       {remaining > 0 ? (
                         <span className="text-rose-600 font-black font-mono">
-                          {remaining.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {t("common.egp", "ج.م")}
+                          {remaining.toLocaleString(localeCode, { maximumFractionDigits: 2 })} {t("common.egp", "ج.م")}
                         </span>
                       ) : (
                         <span className="text-emerald-700 text-xs font-bold px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200">

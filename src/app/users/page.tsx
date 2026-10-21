@@ -67,7 +67,7 @@ export default async function UsersPage() {
 
   const locale = (settingsRow?.locale ?? "ar") as Locale;
   const isRtl = locale === "ar";
-  const localeCode = locale === "en" ? "en-US" : "ar-EG";
+  const localeCode = "en-US";
 
   const [userRows, roleRows, permissionRows] = await Promise.all([
     db
@@ -340,12 +340,12 @@ export default async function UsersPage() {
             <h3>{translate("users.rbac", locale)}</h3>
             <p>{locale === "en" ? "Define granular permissions for each role; verified server-side on every transaction" : "تحديد الصلاحيات الدقيقة لكل رتبة؛ يتم التحقق منها برمجياً على الخادم بكل عملية"}</p>
           </div>
-          <details className="editor">
+          <details className="editor role-create-editor">
             <summary className="primary">
               <ShieldPlus size={15} />
               <span>{translate("users.addRole", locale)}</span>
             </summary>
-            <form action={createRole} className="form-grid">
+            <form action={createRole} className="form-grid role-create-form">
               <CloseDisclosureButton title={translate("users.addRole", locale)} />
               <label className="wide-field">
                 {locale === "en" ? "Role Name" : "اسم الدور"}

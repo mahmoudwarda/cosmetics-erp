@@ -1,14 +1,31 @@
-import { describe, expect, it, beforeAll } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import postgres from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { and, eq, sql } from "drizzle-orm";
 import * as schema from "../src/server/db/schema";
 import { createInvoice, updateInvoice } from "../src/server/services/invoices";
 import { partyBalance, cashboxBalance, invoiceStatus } from "../src/server/services/ledger-math";
+import { clearLoginAttempts, recordLoginAttempt } from "../src/server/auth/login-rate-limit";
 
-const TEST_DB_URL = "postgres://cosmetics:cosmetics@127.0.0.1:55432/cosmetics_erp_test";
+const TEST_DB_URL = process.env.TEST_DATABASE_URL ?? "postgres://cosmetics:cosmetics@127.0.0.1:55432/cosmetics_erp_test";
 const pool = new postgres.Pool({ connectionString: TEST_DB_URL });
 const testDb = drizzle(pool, { schema });
+
+describe("login attempt protection", () => {
+  it("blocks after repeated attempts and clears the bucket after successful authentication", async () => {
+    const username = `rate-test-${crypto.randomUUID()}`;
+    const address = `test-${crypto.randomUUID()}`;
+    await clearLoginAttempts(username, address);
+    for (let attempt = 1; attempt < 8; attempt += 1) {
+      expect(await recordLoginAttempt(username, address)).toBe(false);
+    }
+    expect(await recordLoginAttempt(username, address)).toBe(true);
+    expect(await recordLoginAttempt(username, address)).toBe(true);
+    await clearLoginAttempts(username, address);
+    expect(await recordLoginAttempt(username, address)).toBe(false);
+    await clearLoginAttempts(username, address);
+  });
+});
 
 describe("ERP Functional & Business Logic Audit (Isolated Test DB)", () => {
   let adminUserId: string;
@@ -52,6 +69,10 @@ describe("ERP Functional & Business Logic Audit (Isolated Test DB)", () => {
 
     const [b2] = await testDb.insert(schema.cashboxes).values({ name: "خزينة تجريبية 2", kind: "cash", openingBalance: "500.00" }).returning();
     secondaryCashboxId = b2.id;
+  });
+
+  afterAll(async () => {
+    await pool.end();
   });
 
   // -------------------------------------------------------------
@@ -455,6 +476,49 @@ describe("ERP Functional & Business Logic Audit (Isolated Test DB)", () => {
       const balance = cashboxBalance("100", [{ kind: "expense", amount: "50" }]);
       expect(balance).toBe(50);
       expect(balance < 1000).toBe(true);
+    });
+
+    it("prevents concurrent sales from overselling the last available stock", async () => {
+      const [product] = await testDb.insert(schema.products).values({
+        sku: `RACE-STOCK-${crypto.randomUUID()}`,
+        name: "صنف اختبار التزامن",
+        costPrice: "1.00",
+        salePrice: "2.00",
+        stock: "5.000",
+      }).returning();
+
+      const results = await Promise.allSettled([1, 2].map(() => createInvoice({
+        type: "sale",
+        partyId: customerPartyId,
+        paid: "0",
+        lines: [{ productId: product.id, quantity: "4.000", unitPrice: "2.00" }],
+      }, adminUserId)));
+
+      expect(results.filter((result) => result.status === "fulfilled")).toHaveLength(1);
+      expect(results.filter((result) => result.status === "rejected")).toHaveLength(1);
+      const [after] = await testDb.select().from(schema.products).where(eq(schema.products.id, product.id));
+      expect(Number(after.stock)).toBe(1);
+    });
+
+    it("serializes concurrent cash outflows so the cashbox cannot be overdrawn", async () => {
+      const [box] = await testDb.insert(schema.cashboxes).values({ name: `اختبار رصيد ${crypto.randomUUID()}`, kind: "cash", openingBalance: "100.00" }).returning();
+      const [productA, productB] = await testDb.insert(schema.products).values([
+        { sku: `RACE-CASH-A-${crypto.randomUUID()}`, name: "صنف اختبار نقدية أ", costPrice: "1.00", salePrice: "2.00", stock: "0.000" },
+        { sku: `RACE-CASH-B-${crypto.randomUUID()}`, name: "صنف اختبار نقدية ب", costPrice: "1.00", salePrice: "2.00", stock: "0.000" },
+      ]).returning();
+
+      const results = await Promise.allSettled([productA, productB].map((product) => createInvoice({
+        type: "purchase",
+        partyId: supplierPartyId,
+        cashboxId: box.id,
+        paid: "80.00",
+        lines: [{ productId: product.id, quantity: "1.000", unitPrice: "80.00" }],
+      }, adminUserId)));
+
+      expect(results.filter((result) => result.status === "fulfilled")).toHaveLength(1);
+      expect(results.filter((result) => result.status === "rejected")).toHaveLength(1);
+      const movements = await testDb.select({ kind: schema.cashTransactions.kind, amount: schema.cashTransactions.amount }).from(schema.cashTransactions).where(eq(schema.cashTransactions.cashboxId, box.id));
+      expect(cashboxBalance(box.openingBalance, movements)).toBe(20);
     });
   });
 });

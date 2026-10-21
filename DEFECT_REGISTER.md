@@ -1,5 +1,7 @@
 # DEFECT_REGISTER.md — Formal Defect Register & Vulnerability Assessment
 
+> Historical baseline only. Findings below were captured against an earlier source state. See [CURRENT_AUDIT_RESULTS.md](CURRENT_AUDIT_RESULTS.md) for current fixes, tests, and deployment conditions.
+
 **Project:** لمسة جمال (Lamsat Gamal) — Cosmetics Supplies Warehouse ERP  
 **Audit Scope:** Full Application Source Code, Server Actions, Database Services, Security, and UI/UX Workflows  
 

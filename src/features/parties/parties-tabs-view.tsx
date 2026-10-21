@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
   Users,
@@ -103,13 +103,6 @@ export function PartiesTabsView({
   const [viewingParty, setViewingParty] = useState<PartyItem | null>(null);
   const [statementPartySearch, setStatementPartySearch] = useState("");
   const [statementRowSearch, setStatementRowSearch] = useState("");
-
-  // Sync tab state when initialTab changes (e.g. from URL navigation)
-  useEffect(() => {
-    if (initialTab) {
-      setActiveTab(initialTab);
-    }
-  }, [initialTab]);
 
   const customers = useMemo(() => parties.filter((p) => p.type === "customer"), [parties]);
   const suppliers = useMemo(() => parties.filter((p) => p.type === "supplier"), [parties]);
@@ -370,8 +363,8 @@ export function PartiesTabsView({
                                   : "text-slate-600"
                               }`}
                             >
-                              {Math.abs(balance).toLocaleString(locale === "en" ? "en-US" : "ar-EG", {
-                                minimumFractionDigits: 2,
+                              {Math.abs(balance).toLocaleString("en-US", {
+                                maximumFractionDigits: 2,
                               })}{" "}
                               {t("common.egp", "ج.م")}
                             </b>
@@ -710,7 +703,7 @@ export function PartiesTabsView({
                         const dateFormatted =
                           row.id === "opening"
                             ? "رصيد افتتاحي"
-                            : new Date(row.createdAt).toLocaleDateString(locale === "en" ? "en-US" : "ar-EG", {
+                            : new Date(row.createdAt).toLocaleDateString("en-US", {
                                 year: "numeric",
                                 month: "short",
                                 day: "numeric",
@@ -732,13 +725,13 @@ export function PartiesTabsView({
                             </td>
                             <td className="p-2 text-xs text-slate-600 font-semibold">{row.notes ?? "—"}</td>
                             <td className="p-2 text-center font-black text-rose-600 font-mono">
-                              {Number(row.debit) > 0 ? `${Number(row.debit).toLocaleString(locale === "en" ? "en-US" : "ar-EG")} ج.م` : "—"}
+                              {Number(row.debit) > 0 ? `${Number(row.debit).toLocaleString("en-US")} ج.م` : "—"}
                             </td>
                             <td className="p-2 text-center font-black text-emerald-700 font-mono">
-                              {Number(row.credit) > 0 ? `${Number(row.credit).toLocaleString(locale === "en" ? "en-US" : "ar-EG")} ج.م` : "—"}
+                              {Number(row.credit) > 0 ? `${Number(row.credit).toLocaleString("en-US")} ج.م` : "—"}
                             </td>
                             <td className="p-2 text-center font-black text-slate-900 font-mono">
-                              {Math.abs(row.balance).toLocaleString(locale === "en" ? "en-US" : "ar-EG", { minimumFractionDigits: 2 })} ج.م
+                              {Math.abs(row.balance).toLocaleString("en-US", { maximumFractionDigits: 2 })} ج.م
                               <small className="block text-[10px] text-slate-500 font-bold">
                                 {row.balance > 0.005
                                   ? selectedParty.type === "customer"
@@ -770,8 +763,8 @@ export function PartiesTabsView({
                   <div className="text-left">
                     <span className="text-xs text-slate-500 font-bold block mb-1">صافي الرصيد الختامي:</span>
                     <b className="text-2xl font-black text-indigo-700 font-mono">
-                      {Math.abs(statementEntries.at(-1)?.balance ?? 0).toLocaleString(locale === "en" ? "en-US" : "ar-EG", {
-                        minimumFractionDigits: 2,
+                      {Math.abs(statementEntries.at(-1)?.balance ?? 0).toLocaleString("en-US", {
+                        maximumFractionDigits: 2,
                       })}{" "}
                       ج.م
                     </b>
@@ -868,7 +861,7 @@ export function PartiesTabsView({
                             : "text-slate-600"
                         }`}
                       >
-                        {Math.abs(bal).toLocaleString(locale === "en" ? "en-US" : "ar-EG", { minimumFractionDigits: 2 })}{" "}
+                        {Math.abs(bal).toLocaleString("en-US", { maximumFractionDigits: 2 })}{" "}
                         {t("common.egp", "ج.م")}
                       </b>
                       <span
@@ -901,14 +894,14 @@ export function PartiesTabsView({
                         {t("parties.openingBalance", "الرصيد الافتتاحي عند التسجيل")}
                       </span>
                       <b className="text-2xl font-black text-[var(--ink)] font-mono block">
-                        {Number(viewingParty.openingBalance).toLocaleString(locale === "en" ? "en-US" : "ar-EG", {
-                          minimumFractionDigits: 2,
+                        {Number(viewingParty.openingBalance).toLocaleString("en-US", {
+                          maximumFractionDigits: 2,
                         })}{" "}
                         {t("common.egp", "ج.م")}
                       </b>
                       <span className="block mt-2 text-xs text-[var(--muted)] font-bold">
                         {t("parties.registrationDate", "تاريخ التسجيل")}:{" "}
-                        {new Date(viewingParty.createdAt).toLocaleDateString(locale === "en" ? "en-US" : "ar-EG", {
+                        {new Date(viewingParty.createdAt).toLocaleDateString("en-US", {
                           year: "numeric",
                           month: "short",
                           day: "numeric",
@@ -999,18 +992,18 @@ export function PartiesTabsView({
                             <td className="text-[11px] font-mono font-bold">
                               {row.id === "opening"
                                 ? "افتتاحي"
-                                : new Date(row.createdAt).toLocaleDateString(locale === "en" ? "en-US" : "ar-EG")}
+                                : new Date(row.createdAt).toLocaleDateString("en-US")}
                             </td>
                             <td className="text-[11px] font-black">{row.kind}</td>
                             <td className="text-[11px] text-[var(--muted)] font-bold">{row.notes ?? "—"}</td>
                             <td className="text-center text-[11px] font-black text-rose-600 font-mono">
-                              {Number(row.debit) > 0 ? Number(row.debit).toLocaleString(locale === "en" ? "en-US" : "ar-EG") : "—"}
+                              {Number(row.debit) > 0 ? Number(row.debit).toLocaleString("en-US") : "—"}
                             </td>
                             <td className="text-center text-[11px] font-black text-emerald-700 font-mono">
-                              {Number(row.credit) > 0 ? Number(row.credit).toLocaleString(locale === "en" ? "en-US" : "ar-EG") : "—"}
+                              {Number(row.credit) > 0 ? Number(row.credit).toLocaleString("en-US") : "—"}
                             </td>
                             <td className="text-center text-[11px] font-black font-mono">
-                              {Math.abs(row.balance).toLocaleString(locale === "en" ? "en-US" : "ar-EG", { minimumFractionDigits: 2 })}
+                              {Math.abs(row.balance).toLocaleString("en-US", { maximumFractionDigits: 2 })}
                             </td>
                           </tr>
                         ))}

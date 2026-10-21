@@ -15,6 +15,13 @@
       "when": 1792058286549,
       "tag": "0001_youthful_vermin",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792420000000,
+      "tag": "0002_login_attempts",
+      "breakpoints": true
     }
   ]
 }

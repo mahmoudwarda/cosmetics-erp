@@ -22,7 +22,7 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
   }
 
   const logoUrl = localLogoUrl(organization?.logoPath);
-  const { url: networkUrl } = getLocalNetworkUrl(3000);
+  const { url: networkUrl } = getLocalNetworkUrl(3001);
 
   return (
     <main className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-gradient-to-br from-slate-100 via-indigo-50/30 to-slate-200/60">

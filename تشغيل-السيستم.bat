@@ -19,11 +19,23 @@ if %errorlevel% neq 0 (
 
 echo [1/3] بدء تشغيل قاعدة البيانات المحلية (PostgreSQL Portable)...
 powershell -ExecutionPolicy Bypass -File "%~dp0scripts\start-db.ps1"
+if errorlevel 1 (
+    echo فشل تشغيل قاعدة البيانات. راجع data\postgres-server.log.
+    exit /b 1
+)
 
 echo.
 echo [2/3] فحص وتحديث الجداول...
 call npm run db:migrate
+if errorlevel 1 (
+    echo فشل تحديث قاعدة البيانات. تم إيقاف التشغيل لحماية البيانات.
+    exit /b 1
+)
 call npm run db:seed
+if errorlevel 1 (
+    echo فشل تجهيز المستخدم الأولي. تأكد من ضبط SEED_ADMIN_PASSWORD في .env.
+    exit /b 1
+)
 
 rem Get Local Network IP
 set "LOCAL_IP=127.0.0.1"
@@ -44,7 +56,7 @@ echo   📱 للفتح من أي جهاز آخر في نفس المكان (كا�
 echo      http://%LOCAL_IP%:3001
 echo.
 echo   💾 كل البيانات تُحفظ محلياً على هذا الجهاز في مجلد: data\pgdata
-echo   🔑 بيانات الدخول: admin  ^|  كلمة المرور: ChangeMe123!
+echo   🔑 اسم المستخدم الأولي: admin  ^|  اضبط كلمة المرور في ملف .env
 echo =====================================================================
 echo   (يرجى ترك هذه الشاشة مفتوحة طوال فترة عمل المحل/الشركة)
 echo.

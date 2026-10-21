@@ -86,7 +86,7 @@ export async function adjustStock(raw: unknown) {
   const userId = await requirePermission("inventory", "edit");
   const input = adjustmentSchema.parse(raw);
   await db.transaction(async (tx) => {
-    const [p] = await tx.select().from(products).where(eq(products.id, input.productId)).limit(1);
+    const [p] = await tx.select().from(products).where(eq(products.id, input.productId)).for("update").limit(1);
     if (!p) throw new Error("PRODUCT_NOT_FOUND");
     if (Number(p.stock) + input.quantity < 0) throw new Error("NEGATIVE_STOCK");
     await tx.update(products).set({ stock: String(Number(p.stock) + input.quantity) }).where(eq(products.id, p.id));

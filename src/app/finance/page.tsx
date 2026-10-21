@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { desc, eq, sql } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import { ArrowLeftRight, ArrowRight, Banknote, Landmark, Plus, Receipt, Wallet } from "lucide-react";
+import { ArrowLeftRight, ArrowRight, Banknote, Landmark, Plus, Receipt, Wallet, Pencil, Trash2 } from "lucide-react";
 import { getSessionUserId } from "@/server/auth/session";
 import { db } from "@/server/db";
 import { cashTransactions, cashboxes, permissions, users } from "@/server/db/schema";
-import { addCashTransaction, createCashbox, transferCash } from "@/features/finance/actions";
+import { addCashTransaction, createCashbox, deactivateCashbox, transferCash, updateCashbox } from "@/features/finance/actions";
 import { requirePermission } from "@/server/permissions";
 import { CloseDisclosureButton } from "@/components/close-disclosure-button";
 
@@ -28,8 +28,10 @@ export default async function FinancePage() {
     : [];
 
   const canCreate = grants.some((grant) => grant.action === "create");
+  const canEdit = grants.some((grant) => grant.action === "edit");
+  const canDelete = grants.some((grant) => grant.action === "delete");
 
-  const [boxes, txs, aggregates] = await Promise.all([
+  const [boxes, txs, aggregates, allBoxes] = await Promise.all([
     db.select().from(cashboxes).where(eq(cashboxes.active, true)),
     db.select().from(cashTransactions).orderBy(desc(cashTransactions.createdAt)).limit(100),
     db
@@ -39,6 +41,7 @@ export default async function FinancePage() {
       })
       .from(cashTransactions)
       .groupBy(cashTransactions.cashboxId),
+    db.select({ id: cashboxes.id, name: cashboxes.name }).from(cashboxes),
   ]);
 
   const totals = new Map(aggregates.map((x) => [x.cashboxId, Number(x.balance)]));
@@ -85,30 +88,45 @@ export default async function FinancePage() {
             : "text-teal-900";
 
           return (
-            <article
-              className={`p-5 rounded-2xl border ${themeClasses} flex flex-col justify-between`}
-              key={box.id}
-            >
+            <article className={`p-5 rounded-2xl border ${themeClasses} flex flex-col justify-between`} key={box.id}>
               <div className="flex items-center justify-between mb-2">
                 <span className="font-bold text-sm">{box.name}</span>
                 <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold ${iconClasses}`}>
-                  {isBank ? (
-                    <Landmark size={18} />
-                  ) : isWallet ? (
-                    <Wallet size={18} />
-                  ) : (
-                    <Banknote size={18} />
-                  )}
+                  {isBank ? <Landmark size={18} /> : isWallet ? <Wallet size={18} /> : <Banknote size={18} />}
                 </div>
               </div>
               <div>
                 <strong className={`text-2xl lg:text-3xl font-black font-mono tracking-tight block ${balanceColor}`}>
-                  {balance.toLocaleString("ar-EG")} <small className="text-xs font-bold opacity-80">ج.م</small>
+                  {balance.toLocaleString("en-US", { maximumFractionDigits: 2 })} <small className="text-xs font-bold opacity-80">ج.م</small>
                 </strong>
                 <p className="text-xs font-medium opacity-75 mt-1">
                   {box.kind === "cash" ? "صندوق كاشير نقدي" : isBank ? "حساب بنكي معتمد" : "محفظة إلكترونية"} · رصيد فعلي
                 </p>
               </div>
+              {(canEdit || canDelete) && (
+                <div className="mt-4 flex flex-wrap gap-2 border-t border-current/10 pt-3">
+                  {canEdit && (
+                    <details className="group w-full">
+                      <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 rounded-lg border border-current/20 bg-white/70 px-3 py-2 text-xs font-bold"><Pencil size={13} /> تعديل بيانات الخزنة</summary>
+                      <form action={updateCashbox} className="form-grid mt-3 rounded-xl border border-current/15 bg-white/80 p-3">
+                        <input type="hidden" name="id" value={box.id} />
+                        <label>اسم الخزنة<input name="name" defaultValue={box.name} required minLength={2} maxLength={100} /></label>
+                        <label>نوع الخزنة<select name="kind" defaultValue={box.kind}><option value="cash">نقدي</option><option value="bank">حساب بنكي</option><option value="wallet">محفظة إلكترونية</option></select></label>
+                        <label className="wide-field">الرصيد الافتتاحي (ج.م)<input name="openingBalance" type="number" min="0" step="0.01" defaultValue={box.openingBalance} required /></label>
+                        <button className="primary"><Pencil size={13} /> حفظ التعديلات</button>
+                      </form>
+                    </details>
+                  )}
+                  {canDelete && (
+                    <form action={deactivateCashbox} className="inline-flex">
+                      <input type="hidden" name="id" value={box.id} />
+                      <button type="submit" className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-bold text-rose-700">
+                        <Trash2 size={13} /> حذف الخزنة
+                      </button>
+                    </form>
+                  )}
+                </div>
+              )}
             </article>
           );
         })}
@@ -247,7 +265,7 @@ export default async function FinancePage() {
             <h3>دفتر الحركات النقدية</h3>
             <p>سجل المقبوضات والمصروفات والتحويلات المسجلة</p>
           </div>
-          <span className="date-pill">إجمالي السيولة: {grandTotalCash.toLocaleString("ar-EG")} ج.م</span>
+          <span className="date-pill">إجمالي السيولة: {grandTotalCash.toLocaleString("en-US")} ج.م</span>
         </div>
 
         <div className="table-wrap">
@@ -269,10 +287,10 @@ export default async function FinancePage() {
                   return (
                     <tr key={tx.id}>
                       <td className="text-xs text-[var(--muted)] font-medium">
-                        {new Date(tx.createdAt).toLocaleString("ar-EG")}
+                        {new Date(tx.createdAt).toLocaleString("en-US")}
                       </td>
                       <td className="font-bold text-[var(--ink)]">
-                        {boxes.find((box) => box.id === tx.cashboxId)?.name ?? "صندوق مؤرشف"}
+                        {allBoxes.find((box) => box.id === tx.cashboxId)?.name ?? "خزنة محذوفة"}
                       </td>
                       <td>
                         <span
@@ -299,7 +317,7 @@ export default async function FinancePage() {
                       </td>
                       <td className="text-xs font-semibold text-[var(--ink)]">{tx.category ?? "—"}</td>
                       <td className={`font-bold ${isPositive ? "text-emerald-700" : "text-rose-600"}`}>
-                        {isPositive ? "+" : "−"} {Number(tx.amount).toLocaleString("ar-EG")} ج.م
+                        {isPositive ? "+" : "−"} {Number(tx.amount).toLocaleString("en-US")} ج.م
                       </td>
                       <td className="text-xs text-[var(--muted)]">{tx.notes ?? "—"}</td>
                     </tr>

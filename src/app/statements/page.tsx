@@ -7,6 +7,7 @@ import { getSessionUserId } from "@/server/auth/session";
 import { db } from "@/server/db";
 import { parties, partyLedger } from "@/server/db/schema";
 import { requirePermission } from "@/server/permissions";
+import { formatAmount } from "@/lib/number-format";
 
 export default async function StatementsPage({
   searchParams,
@@ -148,7 +149,7 @@ export default async function StatementsPage({
             <div className="text-left">
               <span className="text-xs text-[var(--muted)] block mb-1">الرصيد الختامي</span>
               <strong className={`text-xl font-extrabold ${balance > 0 ? "text-indigo-700" : balance < 0 ? "text-rose-600" : "text-emerald-700"}`}>
-                {balance.toLocaleString("ar-EG", { minimumFractionDigits: 2 })} ج.م
+                {balance.toLocaleString("en-US", { maximumFractionDigits: 2 })} ج.م
               </strong>
             </div>
           )}
@@ -172,7 +173,7 @@ export default async function StatementsPage({
                     <td className="text-xs text-[var(--muted)]">
                       {entry.createdAt.getTime() === 0
                         ? "رصيد افتتاحي سابق"
-                        : new Date(entry.createdAt).toLocaleString("ar-EG")}
+                        : new Date(entry.createdAt).toLocaleString("en-US")}
                     </td>
                     <td className="font-semibold text-[var(--ink)]">
                       {entry.notes ??
@@ -185,13 +186,13 @@ export default async function StatementsPage({
                           : "حركة")}
                     </td>
                     <td className="text-center font-semibold">
-                      {Number(entry.debit) > 0 ? `${Number(entry.debit).toFixed(2)} ج.م` : "—"}
+                      {Number(entry.debit) > 0 ? `${formatAmount(entry.debit)} ج.م` : "—"}
                     </td>
                     <td className="text-center font-semibold">
-                      {Number(entry.credit) > 0 ? `${Number(entry.credit).toFixed(2)} ج.م` : "—"}
+                      {Number(entry.credit) > 0 ? `${formatAmount(entry.credit)} ج.م` : "—"}
                     </td>
                     <td className="text-center font-bold text-[var(--ink)]">
-                      {entry.balance.toFixed(2)} ج.م
+                      {formatAmount(entry.balance)} ج.م
                     </td>
                   </tr>
                 ))}

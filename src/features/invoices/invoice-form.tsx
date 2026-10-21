@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Plus,
   Minus,
@@ -23,6 +23,7 @@ import {
 import { saveInvoice } from "./actions";
 import { CloseDisclosureButton } from "@/components/close-disclosure-button";
 import { useI18n } from "@/lib/i18n-client";
+import { formatAmount, formatAmountInput } from "@/lib/number-format";
 
 type Product = {
   id: string;
@@ -82,22 +83,24 @@ export function InvoiceForm({
   parties,
   cashboxes,
   units = [],
+  partyBalances = {},
   initial,
 }: {
   products: Product[];
   parties: Party[];
   cashboxes: Cashbox[];
   units?: Unit[];
+  partyBalances?: Record<string, number>;
   initial?: InitialInvoice;
 }) {
   const { t, locale } = useI18n();
   const [type, setType] = useState<InvoiceType>(initial?.type ?? "sale");
   const [productId, setProductId] = useState(initial?.lines[0]?.productId ?? products[0]?.id ?? "");
   const [quantity, setQuantity] = useState("1");
-  const [lines, setLines] = useState<Line[]>(initial?.lines ?? []);
-  const [discount, setDiscount] = useState(initial?.discount ?? "0");
+  const [lines, setLines] = useState<Line[]>(() => (initial?.lines ?? []).map((line) => ({ ...line, unitPrice: formatAmountInput(Number(line.unitPrice)), basePrice: line.basePrice ? formatAmountInput(Number(line.basePrice)) : undefined, minPrice: line.minPrice ? formatAmountInput(Number(line.minPrice)) : undefined })));
+  const [discount, setDiscount] = useState(formatAmountInput(Number(initial?.discount ?? 0)));
   const [tax, setTax] = useState(initial?.tax ?? "0");
-  const [paid, setPaid] = useState(initial?.paid ?? "0");
+  const [paid, setPaid] = useState(formatAmountInput(Number(initial?.paid ?? 0)));
   const [partyId, setPartyId] = useState<string>(initial?.partyId ?? "");
   const [cashboxId, setCashboxId] = useState<string>(initial?.cashboxId ?? "");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -154,7 +157,7 @@ export function InvoiceForm({
   const selectedUnitFactor = Math.max(1, Math.round(Number(selectedUnit?.factor ?? 1)) || 1);
   const isCustomerType = type === "sale" || type === "sale_return";
   const baseSelectedPrice = selected ? Number(isCustomerType ? selected.salePrice : selected.costPrice) : 0;
-  const calculatedUnitPrice = (baseSelectedPrice * selectedUnitFactor).toFixed(2);
+  const calculatedUnitPrice = formatAmountInput(baseSelectedPrice * selectedUnitFactor);
 
   // Compute live subtotal
   const subtotal = useMemo(() => {
@@ -173,7 +176,7 @@ export function InvoiceForm({
         0
       );
       if (initialSubtotal > 0) {
-        return ((parseFloat(initial.discount) / initialSubtotal) * 100).toFixed(1);
+        return ((parseFloat(initial.discount) / initialSubtotal) * 100).toFixed(4);
       }
     }
     return "0";
@@ -190,7 +193,7 @@ export function InvoiceForm({
     setDiscountPercent(pctStr);
     const pct = parseNum(pctStr);
     if (pct > 0 && subtotal > 0) {
-      const calculatedEgp = Math.min(subtotal, (subtotal * pct) / 100).toFixed(2);
+      const calculatedEgp = formatAmountInput(Math.min(subtotal, (subtotal * pct) / 100));
       setDiscount(calculatedEgp);
     } else if (pctStr === "" || pct === 0) {
       setDiscount("0");
@@ -201,39 +204,30 @@ export function InvoiceForm({
     setDiscount(egpStr);
     const egp = parseNum(egpStr);
     if (egp > 0 && subtotal > 0) {
-      setDiscountPercent(((egp / subtotal) * 100).toFixed(1));
+      setDiscountPercent(((egp / subtotal) * 100).toFixed(4));
     } else if (egpStr === "" || egp === 0) {
       setDiscountPercent("0");
     }
   };
 
-  // Keep discount in EGP synced if subtotal changes and percentage was set
-  useEffect(() => {
-    const pct = parseNum(discountPercent);
-    if (pct > 0 && subtotal > 0) {
-      const calculatedEgp = Math.min(subtotal, (subtotal * pct) / 100).toFixed(2);
-      setDiscount(calculatedEgp);
-    }
-  }, [subtotal, discountPercent]);
+  const discountAmount = discountPercent && parseNum(discountPercent) > 0 && subtotal > 0
+    ? Math.min(subtotal, (subtotal * parseNum(discountPercent)) / 100)
+    : parseNum(discount);
 
   const total = useMemo(() => {
     const rawLinesTotal = lines.reduce(
       (sum, line) => sum + Math.round(Number(line.quantity) * Number(line.unitPrice) * 100),
       0
     );
-    const rawDiscount = Math.round(Number(discount || 0) * 100);
+    const rawDiscount = Math.round(discountAmount * 100);
     const rawTax = Math.round(Number(tax || 0) * 100);
     return Math.max(0, (rawLinesTotal - rawDiscount + rawTax) / 100);
-  }, [lines, discount, tax]);
+  }, [lines, discountAmount, tax]);
 
-  // Keep paid in sync with paymentMode
-  useEffect(() => {
-    if (paymentMode === "cash") {
-      setPaid(total > 0 ? total.toFixed(2) : "0");
-    } else if (paymentMode === "credit") {
-      setPaid("0");
-    }
-  }, [total, paymentMode]);
+  const selectedParty = parties.find((party) => party.id === partyId);
+  const previousBalance = partyBalances[partyId] ?? 0;
+
+  const effectivePaid = paymentMode === "cash" ? formatAmountInput(total) : paymentMode === "credit" ? "0" : paid;
 
   // Barcode Fast Scan with Stock Validation
   const handleBarcodeScan = (e?: React.FormEvent) => {
@@ -250,8 +244,8 @@ export function InvoiceForm({
       onProductSelect(found.id);
       const factor = Number(selectedUnit?.factor ?? 1) || 1;
       const basePrice = Number(isCustomerType ? found.salePrice : found.costPrice);
-      const unitPrice = (basePrice * factor).toFixed(2);
-      const minPrice = isCustomerType ? (Number(found.costPrice) * factor).toFixed(2) : "0";
+      const unitPrice = formatAmountInput(basePrice * factor);
+      const minPrice = isCustomerType ? formatAmountInput(Number(found.costPrice) * factor) : "0";
 
       // Stock check for sale and purchase return
       const existingPieces = lines
@@ -352,7 +346,7 @@ export function InvoiceForm({
 
     const price = calculatedUnitPrice;
     const unitName = selectedUnit?.name ?? "قطعة";
-    const minPrice = isCustomerType ? (Number(selected.costPrice) * factor).toFixed(2) : "0";
+    const minPrice = isCustomerType ? formatAmountInput(Number(selected.costPrice) * factor) : "0";
 
     setLines((old) => [
       ...old,
@@ -413,7 +407,7 @@ export function InvoiceForm({
       // Selling price protection: Do not allow selling below unit cost or official unit price
       if (isNaN(newPrice) || newPrice < minAllowed - 0.005) {
         setFormError(
-          `ممنوع البيع بسعر أقل من سعر التكلفة/الحد الأدنى للوحدة (${minAllowed.toFixed(2)} ج.م). لتطبيق تخفيض يرجى استخدام خانة الخصم الرسمية.`
+          `ممنوع البيع بسعر أقل من سعر التكلفة/الحد الأدنى للوحدة (${formatAmount(minAllowed)} ج.م). لتطبيق تخفيض يرجى استخدام خانة الخصم الرسمية.`
         );
         return;
       }
@@ -429,6 +423,8 @@ export function InvoiceForm({
   // Full Pre-Submit Validation of Worst-Case Scenarios
   const handleAction = async (formData: FormData) => {
     setFormError(null);
+    formData.set("discount", discountAmount.toFixed(2));
+    formData.set("paid", effectivePaid);
 
     // 1. Must have lines
     if (lines.length === 0) {
@@ -477,7 +473,7 @@ export function InvoiceForm({
     }
 
     // 4. Credit / Anonymous Customer Safeguard
-    const paidNum = parseFloat(paid) || 0;
+    const paidNum = parseNum(effectivePaid);
     if (paidNum < total && !partyId) {
       setFormError(
         "لا يمكن البيع بالآجل أو تسجيل مديونية لعميل نقدي مجهول. يرجى اختيار عميل مسجل لترحيل المديونية لحسابه."
@@ -498,7 +494,7 @@ export function InvoiceForm({
     }
 
     // 7. Discount cannot exceed subtotal
-    const discountNum = parseFloat(discount) || 0;
+    const discountNum = discountAmount;
     if (discountNum > subtotal) {
       setFormError("قيمة الخصم لا يمكن أن تتجاوز إجمالي الفاتورة قبل الخصم.");
       return;
@@ -679,6 +675,23 @@ export function InvoiceForm({
               </option>
             ))}
           </select>
+          {selectedParty && (
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-indigo-100 bg-indigo-50/70 px-3 py-2 text-xs" aria-live="polite">
+              <span className="font-semibold text-slate-700">{locale === "en" ? "Previous account balance" : "الحساب السابق"}</span>
+              <strong className="font-mono text-indigo-800" dir="ltr">{formatAmount(Math.abs(previousBalance))} {t("common.egp", "ج.م")}</strong>
+              <span className="text-slate-600">
+                {previousBalance === 0
+                  ? (locale === "en" ? "Settled" : "لا يوجد رصيد سابق")
+                  : selectedParty.type === "customer"
+                    ? previousBalance > 0
+                      ? (locale === "en" ? "Due from customer" : "مستحق لنا على العميل")
+                      : (locale === "en" ? "Customer credit" : "رصيد دائن للعميل")
+                    : previousBalance < 0
+                      ? (locale === "en" ? "Due to supplier" : "مستحق للمورد")
+                      : (locale === "en" ? "Supplier credit" : "رصيد دائن للمورد")}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Cashbox Selector */}
@@ -782,7 +795,7 @@ export function InvoiceForm({
               const stockPieces = Math.floor(Number(p.stock));
               return (
                 <option key={p.id} value={p.id}>
-                  {p.name} — ({locale === "en" ? `Available: ${stockPieces} pcs` : `المتاح: ${stockPieces} قطعة`}) · {Number(price).toFixed(2)} {t("common.egp", "ج.م")}
+                  {p.name} — ({locale === "en" ? `Available: ${stockPieces} pcs` : `المتاح: ${stockPieces} قطعة`}) · {formatAmount(price)} {t("common.egp", "ج.م")}
                 </option>
               );
             })}
@@ -915,9 +928,9 @@ export function InvoiceForm({
                           line.basePrice ||
                             Number(line.unitPrice) / (Number(line.unitFactor) || 1)
                         );
-                        const newPrice = (baseP * newFactor).toFixed(2);
+                        const newPrice = formatAmountInput(baseP * newFactor);
                         const prod = products.find((p) => p.id === line.productId);
-                        const minP = isCustomerType ? (Number(prod?.costPrice ?? 0) * newFactor).toFixed(2) : "0";
+                        const minP = isCustomerType ? formatAmountInput(Number(prod?.costPrice ?? 0) * newFactor) : "0";
 
                         setLines((old) =>
                           old.map((item, i) =>
@@ -993,7 +1006,7 @@ export function InvoiceForm({
                         // In sales, unit price is protected to prevent selling below unit price
                         <div className="inline-flex flex-col items-center">
                           <span className="font-mono font-bold text-sm text-[var(--ink)] px-2 py-1 bg-[var(--bg)] border border-[var(--line)] rounded-md">
-                            {Number(line.unitPrice).toFixed(2)} ج.م
+                            {formatAmount(line.unitPrice)} ج.م
                           </span>
                           <span className="text-[10px] text-emerald-700 font-bold mt-0.5">
                             سعر الوحدة المعتمد
@@ -1012,13 +1025,13 @@ export function InvoiceForm({
                       )}
                       {factor > 1 && (
                         <span className="block text-[10px] text-[var(--muted)] mt-0.5 font-mono">
-                          ({(Number(line.unitPrice) / factor).toFixed(2)} ج/قطعة)
+                          ({formatAmount(Number(line.unitPrice) / factor)} ج/قطعة)
                         </span>
                       )}
                     </div>
                   </td>
                   <td className="font-bold text-[var(--ink)] text-center font-mono text-sm">
-                    {lineTotal} ج.م
+                    {formatAmount(lineTotal)} ج.م
                   </td>
                   <td className="text-center">
                     <button
@@ -1104,13 +1117,13 @@ export function InvoiceForm({
         <label>
           <span className="flex items-center justify-between">
             <span className="font-bold text-xs text-[var(--ink)]">{t("invoices.discountPercent", "الخصم (%)")}</span>
-            {subtotal > 0 && <small className="text-[var(--muted)] text-[10px]">{locale === "en" ? `From ${subtotal.toFixed(2)}` : `من ${subtotal.toFixed(2)} ج.م`}</small>}
+            {subtotal > 0 && <small className="text-[var(--muted)] text-[10px]">{locale === "en" ? `From ${formatAmount(subtotal)}` : `من ${formatAmount(subtotal)} ج.م`}</small>}
           </span>
           <input
             type="number"
             min="0"
             max="100"
-            step="1"
+            step="0.0001"
             value={discountPercent === "0" ? "" : discountPercent}
             placeholder="0%"
             className="font-bold font-mono text-xs mt-1"
@@ -1125,8 +1138,8 @@ export function InvoiceForm({
             type="number"
             min="0"
             max={subtotal || undefined}
-            step="1"
-            value={discount === "0" ? "" : discount}
+            step="0.01"
+            value={discountAmount === 0 ? "" : formatAmountInput(discountAmount)}
             placeholder="0"
             className="font-bold font-mono text-xs mt-1"
             onChange={(e) => onDiscountEgpChange(e.target.value)}
@@ -1144,7 +1157,7 @@ export function InvoiceForm({
                 type="button"
                 onClick={() => {
                   setPaymentMode("cash");
-                  setPaid(total.toFixed(2));
+                  setPaid(formatAmountInput(total));
                 }}
                 className="text-[10px] text-indigo-700 font-bold hover:underline cursor-pointer"
               >
@@ -1156,9 +1169,9 @@ export function InvoiceForm({
             name="paid"
             type="number"
             min="0"
-            step="1"
+            step="0.01"
             max={total}
-            value={paid === "0" ? "" : paid}
+            value={effectivePaid === "0" ? "" : effectivePaid}
             placeholder="0"
             className="font-bold font-mono text-xs mt-1"
             onChange={(e) => {
@@ -1174,11 +1187,11 @@ export function InvoiceForm({
         <div className="sm:col-span-3 flex items-center justify-between p-4 bg-[var(--panel)] border border-[var(--line)] rounded-xl">
           <div>
             <span className="text-xs text-[var(--muted)] font-semibold block mb-0.5">{t("invoices.subtotal", "المجموع قبل الخصم")}:</span>
-            <b className="text-base text-[var(--ink)] font-bold">{subtotal.toFixed(2)} {t("common.egp", "ج.م")}</b>
+            <b className="text-base text-[var(--ink)] font-bold">{formatAmount(subtotal)} {t("common.egp", "ج.م")}</b>
           </div>
           <div className="text-left">
             <span className="text-xs text-[var(--muted)] font-semibold block mb-0.5">{t("invoices.netTotal", "الصافي النهائي المطلوب")}:</span>
-            <b className="text-2xl font-black text-indigo-700">{total.toFixed(2)} {t("common.egp", "ج.م")}</b>
+            <b className="text-2xl font-black text-indigo-700">{formatAmount(total)} {t("common.egp", "ج.م")}</b>
           </div>
         </div>
       </div>

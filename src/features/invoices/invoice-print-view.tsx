@@ -12,6 +12,7 @@ import {
   Building,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n-client";
+import { formatAmount } from "@/lib/number-format";
 
 type InvoiceData = {
   invoice: {
@@ -55,7 +56,7 @@ export function InvoicePrintView({ data }: { data: InvoiceData }) {
   const [format, setFormat] = useState<"a4" | "thermal" | "dispatch">("a4");
   const { invoice, party, org, lines, invoiceLogo } = data;
   const remaining = Math.max(0, Number(invoice.total) - Number(invoice.paid));
-  const dateFormatted = new Date(invoice.createdAt).toLocaleString(locale === "en" ? "en-US" : "ar-EG", {
+  const dateFormatted = new Date(invoice.createdAt).toLocaleString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -200,10 +201,10 @@ export function InvoicePrintView({ data }: { data: InvoiceData }) {
                   <tr key={line.id}>
                     <td className="text-center text-xs text-[var(--muted)] font-mono">{idx + 1}</td>
                     <td className="font-bold text-[var(--ink)]">{line.description}</td>
-                    <td className="text-center font-bold">{Number(line.quantity).toLocaleString("ar-EG")}</td>
-                    <td className="text-center font-semibold">{Number(line.unitPrice).toLocaleString("ar-EG")} ج.م</td>
+                    <td className="text-center font-bold">{Number(line.quantity).toLocaleString("en-US")}</td>
+                    <td className="text-center font-semibold">{Number(line.unitPrice).toLocaleString("en-US")} ج.م</td>
                     <td className="text-center font-bold text-[var(--ink)]">
-                      {Number(line.lineTotal).toLocaleString("ar-EG")} ج.م
+                      {Number(line.lineTotal).toLocaleString("en-US")} ج.م
                     </td>
                   </tr>
                 ))}
@@ -215,32 +216,32 @@ export function InvoicePrintView({ data }: { data: InvoiceData }) {
           <section className="invoice-totals">
             <p>
               <span>المجموع قبل الخصم:</span>
-              <b>{Number(invoice.subtotal).toLocaleString("ar-EG")} ج.م</b>
+              <b>{Number(invoice.subtotal).toLocaleString("en-US")} ج.م</b>
             </p>
             {Number(invoice.discount) > 0 && (
               <p>
                 <span>الخصم الممنوح:</span>
-                <b className="text-rose-600">− {Number(invoice.discount).toLocaleString("ar-EG")} ج.م</b>
+                <b className="text-rose-600">− {Number(invoice.discount).toLocaleString("en-US")} ج.م</b>
               </p>
             )}
             {Number(invoice.tax) > 0 && (
               <p>
                 <span>ضريبة القيمة المضافة:</span>
-                <b>+ {Number(invoice.tax).toLocaleString("ar-EG")} ج.م</b>
+                <b>+ {Number(invoice.tax).toLocaleString("en-US")} ج.م</b>
               </p>
             )}
             <p className="grand-total">
               <span>الصافي المطلوب:</span>
-              <b>{Number(invoice.total).toLocaleString("ar-EG")} ج.م</b>
+              <b>{Number(invoice.total).toLocaleString("en-US")} ج.م</b>
             </p>
             <p>
               <span>المسدد نقداً:</span>
-              <b className="text-emerald-700">{Number(invoice.paid).toLocaleString("ar-EG")} ج.م</b>
+              <b className="text-emerald-700">{Number(invoice.paid).toLocaleString("en-US")} ج.م</b>
             </p>
             {remaining > 0 && (
               <p className="font-bold text-rose-600">
                 <span>المتبقي في الذمة:</span>
-                <b>{remaining.toLocaleString("ar-EG", { minimumFractionDigits: 2 })} ج.م</b>
+                <b>{remaining.toLocaleString("en-US", { maximumFractionDigits: 2 })} ج.م</b>
               </p>
             )}
           </section>
@@ -306,7 +307,7 @@ export function InvoicePrintView({ data }: { data: InvoiceData }) {
                   <tr key={l.id}>
                     <td className="py-1 font-bold">{l.description}</td>
                     <td className="py-1 text-center font-bold">{l.quantity}</td>
-                    <td className="py-1 text-left">{Number(l.lineTotal).toFixed(2)}</td>
+                    <td className="py-1 text-left">{formatAmount(l.lineTotal)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -316,32 +317,32 @@ export function InvoicePrintView({ data }: { data: InvoiceData }) {
           <div className="py-2 space-y-1 text-xs border-b border-dashed border-black">
             <div className="flex justify-between">
               <span>المجموع:</span>
-              <span>{Number(invoice.subtotal).toFixed(2)} ج.م</span>
+              <span>{formatAmount(invoice.subtotal)} ج.م</span>
             </div>
             {Number(invoice.discount) > 0 && (
               <div className="flex justify-between text-rose-600">
                 <span>الخصم:</span>
-                <span>−{Number(invoice.discount).toFixed(2)} ج.م</span>
+                <span>−{formatAmount(invoice.discount)} ج.م</span>
               </div>
             )}
             {Number(invoice.tax) > 0 && (
               <div className="flex justify-between">
                 <span>الضريبة:</span>
-                <span>+{Number(invoice.tax).toFixed(2)} ج.م</span>
+                <span>+{formatAmount(invoice.tax)} ج.م</span>
               </div>
             )}
             <div className="flex justify-between text-sm font-black pt-1 border-t border-black">
               <span>الصافي المطلوب:</span>
-              <span>{Number(invoice.total).toFixed(2)} ج.م</span>
+              <span>{formatAmount(invoice.total)} ج.م</span>
             </div>
             <div className="flex justify-between">
               <span>المدفوع:</span>
-              <span>{Number(invoice.paid).toFixed(2)} ج.م</span>
+              <span>{formatAmount(invoice.paid)} ج.م</span>
             </div>
             {remaining > 0 && (
               <div className="flex justify-between font-bold text-rose-700">
                 <span>المتبقي:</span>
-                <span>{remaining.toFixed(2)} ج.م</span>
+                <span>{formatAmount(remaining)} ج.م</span>
               </div>
             )}
           </div>
@@ -414,7 +415,7 @@ export function InvoicePrintView({ data }: { data: InvoiceData }) {
                     <td className="text-center text-xs text-[var(--muted)] font-mono">{idx + 1}</td>
                     <td className="font-bold text-[var(--ink)] text-sm">{line.description}</td>
                     <td className="text-center font-mono font-black text-base text-indigo-700">
-                      {Number(line.quantity).toLocaleString("ar-EG")} قطعة
+                      {Number(line.quantity).toLocaleString("en-US")} قطعة
                     </td>
                     <td className="text-center text-xs font-semibold text-emerald-700">
                       تم الصرف من المستودع

@@ -36,7 +36,7 @@ export default async function Inventory({
     .limit(1);
 
   const locale = (settingsRow?.locale ?? "ar") as Locale;
-  const localeCode = locale === "en" ? "en-US" : "ar-EG";
+  const localeCode = "en-US";
 
   const query = searchParams ? await searchParams : {};
 
@@ -55,7 +55,7 @@ export default async function Inventory({
 
   const can = (action: string) => grants.some((grant) => grant.action === action);
 
-  let [rows, cats, unitRows] = await Promise.all([
+  const [rows, cats, initialUnitRows] = await Promise.all([
     db
       .select()
       .from(products)
@@ -72,6 +72,7 @@ export default async function Inventory({
       .from(units)
       .orderBy(units.factor),
   ]);
+  let unitRows = initialUnitRows;
 
   // Seed standard packaging units if empty
   if (unitRows.length === 0) {
@@ -133,7 +134,7 @@ export default async function Inventory({
             {translate("reports.inventoryCapital", locale, "رأس مال البضاعة بالمخزن")}
           </span>
           <b className="text-xl text-[var(--ink)] font-bold">
-            {totalInventoryCost.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
+            {totalInventoryCost.toLocaleString(localeCode, { maximumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
           </b>
         </div>
       </div>

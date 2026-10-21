@@ -1,7 +1,7 @@
 import "server-only";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { db } from "@/server/db";
-import { restoreEditedInvoiceStock, reverseCashKind } from "@/server/services/ledger-math";
+import { cashboxBalance, restoreEditedInvoiceStock, reverseCashKind } from "@/server/services/ledger-math";
 import { cashTransactions, cashboxes, invoiceLines, invoices, parties, partyLedger, products, stockMovements } from "@/server/db/schema";
 
 export type InvoiceInput = {
@@ -35,22 +35,21 @@ export async function createInvoice(input: InvoiceInput, userId: string) {
     const normalized = [];
     const quantitiesByProduct = new Map<string, number>();
     let subtotal = 0;
+    const productIds = [...new Set(input.lines.map((line) => line.productId))].sort();
+    const lockedProducts = await tx.select().from(products).where(inArray(products.id, productIds)).orderBy(products.id).for("update");
+    const productsById = new Map(lockedProducts.map((product) => [product.id, product]));
 
     for (const line of input.lines) {
       const qty = Number(line.quantity),
         price = Number(line.unitPrice);
-      const factor = Number(line.unitFactor ?? 1) || 1;
+      const factor = Number(line.unitFactor ?? 1);
       const stockQty = qty * factor;
 
-      if (!Number.isFinite(qty) || qty <= 0 || !Number.isFinite(price) || price < 0) {
+      if (!Number.isFinite(qty) || qty <= 0 || Math.round(qty * 1000) !== qty * 1000 || !Number.isFinite(price) || price < 0 || Math.round(price * 100) !== price * 100 || !Number.isFinite(factor) || factor <= 0 || Math.round(factor * 10000) !== factor * 10000) {
         throw new Error("INVALID_LINE");
       }
-      const [p] = await tx
-        .select()
-        .from(products)
-        .where(and(eq(products.id, line.productId), eq(products.active, true)))
-        .limit(1);
-      if (!p) throw new Error("PRODUCT_NOT_FOUND");
+      const p = productsById.get(line.productId);
+      if (!p || !p.active) throw new Error("PRODUCT_NOT_FOUND");
       quantitiesByProduct.set(p.id, (quantitiesByProduct.get(p.id) ?? 0) + stockQty);
       const total = Math.round(qty * price * 100) / 100;
       subtotal += total;
@@ -93,6 +92,15 @@ export async function createInvoice(input: InvoiceInput, userId: string) {
       const isCustomerType = input.type === "sale" || input.type === "sale_return";
       if (isCustomerType && party.type !== "customer") throw new Error("PARTY_TYPE_MISMATCH");
       if (!isCustomerType && party.type !== "supplier") throw new Error("PARTY_TYPE_MISMATCH");
+    }
+
+    if (paid > 0 && input.cashboxId) {
+      const [box] = await tx.select().from(cashboxes).where(and(eq(cashboxes.id, input.cashboxId), eq(cashboxes.active, true))).for("update").limit(1);
+      if (!box) throw new Error("CASHBOX_NOT_FOUND");
+      if (input.type === "purchase" || input.type === "sale_return") {
+        const txs = await tx.select({ kind: cashTransactions.kind, amount: cashTransactions.amount }).from(cashTransactions).where(eq(cashTransactions.cashboxId, box.id));
+        if (cashboxBalance(box.openingBalance, txs) < paid) throw new Error("INSUFFICIENT_CASHBOX_BALANCE");
+      }
     }
 
     const prefix =
@@ -310,10 +318,10 @@ export async function updateInvoice(invoiceId:string,input:InvoiceInput,userId:s
   for (const line of input.lines) {
     const quantity = Number(line.quantity),
       price = Number(line.unitPrice);
-    const factor = Number(line.unitFactor ?? 1) || 1;
+    const factor = Number(line.unitFactor ?? 1);
     const stockQty = quantity * factor;
 
-    if (!Number.isFinite(quantity) || quantity <= 0 || !Number.isFinite(price) || price < 0) {
+    if (!Number.isFinite(quantity) || quantity <= 0 || Math.round(quantity * 1000) !== quantity * 1000 || !Number.isFinite(price) || price < 0 || Math.round(price * 100) !== price * 100 || !Number.isFinite(factor) || factor <= 0 || Math.round(factor * 10000) !== factor * 10000) {
       throw new Error("INVALID_LINE");
     }
     let product = currentProducts.get(line.productId);
@@ -324,7 +332,7 @@ export async function updateInvoice(invoiceId:string,input:InvoiceInput,userId:s
         .where(and(eq(products.id, line.productId), eq(products.active, true)))
         .for("update")
         .limit(1);
-      if (!found) throw new Error("PRODUCT_NOT_FOUND");
+      if (!found || !found.active) throw new Error("PRODUCT_NOT_FOUND");
       product = found;
       currentProducts.set(product.id, product);
     }
@@ -457,7 +465,15 @@ export async function updateInvoice(invoiceId:string,input:InvoiceInput,userId:s
    await tx.insert(partyLedger).values({partyId:input.partyId,invoiceId:invoice.id,kind:invoice.type,debit:money(invoice.type==="sale"?total:0),credit:money(invoice.type==="purchase"?total:0),notes:`فاتورة ${invoice.number} بعد التعديل`});
    if(paid>0) await tx.insert(partyLedger).values({partyId:input.partyId,invoiceId:invoice.id,kind:"payment",debit:money(invoice.type==="purchase"?paid:0),credit:money(invoice.type==="sale"?paid:0),notes:`دفعة فاتورة ${invoice.number}`});
   }
-  if(paid>0&&input.cashboxId) await tx.insert(cashTransactions).values({cashboxId:input.cashboxId,kind:invoice.type==="sale"?"invoice_payment":"expense",amount:money(paid),invoiceId:invoice.id,partyId:input.partyId??null,category:`تعديل ${invoice.type}`,notes:`دفعة فاتورة ${invoice.number} بعد التعديل`,userId});
+  if (paid > 0 && input.cashboxId) {
+    const [box] = await tx.select().from(cashboxes).where(and(eq(cashboxes.id, input.cashboxId), eq(cashboxes.active, true))).for("update").limit(1);
+    if (!box) throw new Error("CASHBOX_NOT_FOUND");
+    if (invoice.type === "purchase") {
+      const txs = await tx.select({ kind: cashTransactions.kind, amount: cashTransactions.amount }).from(cashTransactions).where(eq(cashTransactions.cashboxId, box.id));
+      if (cashboxBalance(box.openingBalance, txs) < paid) throw new Error("INSUFFICIENT_CASHBOX_BALANCE");
+    }
+    await tx.insert(cashTransactions).values({cashboxId:input.cashboxId,kind:invoice.type==="sale"?"invoice_payment":"expense",amount:money(paid),invoiceId:invoice.id,partyId:input.partyId??null,category:`تعديل ${invoice.type}`,notes:`دفعة فاتورة ${invoice.number} بعد التعديل`,userId});
+  }
   return {...invoice,partyId:input.partyId??null,subtotal:money(subtotal),discount:money(disc),tax:money(tax),total:money(total),paid:money(paid),status:paid===0?"unpaid":paid>=total?"paid":"partial"};
  });
 }

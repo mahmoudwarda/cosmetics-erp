@@ -25,7 +25,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     accent = "indigo",
     modules: string[] = [],
     userName: string | null = null;
-  const { url: networkUrl } = getLocalNetworkUrl(3000);
+  const { url: networkUrl } = getLocalNetworkUrl(3001);
 
   try {
     const [brand] = await db

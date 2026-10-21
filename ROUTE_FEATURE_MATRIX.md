@@ -1,5 +1,7 @@
 # ROUTE_FEATURE_MATRIX.md — Route, Feature & Permission Matrix
 
+> Historical baseline only. See [CURRENT_AUDIT_RESULTS.md](CURRENT_AUDIT_RESULTS.md) for current route verification and security status.
+
 **Project:** لمسة جمال (Lamsat Gamal) — Cosmetics Supplies Warehouse ERP  
 **Scope:** 14 Application Routes, 16 Server Actions, 2 Route Handlers  
 

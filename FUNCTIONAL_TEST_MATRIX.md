@@ -1,5 +1,7 @@
 # FUNCTIONAL_TEST_MATRIX.md — Executed Test Matrix & Verification Log
 
+> Historical baseline only. See [CURRENT_AUDIT_RESULTS.md](CURRENT_AUDIT_RESULTS.md) for the latest executed test results.
+
 **Project:** لمسة جمال (Lamsat Gamal) — Cosmetics Supplies Warehouse ERP  
 **Test Harness:** Vitest 3.2.7 ([`tests/erp-functional-audit.test.ts`](file:///Users/mahmoudnagy/Downloads/project-clean/Cosmetics-ERP-SourceCode/tests/erp-functional-audit.test.ts)) + HTTP API Driver  
 **Isolated Database:** `cosmetics_erp_test` on PostgreSQL 17 (`127.0.0.1:55432`)  

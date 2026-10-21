@@ -80,7 +80,7 @@ export default async function Home() {
     .limit(1);
   const organizationName = organization?.name ?? (organization?.locale === "en" ? "Beauty Touch" : "لمسة جمال");
   const locale = (organization?.locale ?? "ar") as Locale;
-  const localeCode = locale === "en" ? "en-US" : "ar-EG";
+  const localeCode = "en-US";
 
   const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
 
@@ -313,7 +313,7 @@ export default async function Home() {
         <div className="top-actions">
           <Link href="/invoices/new" className="primary">
             <FilePlus size={16} />
-            <span>{translate("dash.newInvoiceShortcut", locale, "فاتورة جديدة (F2)")}</span>
+            <span>{translate("dash.newInvoiceShortcut", locale, "فاتورة جديدة")}</span>
           </Link>
           <div className="date-pill">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -348,13 +348,13 @@ export default async function Home() {
                 {translate("dash.immediateLiquidationAtCost", locale, "صافي التصفية الفورية (بالتكلفة):")}
               </span>
               <b className="text-3xl md:text-4xl font-black text-indigo-700 font-mono tracking-tight block">
-                {netLiquidationAtCost.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-sm font-bold text-indigo-600/70">{translate("common.egp", locale, "ج.م")}</small>
+                {netLiquidationAtCost.toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-sm font-bold text-indigo-600/70">{translate("common.egp", locale, "ج.م")}</small>
               </b>
             </div>
             <div className="text-xs text-emerald-800 font-semibold flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 rounded-xl">
               <span>{translate("dash.liquidationAtRetail", locale, "التصفية بالبيع القطاعي:")}</span>
               <b className="text-emerald-700 font-black font-mono text-sm">
-                {netLiquidationAtRetail.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
+                {netLiquidationAtRetail.toLocaleString(localeCode, { maximumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
               </b>
             </div>
           </div>
@@ -370,7 +370,7 @@ export default async function Home() {
                 <span>{translate("dash.cashboxLiquidity", locale, "سيولة الخزائن الفورية")}</span>
               </span>
               <b className="text-xl md:text-2xl font-black text-emerald-800 block mt-1.5 font-mono">
-                {totalCashBalance.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs font-bold text-emerald-700/80">{translate("common.egp", locale, "ج.م")}</small>
+                {totalCashBalance.toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-xs font-bold text-emerald-700/80">{translate("common.egp", locale, "ج.م")}</small>
               </b>
               <small className="text-[11px] text-emerald-700 font-medium">
                 {locale === "en" ? `In ${activeBoxesWithBalance.length} cashboxes` : `في ${activeBoxesWithBalance.length} خزائن نقدية`}
@@ -389,7 +389,7 @@ export default async function Home() {
                 <span>{translate("dash.inventoryAtCost", locale, "بضاعة المخزن (بالتكلفة)")}</span>
               </span>
               <b className="text-xl md:text-2xl font-black text-amber-900 block mt-1.5 font-mono">
-                {inventoryCostValuation.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs font-bold text-amber-800/80">{translate("common.egp", locale, "ج.م")}</small>
+                {inventoryCostValuation.toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-xs font-bold text-amber-800/80">{translate("common.egp", locale, "ج.م")}</small>
               </b>
               <small className="text-[11px] text-amber-800 font-medium">
                 {totalStockUnits.toLocaleString(localeCode)} {locale === "en" ? `pcs (${totalProductsCount} items)` : `قطعة (${totalProductsCount} صنف)`}
@@ -408,7 +408,7 @@ export default async function Home() {
                 <span>{translate("dash.marketReceivables", locale, "فلوسنا بالسوق (آجل العملاء)")}</span>
               </span>
               <b className="text-xl md:text-2xl font-black text-sky-900 block mt-1.5 font-mono">
-                {customerReceivablesTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs font-bold text-sky-800/80">{translate("common.egp", locale, "ج.م")}</small>
+                {customerReceivablesTotal.toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-xs font-bold text-sky-800/80">{translate("common.egp", locale, "ج.م")}</small>
               </b>
               <small className="text-[11px] text-sky-800 font-medium">
                 {locale === "en" ? "Receivables from customers" : "ديون مستحقة لنا بالخارج"}
@@ -427,7 +427,7 @@ export default async function Home() {
                 <span>{translate("dash.supplierPayables", locale, "مستحقات الموردين (علينا)")}</span>
               </span>
               <b className="text-xl md:text-2xl font-black text-rose-700 block mt-1.5 font-mono">
-                {supplierPayablesTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs font-bold text-rose-600/80">{translate("common.egp", locale, "ج.م")}</small>
+                {supplierPayablesTotal.toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-xs font-bold text-rose-600/80">{translate("common.egp", locale, "ج.م")}</small>
               </b>
               <small className="text-[11px] text-rose-800 font-medium">
                 {locale === "en" ? "Payable obligations" : "التزامات واجبة السداد"}
@@ -452,7 +452,7 @@ export default async function Home() {
           </div>
           <div>
             <b className="text-2xl lg:text-3xl text-blue-900 block font-black font-mono tracking-tight">
-              {todaySalesTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs text-blue-700/80 font-bold">{translate("common.egp", locale, "ج.م")}</small>
+              {todaySalesTotal.toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-xs text-blue-700/80 font-bold">{translate("common.egp", locale, "ج.م")}</small>
             </b>
             <span className="text-xs text-blue-700 font-semibold block mt-1">
               {todaySalesCount} {locale === "en" ? "sales invoices" : "فاتورة بيع"}
@@ -470,7 +470,7 @@ export default async function Home() {
           </div>
           <div>
             <b className="text-2xl lg:text-3xl text-emerald-800 block font-black font-mono tracking-tight">
-              +{todayProfitTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs text-emerald-700/80 font-bold">{translate("common.egp", locale, "ج.م")}</small>
+              +{todayProfitTotal.toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-xs text-emerald-700/80 font-bold">{translate("common.egp", locale, "ج.م")}</small>
             </b>
             <span className="text-xs text-emerald-800 font-bold block mt-1">
               {locale === "en" ? `Margin: ${todayMarginRate}%` : `هامش: %${todayMarginRate}`}
@@ -488,7 +488,7 @@ export default async function Home() {
           </div>
           <div>
             <b className="text-2xl lg:text-3xl text-purple-900 block font-black font-mono tracking-tight">
-              {todayPurchasesTotal.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs text-purple-700/80 font-bold">{translate("common.egp", locale, "ج.م")}</small>
+              {todayPurchasesTotal.toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-xs text-purple-700/80 font-bold">{translate("common.egp", locale, "ج.م")}</small>
             </b>
             <span className="text-xs text-purple-700 font-semibold block mt-1">
               {todayPurchasesCount} {locale === "en" ? "purchase orders" : "أمر توريد"}
@@ -506,7 +506,7 @@ export default async function Home() {
           </div>
           <div>
             <b className="text-2xl lg:text-3xl text-teal-900 block font-black font-mono tracking-tight">
-              {totalCashBalance.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs text-teal-700/80 font-bold">{translate("common.egp", locale, "ج.م")}</small>
+              {totalCashBalance.toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-xs text-teal-700/80 font-bold">{translate("common.egp", locale, "ج.م")}</small>
             </b>
             <span className="text-xs text-teal-700 font-semibold block mt-1">
               {locale === "en" ? `In ${activeBoxesWithBalance.length} active cashboxes` : `في ${activeBoxesWithBalance.length} خزائن نشطة`}
@@ -524,7 +524,7 @@ export default async function Home() {
           </div>
           <div>
             <b className="text-2xl lg:text-3xl text-amber-900 block font-black font-mono tracking-tight">
-              {inventoryCostValuation.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs text-amber-800/80 font-bold">{translate("common.egp", locale, "ج.م")}</small>
+              {inventoryCostValuation.toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-xs text-amber-800/80 font-bold">{translate("common.egp", locale, "ج.م")}</small>
             </b>
             <span className="text-xs text-amber-800 font-semibold block mt-1">
               {totalStockUnits.toLocaleString(localeCode)} {locale === "en" ? `pcs (${totalProductsCount} items)` : `قطعة (${totalProductsCount} صنف)`}
@@ -627,7 +627,7 @@ export default async function Home() {
                 {locale === "en" ? "Cash Collected" : "المدفوع نقداً:"}
               </span>
               <b className="text-xl md:text-2xl font-black text-emerald-800 font-mono block">
-                {todaySalesPaid.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs font-bold text-emerald-700/80">{translate("common.egp", locale, "ج.م")}</small>
+                {todaySalesPaid.toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-xs font-bold text-emerald-700/80">{translate("common.egp", locale, "ج.م")}</small>
               </b>
             </div>
             <div className="p-4 bg-indigo-50/80 border border-indigo-200 rounded-xl">
@@ -635,7 +635,7 @@ export default async function Home() {
                 {locale === "en" ? "Credit / Remaining" : "المتبقي آجل بالسوق:"}
               </span>
               <b className="text-xl md:text-2xl font-black text-indigo-800 font-mono block">
-                {todaySalesCredit.toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-xs font-bold text-indigo-700/80">{translate("common.egp", locale, "ج.م")}</small>
+                {todaySalesCredit.toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-xs font-bold text-indigo-700/80">{translate("common.egp", locale, "ج.م")}</small>
               </b>
             </div>
           </div>
@@ -763,7 +763,7 @@ export default async function Home() {
                           {new Date(i.createdAt).toLocaleDateString(localeCode, { month: "short", day: "numeric" })}
                         </td>
                         <td className="font-bold text-sm text-[var(--ink)] font-mono">
-                          {Number(i.total).toLocaleString(localeCode, { minimumFractionDigits: 2 })} <small className="text-[10px] text-[var(--muted)] font-normal">{translate("common.egp", locale, "ج.م")}</small>
+                          {Number(i.total).toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-[10px] text-[var(--muted)] font-normal">{translate("common.egp", locale, "ج.م")}</small>
                         </td>
                         <td>
                           <span className={`status ${i.status}`}>
@@ -839,7 +839,7 @@ export default async function Home() {
                   </div>
                   <div className="text-left">
                     <b className="text-sm font-bold text-emerald-700 block font-mono">
-                      {box.balance.toLocaleString(localeCode, { minimumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
+                      {box.balance.toLocaleString(localeCode, { maximumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
                     </b>
                   </div>
                 </div>

@@ -82,7 +82,7 @@ export function InventoryTabsView({
   };
 
   const { t, locale, isRtl } = useI18n();
-  const localeCode = locale === "en" ? "en-US" : "ar-EG";
+  const localeCode = "en-US";
 
   const [activeTab, setActiveTab] = useState<"products" | "categories" | "units">("products");
   const [searchQuery, setSearchQuery] = useState("");

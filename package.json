@@ -6,14 +6,12 @@
   "scripts": {
     "dev": "next dev --hostname 0.0.0.0",
     "build": "next build --webpack",
-    "start": "next start --hostname 0.0.0.0",
+    "start": "next start --hostname 0.0.0.0 --port 3001",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
-    "network:sync": "bash scripts/sync-network.sh",
-    "network:watch": "bash scripts/sync-network.sh --watch",
     "test": "vitest run"
   },
   "dependencies": {

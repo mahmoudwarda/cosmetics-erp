@@ -42,7 +42,7 @@ export default async function ReportsPage({
 
   const locale = (settingsRow?.locale ?? "ar") as Locale;
   const isRtl = locale === "ar";
-  const localeCode = locale === "en" ? "en-US" : "ar-EG";
+  const localeCode = "en-US";
 
   const range = await searchParams;
   const todayStr = new Date().toISOString().slice(0, 10);
@@ -189,8 +189,10 @@ export default async function ReportsPage({
   const inventoryRetailValuation = Number(invCapital.retailValuation);
 
   // Helper date shortcuts
-  const past7Days = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
-  const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().slice(0, 10);
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setUTCDate(sevenDaysAgo.getUTCDate() - 7);
+  const past7Days = sevenDaysAgo.toISOString().slice(0, 10);
+  const monthStart = `${todayStr.slice(0, 8)}01`;
 
   return (
     <main className="main standalone">
@@ -239,7 +241,7 @@ export default async function ReportsPage({
                   : "bg-[var(--panel)] border-[var(--line)] text-[var(--ink)] hover:border-indigo-400"
               }`}
             >
-              {locale === "en" ? "Past 7 Days" : "آخر ٧ أيام"}
+              {locale === "en" ? "Past 7 Days" : "آخر 7 أيام"}
             </Link>
             <Link
               href={`/reports?from=${monthStart}&to=${todayStr}`}
@@ -281,10 +283,10 @@ export default async function ReportsPage({
             </div>
           </div>
           <b className="text-xl text-indigo-700 dark:text-indigo-400 block font-bold">
-            {totalPeriodRevenue.toLocaleString("ar-EG")} <small className="text-[10px] text-[var(--muted)] font-normal">ج.م</small>
+            {totalPeriodRevenue.toLocaleString("en-US")} <small className="text-[10px] text-[var(--muted)] font-normal">ج.م</small>
           </b>
           <span className="text-[11px] text-[var(--muted)] font-medium">
-            {totalInvoicesCount.toLocaleString("ar-EG")} فاتورة بيع
+            {totalInvoicesCount.toLocaleString("en-US")} فاتورة بيع
           </span>
         </div>
 
@@ -297,7 +299,7 @@ export default async function ReportsPage({
             </div>
           </div>
           <b className="text-xl text-emerald-600 dark:text-emerald-400 block font-bold">
-            +{totalPeriodGrossProfit.toLocaleString("ar-EG")} <small className="text-[10px] text-[var(--muted)] font-normal">ج.م</small>
+            +{totalPeriodGrossProfit.toLocaleString("en-US")} <small className="text-[10px] text-[var(--muted)] font-normal">ج.م</small>
           </b>
           <span className="text-[11px] text-emerald-700 dark:text-emerald-500 font-semibold">
             هامش ربح: %{overallMarginRate}
@@ -313,10 +315,10 @@ export default async function ReportsPage({
             </div>
           </div>
           <b className="text-xl text-purple-700 dark:text-purple-400 block font-bold">
-            {totalPeriodPurchases.toLocaleString("ar-EG")} <small className="text-[10px] text-[var(--muted)] font-normal">ج.م</small>
+            {totalPeriodPurchases.toLocaleString("en-US")} <small className="text-[10px] text-[var(--muted)] font-normal">ج.م</small>
           </b>
           <span className="text-[11px] text-[var(--muted)] font-medium">
-            {totalPurchasesCount.toLocaleString("ar-EG")} فاتورة توريد
+            {totalPurchasesCount.toLocaleString("en-US")} فاتورة توريد
           </span>
         </div>
 
@@ -329,7 +331,7 @@ export default async function ReportsPage({
             </div>
           </div>
           <b className="text-xl text-[var(--ink)] block font-bold">
-            {totalPeriodPaid.toLocaleString("ar-EG")} <small className="text-[10px] text-[var(--muted)] font-normal">ج.م</small>
+            {totalPeriodPaid.toLocaleString("en-US")} <small className="text-[10px] text-[var(--muted)] font-normal">ج.م</small>
           </b>
           <span className="text-[11px] text-blue-700 dark:text-blue-400 font-medium">
             معدل الكاش: %{cashCollectionRate}
@@ -345,7 +347,7 @@ export default async function ReportsPage({
             </div>
           </div>
           <b className="text-xl text-rose-600 dark:text-rose-400 block font-bold">
-            {totalPeriodRemaining.toLocaleString("ar-EG")} <small className="text-[10px] text-[var(--muted)] font-normal">ج.م</small>
+            {totalPeriodRemaining.toLocaleString("en-US")} <small className="text-[10px] text-[var(--muted)] font-normal">ج.م</small>
           </b>
           <span className="text-[11px] text-rose-700 dark:text-rose-400 font-medium">
             مديونيات جديدة بالفترة
@@ -361,7 +363,7 @@ export default async function ReportsPage({
             </div>
           </div>
           <b className="text-xl text-amber-700 dark:text-amber-400 block font-bold">
-            {inventoryWorkingCapital.toLocaleString("ar-EG")} <small className="text-[10px] text-[var(--muted)] font-normal">ج.م</small>
+            {inventoryWorkingCapital.toLocaleString("en-US")} <small className="text-[10px] text-[var(--muted)] font-normal">ج.م</small>
           </b>
           <span className="text-[11px] text-[var(--muted)] font-medium">
             تكلفة بضاعة المستودع
@@ -415,12 +417,12 @@ export default async function ReportsPage({
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 shrink-0" />
                 <span className="text-[var(--ink)]">نقدي فوري (كاش):</span>
-                <b className="text-indigo-700">{totalPeriodPaid.toLocaleString("ar-EG")} ج.م</b>
+                <b className="text-indigo-700">{totalPeriodPaid.toLocaleString("en-US")} ج.م</b>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-slate-300 shrink-0" />
                 <span className="text-[var(--muted)]">آجل على الحساب:</span>
-                <b className="text-rose-600">{totalPeriodRemaining.toLocaleString("ar-EG")} ج.م</b>
+                <b className="text-rose-600">{totalPeriodRemaining.toLocaleString("en-US")} ج.م</b>
               </div>
             </div>
           </div>
@@ -439,7 +441,7 @@ export default async function ReportsPage({
             <div>
               <div className="flex justify-between text-xs font-bold mb-1">
                 <span>المبيعات:</span>
-                <span className="text-indigo-600">{totalPeriodRevenue.toLocaleString("ar-EG")} ج.م</span>
+                <span className="text-indigo-600">{totalPeriodRevenue.toLocaleString("en-US")} ج.م</span>
               </div>
               <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
                 <div className="h-full bg-indigo-600 rounded-full" style={{ width: "100%" }} />
@@ -449,7 +451,7 @@ export default async function ReportsPage({
             <div>
               <div className="flex justify-between text-xs font-bold mb-1">
                 <span>المشتريات:</span>
-                <span className="text-purple-600">{totalPeriodPurchases.toLocaleString("ar-EG")} ج.م</span>
+                <span className="text-purple-600">{totalPeriodPurchases.toLocaleString("en-US")} ج.م</span>
               </div>
               <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
                 <div
@@ -464,7 +466,7 @@ export default async function ReportsPage({
             <div>
               <div className="flex justify-between text-xs font-bold mb-1">
                 <span>مجمل الأرباح:</span>
-                <span className="text-emerald-600">+{totalPeriodGrossProfit.toLocaleString("ar-EG")} ج.م</span>
+                <span className="text-emerald-600">+{totalPeriodGrossProfit.toLocaleString("en-US")} ج.م</span>
               </div>
               <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
                 <div
@@ -490,15 +492,15 @@ export default async function ReportsPage({
           <div className="space-y-2 py-1 text-xs">
             <div className="flex justify-between items-center p-2 rounded-lg bg-[var(--bg)] border border-[var(--line)]">
               <span className="font-semibold text-[var(--muted)]">رأس مال المخزون بالتكلفة:</span>
-              <b className="font-bold text-[var(--ink)]">{inventoryWorkingCapital.toLocaleString("ar-EG")} ج.م</b>
+              <b className="font-bold text-[var(--ink)]">{inventoryWorkingCapital.toLocaleString("en-US")} ج.م</b>
             </div>
             <div className="flex justify-between items-center p-2 rounded-lg bg-[var(--bg)] border border-[var(--line)]">
               <span className="font-semibold text-[var(--muted)]">القيمة التقديرية بالبيع القطاعي:</span>
-              <b className="font-bold text-emerald-700">{inventoryRetailValuation.toLocaleString("ar-EG")} ج.م</b>
+              <b className="font-bold text-emerald-700">{inventoryRetailValuation.toLocaleString("en-US")} ج.م</b>
             </div>
             <div className="flex justify-between items-center p-2 rounded-lg bg-[var(--bg)] border border-[var(--line)]">
               <span className="font-semibold text-[var(--muted)]">إجمالي وحدات المخزن:</span>
-              <b className="font-bold text-indigo-700">{Number(invCapital.totalPieces).toLocaleString("ar-EG")} قطعة</b>
+              <b className="font-bold text-indigo-700">{Number(invCapital.totalPieces).toLocaleString("en-US")} قطعة</b>
             </div>
           </div>
         </div>
@@ -544,7 +546,7 @@ export default async function ReportsPage({
                         {c.invoicesCount} فاتورة
                       </td>
                       <td className="text-left font-bold text-xs text-indigo-700">
-                        {Number(c.totalPurchased).toLocaleString("ar-EG")} ج.م
+                        {Number(c.totalPurchased).toLocaleString("en-US")} ج.م
                       </td>
                     </tr>
                   ))
@@ -598,7 +600,7 @@ export default async function ReportsPage({
                         {s.invoicesCount} أمر توريد
                       </td>
                       <td className="text-left font-bold text-xs text-purple-700">
-                        {Number(s.totalSupplied).toLocaleString("ar-EG")} ج.م
+                        {Number(s.totalSupplied).toLocaleString("en-US")} ج.م
                       </td>
                     </tr>
                   ))
@@ -645,10 +647,10 @@ export default async function ReportsPage({
                       </span>
                     </div>
                     <div className="text-xs font-bold text-[var(--ink)] flex items-center gap-3">
-                      <span>المبيعات: {rev.toLocaleString("ar-EG")} ج.م</span>
-                      <span className="text-emerald-700">الربح: {profit.toLocaleString("ar-EG")} ج.م (%{margin})</span>
+                      <span>المبيعات: {rev.toLocaleString("en-US")} ج.م</span>
+                      <span className="text-emerald-700">الربح: {profit.toLocaleString("en-US")} ج.م (%{margin})</span>
                       <span className="text-[var(--muted)] font-normal">
-                        ({Number(item.quantity).toLocaleString("ar-EG")} قطعة · {item.count} فاتورة)
+                        ({Number(item.quantity).toLocaleString("en-US")} قطعة · {item.count} فاتورة)
                       </span>
                     </div>
                   </div>
@@ -676,7 +678,7 @@ export default async function ReportsPage({
           <div className="flex items-center gap-2">
             <Flame size={18} className="text-amber-500" />
             <div>
-              <h3>أعلى ١٠ أصناف مبيعاً وتحقيقاً للأرباح</h3>
+              <h3>أعلى 10 أصناف مبيعاً وتحقيقاً للأرباح</h3>
               <p>تحليل تفصيلي للكميات، إجمالي الإيرادات، التكلفة، وصافي الربح المحقق لكل منتج</p>
             </div>
           </div>
@@ -708,16 +710,16 @@ export default async function ReportsPage({
                       <td className="text-center font-bold text-[var(--muted)]">{index + 1}</td>
                       <td className="font-bold text-[var(--ink)]">{item.name}</td>
                       <td className="text-center font-semibold">
-                        {Number(item.quantity).toLocaleString("ar-EG")} قطعة
+                        {Number(item.quantity).toLocaleString("en-US")} قطعة
                       </td>
                       <td className="text-center font-bold text-indigo-700">
-                        {rev.toLocaleString("ar-EG")} ج.م
+                        {rev.toLocaleString("en-US")} ج.م
                       </td>
                       <td className="text-center font-medium text-slate-600">
-                        {cost.toLocaleString("ar-EG")} ج.م
+                        {cost.toLocaleString("en-US")} ج.م
                       </td>
                       <td className="text-center font-bold text-emerald-700">
-                        +{profit.toLocaleString("ar-EG")} ج.م
+                        +{profit.toLocaleString("en-US")} ج.م
                       </td>
                       <td className="text-center">
                         <span className="inline-block px-2 py-0.5 rounded text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">

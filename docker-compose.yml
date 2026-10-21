@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: cosmetics
-      POSTGRES_PASSWORD: cosmetics_password_secure
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set a unique URL-safe POSTGRES_PASSWORD in .env}
       POSTGRES_DB: cosmetics_erp
     ports:
       - "5432:5432"
@@ -13,9 +13,9 @@ services:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U cosmetics -d cosmetics_erp"]
-      interval: 3s
-      timeout: 3s
-      retries: 10
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   web:
     build:
@@ -24,21 +24,20 @@ services:
     container_name: cosmetics_app
     restart: unless-stopped
     ports:
-      - "3000:3000"
-      - "3001:3000"
+      - "3001:3001"
     environment:
-      DATABASE_URL: postgres://cosmetics:cosmetics_password_secure@db:5432/cosmetics_erp
-      AUTH_SECRET: ${AUTH_SECRET:-cosmetics-erp-super-secret-key-32chars}
-      SESSION_COOKIE_SECURE: "false"
+      DATABASE_URL: postgres://cosmetics:${POSTGRES_PASSWORD}@db:5432/cosmetics_erp
+      AUTH_SECRET: ${AUTH_SECRET:?Set a unique random AUTH_SECRET of at least 32 characters in your .env file}
+      SESSION_COOKIE_SECURE: ${SESSION_COOKIE_SECURE:?Set true behind HTTPS, or false only for trusted LAN HTTP}
+      TRUST_PROXY: ${TRUST_PROXY:-false}
       HOST: "0.0.0.0"
-      PORT: "3000"
+      PORT: "3001"
       UPLOADS_DIR: "./data/uploads"
       BACKUP_DIR: "./data/backups"
     depends_on:
       db:
         condition: service_healthy
     volumes:
-      - ./data/network:/app/data/network
       - app_uploads:/app/data/uploads
       - app_backups:/app/data/backups
 

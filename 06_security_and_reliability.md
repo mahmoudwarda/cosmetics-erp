@@ -1,4 +1,6 @@
 # 06. تدقيق الأمان والموثوقية والصلاحيات (Security & Reliability Assessment)
+
+> This report describes an earlier source state. See [CURRENT_AUDIT_RESULTS.md](CURRENT_AUDIT_RESULTS.md) for current verification before deployment.
 **مشروع:** لمسة جمال — Cosmetics Supplies Warehouse ERP  
 
 ---
