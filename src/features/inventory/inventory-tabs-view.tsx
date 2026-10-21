@@ -832,28 +832,61 @@ export function InventoryTabsView({
           TAB 2: CATEGORIES FULL TABLE
           ========================================================================= */}
       {activeTab === "categories" && (
-        <div className="space-y-4">
-          {/* Add Category Bar */}
+        <div className="space-y-5">
+          {/* Add Category Card */}
           {canCheck("create") && (
-            <div className="p-4 bg-[var(--panel)] border border-[var(--line)] rounded-xl">
-              <form action={createCategoryAction} className="flex flex-col sm:flex-row gap-3 items-end">
-                <label className="flex-1 w-full">
-                  <span className="text-xs font-bold text-[var(--ink)] block mb-1">{t("inventory.newCategoryName")}:</span>
-                  <input
-                    name="name"
-                    required
-                    minLength={2}
-                    placeholder={locale === "en" ? "e.g., Skincare, Makeup, Perfumes..." : "مثال: عناية بالبشرة، مستحضرات تجميل، عطور..."}
-                    className="w-full text-xs"
-                  />
-                </label>
-                <button className="primary px-5 py-2 text-xs font-bold flex items-center gap-1.5 shrink-0" type="submit">
-                  <FolderPlus size={14} />
-                  <span>{t("inventory.saveCategory")}</span>
-                </button>
+            <div className="bg-[var(--panel)] border border-[var(--line-strong)] rounded-2xl shadow-xs overflow-hidden">
+              <div className="px-4 sm:px-5 py-3.5 bg-gradient-to-r from-indigo-50/70 via-slate-50/50 to-transparent border-b border-[var(--line)] flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                    <FolderPlus size={16} />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-[var(--ink)]">إضافة قسم أو تصنيف جديد</h3>
+                    <p className="text-[11px] text-[var(--muted)]">تنظيم المنتجات في مجموعات لتسهيل الفرز والتقارير</p>
+                  </div>
+                </div>
+                <span className="hidden sm:inline-flex items-center text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/70">
+                  نموذج تسجيل سريع
+                </span>
+              </div>
+              <form action={createCategoryAction} className="p-4 sm:p-5">
+                <div className="flex flex-col sm:flex-row gap-3 items-end">
+                  <label className="flex-1 w-full space-y-1.5">
+                    <span className="text-xs font-bold text-[var(--ink)] flex items-center gap-1">
+                      <span>{t("inventory.newCategoryName")}</span>
+                      <span className="text-rose-500 font-bold">*</span>
+                    </span>
+                    <input
+                      name="name"
+                      required
+                      minLength={2}
+                      placeholder={locale === "en" ? "e.g., Skincare, Makeup, Perfumes..." : "مثال: عناية بالبشرة، مستحضرات تجميل، عطور..."}
+                      className="w-full text-xs h-11 px-3.5 rounded-xl border border-[var(--line-strong)] bg-white focus:border-indigo-600 focus:ring-3 focus:ring-indigo-100 transition-all"
+                    />
+                  </label>
+                  <button
+                    className="primary px-6 h-11 text-xs font-bold flex items-center justify-center gap-2 shrink-0 rounded-xl cursor-pointer shadow-xs active:scale-97 transition-all w-full sm:w-auto"
+                    type="submit"
+                  >
+                    <FolderPlus size={15} />
+                    <span>{t("inventory.saveCategory")}</span>
+                  </button>
+                </div>
               </form>
             </div>
           )}
+
+          {/* Categories Full Table Header */}
+          <div className="flex items-center justify-between px-1">
+            <h4 className="text-xs font-bold text-[var(--ink)] flex items-center gap-2">
+              <FolderTree size={15} className="text-indigo-600" />
+              <span>الأقسام والتصنيفات المسجلة</span>
+            </h4>
+            <span className="text-[11px] font-bold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
+              {categories.length} تصنيف
+            </span>
+          </div>
 
           {/* Categories Full Table */}
           <div className="desktop-table-only table-wrap">
@@ -1047,40 +1080,82 @@ export function InventoryTabsView({
           TAB 3: UNITS & PACKAGING FULL TABLE
           ========================================================================= */}
       {activeTab === "units" && (
-        <div className="space-y-4">
-          {/* Add Unit Bar */}
+        <div className="space-y-5">
+          {/* Add Unit Card */}
           {canCheck("create") && (
-            <div className="p-4 bg-[var(--panel)] border border-[var(--line)] rounded-xl">
-              <form action={createUnitAction} className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
-                <label className="sm:col-span-2">
-                  <span className="text-xs font-bold text-[var(--ink)] block mb-1">{t("inventory.newUnitName")}:</span>
-                  <input
-                    name="name"
-                    required
-                    minLength={1}
-                    placeholder={locale === "en" ? "e.g., Carton 24 pcs, Pack of 6, Dozen..." : "مثال: كرتونة 24 قطعة، علبة 6، دستة..."}
-                    className="w-full text-xs"
-                  />
-                </label>
-                <label>
-                  <span className="text-xs font-bold text-[var(--ink)] block mb-1">{t("inventory.unitPackagingFactor")}:</span>
-                  <input
-                    name="factor"
-                    type="number"
-                    min="1"
-                    step="1"
-                    required
-                    defaultValue="1"
-                    className="w-full text-xs font-mono font-bold"
-                  />
-                </label>
-                <button className="primary px-5 py-2 text-xs font-bold flex items-center justify-center gap-1.5 h-[38px]" type="submit">
-                  <Plus size={14} />
-                  <span>{t("inventory.saveUnit")}</span>
-                </button>
+            <div className="bg-[var(--panel)] border border-[var(--line-strong)] rounded-2xl shadow-xs overflow-hidden">
+              <div className="px-4 sm:px-5 py-3.5 bg-gradient-to-r from-indigo-50/70 via-slate-50/50 to-transparent border-b border-[var(--line)] flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                    <Boxes size={16} />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-[var(--ink)]">تسجيل وحدة قياس وعبوة جديدة</h3>
+                    <p className="text-[11px] text-[var(--muted)]">تعريف معاملات الكراتين والعلب لتحويل الكميات تلقائياً إلى قطع</p>
+                  </div>
+                </div>
+                <span className="hidden sm:inline-flex items-center text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/70">
+                  معامل التعبئة والتجزئة
+                </span>
+              </div>
+              <form action={createUnitAction} className="p-4 sm:p-5">
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5 items-end">
+                  <label className="sm:col-span-6 space-y-1.5">
+                    <span className="text-xs font-bold text-[var(--ink)] flex items-center gap-1">
+                      <span>{t("inventory.newUnitName")}</span>
+                      <span className="text-rose-500 font-bold">*</span>
+                    </span>
+                    <input
+                      name="name"
+                      required
+                      minLength={1}
+                      placeholder={locale === "en" ? "e.g., Carton 24 pcs, Pack of 6, Dozen..." : "مثال: كرتونة 24 قطعة، علبة 6، دستة..."}
+                      className="w-full text-xs h-11 px-3.5 rounded-xl border border-[var(--line-strong)] bg-white focus:border-indigo-600 focus:ring-3 focus:ring-indigo-100 transition-all"
+                    />
+                  </label>
+                  <label className="sm:col-span-3 space-y-1.5">
+                    <span className="text-xs font-bold text-[var(--ink)] flex items-center gap-1">
+                      <span>{t("inventory.unitPackagingFactor")}</span>
+                      <span className="text-rose-500 font-bold">*</span>
+                    </span>
+                    <input
+                      name="factor"
+                      type="number"
+                      min="1"
+                      step="1"
+                      required
+                      defaultValue="1"
+                      className="w-full text-xs h-11 px-3.5 rounded-xl border border-[var(--line-strong)] bg-white font-mono font-bold focus:border-indigo-600 focus:ring-3 focus:ring-indigo-100 transition-all text-center"
+                    />
+                  </label>
+                  <div className="sm:col-span-3">
+                    <button
+                      className="primary w-full h-11 text-xs font-bold flex items-center justify-center gap-2 rounded-xl cursor-pointer shadow-xs active:scale-97 transition-all"
+                      type="submit"
+                    >
+                      <Plus size={15} />
+                      <span>{t("inventory.saveUnit")}</span>
+                    </button>
+                  </div>
+                </div>
+                <div className="mt-3 pt-3 border-t border-[var(--line)] flex items-center gap-2 text-[11px] text-[var(--muted)]">
+                  <span className="text-indigo-600 font-bold">💡 إرشاد:</span>
+                  <span>اكتب اسم العبوة (مثال: كرتونة)، وحدد كم قطعة بداخلها في معامل التحويل (مثال: 24).</span>
+                </div>
               </form>
             </div>
           )}
+
+          {/* Units Full Table Header */}
+          <div className="flex items-center justify-between px-1">
+            <h4 className="text-xs font-bold text-[var(--ink)] flex items-center gap-2">
+              <Boxes size={15} className="text-indigo-600" />
+              <span>وحدات القياس والعبوات المسجلة</span>
+            </h4>
+            <span className="text-[11px] font-bold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
+              {units.length} وحدة
+            </span>
+          </div>
 
           {/* Units Full Table */}
           <div className="desktop-table-only table-wrap">
