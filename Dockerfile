@@ -21,7 +21,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 COPY package.json package-lock.json ./
-RUN npm ci --include=dev
+RUN npm config set fetch-retry-mintimeout 20000 \
+    && npm config set fetch-retry-maxtimeout 120000 \
+    && npm config set fetch-retries 5 \
+    && npm ci --include=dev
 
 # ------------------------------------------------------------------------------
 # 3. Builder Stage
