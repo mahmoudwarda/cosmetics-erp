@@ -5,19 +5,20 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePermission } from "@/server/permissions";
 import { createInvoice, updateInvoice } from "@/server/services/invoices";
+import { zUuid, zOptionalUuid } from "@/lib/validation";
 
 const schema = z.object({
-  id: z.string().uuid().optional().or(z.literal("")),
+  id: zOptionalUuid,
   type: z.enum(["sale", "purchase", "sale_return", "purchase_return"]),
-  partyId: z.string().uuid().or(z.literal("")),
-  cashboxId: z.string().uuid().or(z.literal("")),
+  partyId: zUuid.or(z.literal("")),
+  cashboxId: zUuid.or(z.literal("")),
   paid: z.coerce.number().finite().min(0),
   discount: z.coerce.number().finite().min(0),
   tax: z.coerce.number().finite().min(0),
   lines: z
     .array(
       z.object({
-        productId: z.string().uuid(),
+        productId: zUuid,
         quantity: z.string().regex(/^\d+(\.\d{1,3})?$/),
         unitPrice: z.string().regex(/^\d+(\.\d{1,2})?$/),
         unitName: z.string().optional(),

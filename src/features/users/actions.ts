@@ -8,9 +8,10 @@ import { db } from "@/server/db";
 import { permissions, roles, users } from "@/server/db/schema";
 import { requirePermission } from "@/server/permissions";
 import { getSessionUserId } from "@/server/auth/session";
+import { zUuid, zOptionalUuid } from "@/lib/validation";
 
-const roleIds = z.string().uuid();
-const userSchema = z.object({ id: z.string().uuid().optional().or(z.literal("")), name: z.string().trim().min(2).max(140), username: z.string().trim().min(3).max(80).regex(/^[\p{L}\p{N}_.-]+$/u), roleId: roleIds, password: z.string().min(10).optional().or(z.literal("")) });
+const roleIds = zUuid;
+const userSchema = z.object({ id: zOptionalUuid, name: z.string().trim().min(2).max(140), username: z.string().trim().min(3).max(80).regex(/^[\p{L}\p{N}_.-]+$/u), roleId: roleIds, password: z.string().min(10).optional().or(z.literal("")) });
 const modules = ["inventory", "invoices", "finance", "parties", "users", "settings", "reports"] as const;
 const actions = ["view", "create", "edit", "delete", "export"] as const;
 type ModuleValue = typeof modules[number];
@@ -47,14 +48,14 @@ export async function saveUser(formData: FormData) {
 
 export async function resetUserPassword(formData: FormData) {
   await requirePermission("users", "edit");
-  const input = z.object({ id: z.string().uuid(), password: z.string().min(10) }).parse(Object.fromEntries(formData));
+  const input = z.object({ id: zUuid, password: z.string().min(10) }).parse(Object.fromEntries(formData));
   await db.update(users).set({ passwordHash: await hash(input.password) }).where(eq(users.id, input.id));
   revalidatePath("/users");
 }
 
 export async function toggleUserActive(formData: FormData) {
   await requirePermission("users", "edit");
-  const id = z.string().uuid().parse(formData.get("id"));
+  const id = zUuid.parse(formData.get("id"));
   const currentUserId = await getSessionUserId();
   if (id === currentUserId) throw new Error("CANNOT_DISABLE_SELF");
   const [user] = await db.select({ active: users.active }).from(users).where(eq(users.id, id)).limit(1);

@@ -7,6 +7,7 @@ import { db } from "@/server/db";
 import { cashTransactions, cashboxes, parties, partyLedger } from "@/server/db/schema";
 import { requirePermission } from "@/server/permissions";
 import { cashboxBalance } from "@/server/services/ledger-math";
+import { zUuid } from "@/lib/validation";
 
 export async function createCashbox(formData: FormData) {
   await requirePermission("finance", "create");
@@ -17,7 +18,7 @@ export async function createCashbox(formData: FormData) {
 
 export async function updateCashbox(formData: FormData) {
   await requirePermission("finance", "edit");
-  const input = z.object({ id: z.string().uuid(), name: z.string().trim().min(2).max(100), kind: z.enum(["cash", "bank", "wallet"]), openingBalance: z.coerce.number().finite().min(0) }).parse(Object.fromEntries(formData));
+  const input = z.object({ id: zUuid, name: z.string().trim().min(2).max(100), kind: z.enum(["cash", "bank", "wallet"]), openingBalance: z.coerce.number().finite().min(0) }).parse(Object.fromEntries(formData));
   await db.transaction(async (tx) => {
     const [existing] = await tx.select().from(cashboxes).where(and(eq(cashboxes.id, input.id), eq(cashboxes.active, true))).for("update").limit(1);
     if (!existing) throw new Error("CASHBOX_NOT_FOUND");
@@ -30,7 +31,7 @@ export async function updateCashbox(formData: FormData) {
 
 export async function deactivateCashbox(formData: FormData) {
   await requirePermission("finance", "delete");
-  const id = z.string().uuid().parse(formData.get("id"));
+  const id = zUuid.parse(formData.get("id"));
   await db.transaction(async (tx) => {
     const [box] = await tx.select({ id: cashboxes.id, active: cashboxes.active }).from(cashboxes).where(eq(cashboxes.id, id)).for("update").limit(1);
     if (!box || !box.active) throw new Error("CASHBOX_NOT_FOUND");
@@ -41,7 +42,7 @@ export async function deactivateCashbox(formData: FormData) {
 
 export async function addCashTransaction(formData: FormData) {
   const userId = await requirePermission("finance", "create");
-  const input = z.object({ cashboxId: z.string().uuid(), kind: z.enum(["income", "expense"]), amount: z.coerce.number().finite().positive(), category: z.string().trim().min(2).max(100), notes: z.string().trim().max(1000).optional() }).parse(Object.fromEntries(formData));
+  const input = z.object({ cashboxId: zUuid, kind: z.enum(["income", "expense"]), amount: z.coerce.number().finite().positive(), category: z.string().trim().min(2).max(100), notes: z.string().trim().max(1000).optional() }).parse(Object.fromEntries(formData));
   await db.transaction(async (tx) => {
     const [box] = await tx.select().from(cashboxes).where(and(eq(cashboxes.id, input.cashboxId), eq(cashboxes.active, true))).for("update").limit(1);
     if (!box) throw new Error("CASHBOX_NOT_FOUND");
@@ -56,7 +57,7 @@ export async function addCashTransaction(formData: FormData) {
 
 export async function transferCash(formData: FormData) {
   const userId = await requirePermission("finance", "create");
-  const input = z.object({ from: z.string().uuid(), to: z.string().uuid(), amount: z.coerce.number().finite().positive(), notes: z.string().trim().max(1000).optional() }).parse(Object.fromEntries(formData));
+  const input = z.object({ from: zUuid, to: zUuid, amount: z.coerce.number().finite().positive(), notes: z.string().trim().max(1000).optional() }).parse(Object.fromEntries(formData));
   if (input.from === input.to) throw new Error("TRANSFER_SAME_CASHBOX");
   await db.transaction(async (tx) => {
     const locked = await tx.select().from(cashboxes).where(and(eq(cashboxes.active, true), inArray(cashboxes.id, [input.from, input.to]))).orderBy(cashboxes.id).for("update");
@@ -76,7 +77,7 @@ export async function transferCash(formData: FormData) {
 
 export async function registerPartyPayment(formData: FormData) {
   const userId = await requirePermission("parties", "create");
-  const input = z.object({ partyId: z.string().uuid(), cashboxId: z.string().uuid(), amount: z.coerce.number().finite().positive(), notes: z.string().trim().max(1000).optional() }).parse(Object.fromEntries(formData));
+  const input = z.object({ partyId: zUuid, cashboxId: zUuid, amount: z.coerce.number().finite().positive(), notes: z.string().trim().max(1000).optional() }).parse(Object.fromEntries(formData));
   const [party] = await db.select().from(parties).where(eq(parties.id, input.partyId)).limit(1);
   if (!party) throw new Error("ACCOUNT_NOT_FOUND");
   await db.transaction(async (tx) => {

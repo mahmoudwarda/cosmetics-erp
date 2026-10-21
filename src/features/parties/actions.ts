@@ -6,8 +6,9 @@ import { z } from "zod";
 import { db } from "@/server/db";
 import { parties, partyLedger } from "@/server/db/schema";
 import { requirePermission } from "@/server/permissions";
+import { zUuid, zOptionalUuid } from "@/lib/validation";
 
-const partySchema = z.object({ id: z.string().uuid().optional().or(z.literal("")), type: z.enum(["customer", "supplier"]), name: z.string().trim().min(2).max(180), phone: z.string().trim().max(40).optional(), email: z.string().trim().email().or(z.literal("")).optional(), address: z.string().trim().max(1000).optional(), openingBalance: z.coerce.number().finite().min(0) });
+const partySchema = z.object({ id: zOptionalUuid, type: z.enum(["customer", "supplier"]), name: z.string().trim().min(2).max(180), phone: z.string().trim().max(40).optional(), email: z.string().trim().email().or(z.literal("")).optional(), address: z.string().trim().max(1000).optional(), openingBalance: z.coerce.number().finite().min(0) });
 export async function saveParty(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   await requirePermission("parties", id ? "edit" : "create");
@@ -33,7 +34,7 @@ export async function saveParty(formData: FormData) {
 
 export async function deleteParty(formData: FormData) {
   await requirePermission("parties", "delete");
-  const id = z.string().uuid().parse(formData.get("id"));
+  const id = zUuid.parse(formData.get("id"));
   await db.update(parties).set({ deletedAt: new Date() }).where(eq(parties.id, id));
   revalidatePath("/parties");
 }

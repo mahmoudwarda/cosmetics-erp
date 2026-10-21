@@ -6,14 +6,15 @@ import { z } from "zod";
 import { db } from "@/server/db";
 import { categories, products, stockMovements, units } from "@/server/db/schema";
 import { requirePermission } from "@/server/permissions";
+import { zUuid, zOptionalUuid } from "@/lib/validation";
 
 const productSchema = z.object({
-  id: z.string().uuid().optional().or(z.literal("")),
+  id: zOptionalUuid,
   name: z.string().trim().min(2).max(180),
   sku: z.string().trim().max(80).optional().or(z.literal("")),
   barcode: z.string().trim().max(100).optional().or(z.literal("")),
-  categoryId: z.string().uuid().optional().or(z.literal("")),
-  unitId: z.string().uuid().optional().or(z.literal("")),
+  categoryId: zOptionalUuid,
+  unitId: zOptionalUuid,
   costPrice: z.coerce.number().finite().min(0),
   salePrice: z.coerce.number().finite().min(0),
   stock: z
@@ -75,13 +76,13 @@ export async function saveProduct(formData: FormData) {
 
 export async function deleteProduct(formData: FormData) {
   await requirePermission("inventory", "delete");
-  const id = z.string().uuid().parse(formData.get("id"));
+  const id = zUuid.parse(formData.get("id"));
   await db.update(products).set({ active: false, deletedAt: new Date() }).where(eq(products.id, id));
   revalidatePath("/inventory");
   revalidatePath("/");
 }
 
-const adjustmentSchema = z.object({ productId: z.string().uuid(), quantity: z.number().finite().refine((n) => n !== 0), reason: z.string().trim().min(4) });
+const adjustmentSchema = z.object({ productId: zUuid, quantity: z.number().finite().refine((n) => n !== 0), reason: z.string().trim().min(4) });
 export async function adjustStock(raw: unknown) {
   const userId = await requirePermission("inventory", "edit");
   const input = adjustmentSchema.parse(raw);
@@ -110,7 +111,7 @@ export async function createCategory(formData: FormData) {
 
 export async function updateCategory(formData: FormData) {
   await requirePermission("inventory", "edit");
-  const id = z.string().uuid().parse(formData.get("id"));
+  const id = zUuid.parse(formData.get("id"));
   const name = z.string().trim().min(2).max(120).parse(formData.get("name"));
   await db.update(categories).set({ name }).where(eq(categories.id, id));
   revalidatePath("/inventory");
@@ -118,7 +119,7 @@ export async function updateCategory(formData: FormData) {
 
 export async function deleteCategory(formData: FormData) {
   await requirePermission("inventory", "delete");
-  const id = z.string().uuid().parse(formData.get("id"));
+  const id = zUuid.parse(formData.get("id"));
   await db.update(categories).set({ deletedAt: new Date() }).where(eq(categories.id, id));
   revalidatePath("/inventory");
 }
@@ -133,7 +134,7 @@ export async function createUnit(formData: FormData) {
 
 export async function updateUnit(formData: FormData) {
   await requirePermission("inventory", "edit");
-  const id = z.string().uuid().parse(formData.get("id"));
+  const id = zUuid.parse(formData.get("id"));
   const name = z.string().trim().min(1).max(80).parse(formData.get("name"));
   const factor = z.coerce.number().positive().parse(formData.get("factor") ?? 1);
   await db.update(units).set({ name, factor: String(factor) }).where(eq(units.id, id));
@@ -142,7 +143,7 @@ export async function updateUnit(formData: FormData) {
 
 export async function deleteUnit(formData: FormData) {
   await requirePermission("inventory", "delete");
-  const id = z.string().uuid().parse(formData.get("id"));
+  const id = zUuid.parse(formData.get("id"));
   await db.transaction(async (tx) => {
     await tx.update(products).set({ unitId: null }).where(eq(products.unitId, id));
     await tx.delete(units).where(eq(units.id, id));
