@@ -24,6 +24,7 @@ services:
     container_name: cosmetics_app
     restart: unless-stopped
     ports:
+      - "80:3001"
       - "3000:3001"
       - "3001:3001"
     environment:
@@ -33,6 +34,7 @@ services:
       TRUST_PROXY: ${TRUST_PROXY:-false}
       HOST: "0.0.0.0"
       PORT: "3001"
+      HOST_IP: ${HOST_IP:-172.20.10.2}
       UPLOADS_DIR: "./data/uploads"
       BACKUP_DIR: "./data/backups"
     depends_on:

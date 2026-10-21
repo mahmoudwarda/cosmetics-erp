@@ -17,11 +17,25 @@ export function NetworkShareDialog({
 }: NetworkShareDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [displayUrl, setDisplayUrl] = useState(networkUrl);
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
 
   useEffect(() => {
-    if (networkUrl) {
-      QRCodeLib.toDataURL(networkUrl, {
+    if (typeof window !== "undefined") {
+      const { hostname, host, protocol } = window.location;
+      if (hostname && hostname !== "localhost" && hostname !== "127.0.0.1" && !hostname.startsWith("172.18.")) {
+        setDisplayUrl(`${protocol}//${host}`);
+      } else if (networkUrl && networkUrl.includes("172.18.")) {
+        setDisplayUrl("http://172.20.10.2:3000");
+      } else if (networkUrl) {
+        setDisplayUrl(networkUrl);
+      }
+    }
+  }, [networkUrl]);
+
+  useEffect(() => {
+    if (displayUrl) {
+      QRCodeLib.toDataURL(displayUrl, {
         width: 260,
         margin: 2,
         color: {
@@ -33,11 +47,11 @@ export function NetworkShareDialog({
         .then((url) => setQrDataUrl(url))
         .catch((err) => console.error("QR Code generation error:", err));
     }
-  }, [networkUrl]);
+  }, [displayUrl]);
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(networkUrl);
+      await navigator.clipboard.writeText(displayUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     } catch {
@@ -121,12 +135,12 @@ export function NetworkShareDialog({
             </p>
 
             {/* Copy Box */}
-            <div className="flex items-center gap-2 p-1.5 bg-[var(--bg)] rounded-xl border border-[var(--line-strong)] mb-4">
+            <div className="flex items-center gap-2 p-1.5 bg-[var(--bg)] rounded-xl border border-[var(--line-strong)] mb-2">
               <input
                 id="network-url-input"
                 type="text"
-                readOnly
-                value={networkUrl}
+                value={displayUrl}
+                onChange={(e) => setDisplayUrl(e.target.value)}
                 dir="ltr"
                 className="w-full bg-transparent px-3 py-1.5 text-xs font-mono font-bold text-emerald-700 outline-none"
               />
@@ -148,6 +162,10 @@ export function NetworkShareDialog({
                 )}
               </button>
             </div>
+
+            <p className="text-[11px] text-amber-700 bg-amber-50 p-2 rounded-lg border border-amber-200 mb-4 font-medium">
+              💡 <strong>تنبيه للمتصفح:</strong> تأكد أن الرابط يبدأ بـ <span className="font-mono font-bold" dir="ltr">http://</span> وليس <span className="font-mono font-bold" dir="ltr">https://</span> لعدم وجود شهادة SSL محلية.
+            </p>
 
             {/* Instructions */}
             <div className="space-y-2 bg-[var(--bg)] rounded-xl p-3 border border-[var(--line)] text-xs mb-4">
