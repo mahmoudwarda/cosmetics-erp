@@ -45,7 +45,10 @@ export default async function ReportsPage({
   const localeCode = "en-US";
 
   const range = await searchParams;
-  const todayStr = new Date().toISOString().slice(0, 10);
+  
+  // Calculate today's date in local time (Egypt / Middle East timezone)
+  const nowInCairo = new Date(new Date().toLocaleString("en-US", { timeZone: "Africa/Cairo" }));
+  const todayStr = `${nowInCairo.getFullYear()}-${String(nowInCairo.getMonth() + 1).padStart(2, "0")}-${String(nowInCairo.getDate()).padStart(2, "0")}`;
 
   // Default to today unless explicitly provided
   const fromDate = range.from || todayStr;
@@ -53,14 +56,14 @@ export default async function ReportsPage({
 
   const saleConditions = [
     eq(invoices.type, "sale"),
-    gte(invoices.createdAt, new Date(`${fromDate}T00:00:00`)),
-    lte(invoices.createdAt, new Date(`${toDate}T23:59:59.999`)),
+    sql`(${invoices.createdAt} AT TIME ZONE 'Africa/Cairo')::date >= ${fromDate}::date`,
+    sql`(${invoices.createdAt} AT TIME ZONE 'Africa/Cairo')::date <= ${toDate}::date`,
   ];
 
   const purchaseConditions = [
     eq(invoices.type, "purchase"),
-    gte(invoices.createdAt, new Date(`${fromDate}T00:00:00`)),
-    lte(invoices.createdAt, new Date(`${toDate}T23:59:59.999`)),
+    sql`(${invoices.createdAt} AT TIME ZONE 'Africa/Cairo')::date >= ${fromDate}::date`,
+    sql`(${invoices.createdAt} AT TIME ZONE 'Africa/Cairo')::date <= ${toDate}::date`,
   ];
 
   const [
@@ -188,10 +191,10 @@ export default async function ReportsPage({
   const inventoryWorkingCapital = Number(invCapital.capitalCost);
   const inventoryRetailValuation = Number(invCapital.retailValuation);
 
-  // Helper date shortcuts
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setUTCDate(sevenDaysAgo.getUTCDate() - 7);
-  const past7Days = sevenDaysAgo.toISOString().slice(0, 10);
+  // Helper date shortcuts based on local date
+  const d7 = new Date(`${todayStr}T12:00:00Z`);
+  d7.setUTCDate(d7.getUTCDate() - 7);
+  const past7Days = d7.toISOString().slice(0, 10);
   const monthStart = `${todayStr.slice(0, 8)}01`;
 
   return (
