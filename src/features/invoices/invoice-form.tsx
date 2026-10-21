@@ -886,8 +886,8 @@ export function InvoiceForm({
         </div>
       </div>
 
-      {/* Items Table */}
-      <div className="table-wrap">
+      {/* Items Desktop Table (>= 768px) */}
+      <div className="desktop-table-only table-wrap">
         <table>
           <thead>
             <tr>
@@ -1003,7 +1003,6 @@ export function InvoiceForm({
                   <td>
                     <div className="text-center">
                       {type === "sale" ? (
-                        // In sales, unit price is protected to prevent selling below unit price
                         <div className="inline-flex flex-col items-center">
                           <span className="font-mono font-bold text-sm text-[var(--ink)] px-2 py-1 bg-[var(--bg)] border border-[var(--line)] rounded-md">
                             {formatAmount(line.unitPrice)} ج.م
@@ -1055,6 +1054,156 @@ export function InvoiceForm({
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Items Mobile Card List (< 768px) */}
+      <div className="mobile-cards-only space-y-3">
+        {lines.length > 0 ? (
+          lines.map((line, index) => {
+            const lineTotal = (Number(line.quantity) * Number(line.unitPrice)).toFixed(2);
+            const factor = Math.round(Number(line.unitFactor ?? 1)) || 1;
+            const totalPieces = (parseInt(line.quantity, 10) || 0) * factor;
+
+            return (
+              <div
+                key={`${line.productId}-${index}`}
+                className="p-3.5 bg-[var(--panel)] border border-[var(--line)] rounded-xl shadow-xs space-y-3"
+              >
+                {/* Header: Name + Delete */}
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <b className="text-xs font-bold text-[var(--ink)] block truncate">
+                      {line.name}
+                    </b>
+                    {factor > 1 && (
+                      <span className="text-[10px] text-indigo-700 font-bold block mt-0.5">
+                        عبوة: {line.unitName ?? "كرتونة"} ({factor} قطعة)
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    className="p-1.5 text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded-lg cursor-pointer shrink-0"
+                    title="حذف هذا البند"
+                    onClick={() => setLines((old) => old.filter((_, i) => i !== index))}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+
+                {/* Controls: Unit Dropdown + Quantity Stepper */}
+                <div className="grid grid-cols-2 gap-2 pt-1 border-t border-[var(--line)]/60">
+                  <div>
+                    <label className="text-[10px] text-[var(--muted)] font-bold block mb-1">
+                      الوحدة / التعبئة:
+                    </label>
+                    <select
+                      aria-label="الوحدة والتعبئة"
+                      className="w-full bg-[var(--bg)] border border-[var(--line-strong)] rounded-lg py-1.5 px-2 text-xs font-bold text-center"
+                      value={line.unitId ?? ""}
+                      onChange={(e) => {
+                        const newUnitId = e.target.value;
+                        const newUnit = availableUnits.find((u) => u.id === newUnitId);
+                        const newFactor = Math.round(Number(newUnit?.factor ?? 1)) || 1;
+                        const baseP = Number(
+                          line.basePrice ||
+                            Number(line.unitPrice) / (Number(line.unitFactor) || 1)
+                        );
+                        const newPrice = formatAmountInput(baseP * newFactor);
+                        const prod = products.find((p) => p.id === line.productId);
+                        const minP = isCustomerType ? formatAmountInput(Number(prod?.costPrice ?? 0) * newFactor) : "0";
+
+                        setLines((old) =>
+                          old.map((item, i) =>
+                            i === index
+                              ? {
+                                  ...item,
+                                  unitId: newUnit?.id,
+                                  unitName: newUnit?.name ?? "قطعة",
+                                  unitFactor: String(newFactor),
+                                  unitPrice: newPrice,
+                                  basePrice: String(baseP),
+                                  minPrice: minP,
+                                }
+                              : item
+                          )
+                        );
+                      }}
+                    >
+                      {availableUnits.map((u) => {
+                        const f = Math.round(Number(u.factor)) || 1;
+                        return (
+                          <option key={u.id} value={u.id}>
+                            {u.name} {f > 1 ? `(${f} ق)` : ""}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] text-[var(--muted)] font-bold block mb-1 text-center">
+                      الكمية ({totalPieces} ق):
+                    </label>
+                    <div className="flex items-center justify-center rounded-lg border border-[var(--line-strong)] bg-[var(--bg)] overflow-hidden">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const cur = parseInt(line.quantity, 10) || 1;
+                          if (cur > 1) updateLineQuantity(index, String(cur - 1));
+                        }}
+                        className="w-8 h-8 flex items-center justify-center text-slate-600 hover:bg-slate-200 cursor-pointer font-bold"
+                        title="إنقاص الكمية"
+                      >
+                        <Minus size={13} />
+                      </button>
+                      <input
+                        aria-label="الكمية"
+                        className="w-full text-center font-bold font-mono py-1 text-xs bg-transparent border-0"
+                        type="number"
+                        min="1"
+                        step="1"
+                        value={line.quantity}
+                        onChange={(e) => updateLineQuantity(index, e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const cur = parseInt(line.quantity, 10) || 1;
+                          updateLineQuantity(index, String(cur + 1));
+                        }}
+                        className="w-8 h-8 flex items-center justify-center text-slate-600 hover:bg-slate-200 cursor-pointer font-bold"
+                        title="زيادة الكمية"
+                      >
+                        <Plus size={13} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Price and Subtotal */}
+                <div className="flex items-center justify-between pt-2 border-t border-[var(--line)]/60 text-xs">
+                  <div>
+                    <span className="text-[10px] text-[var(--muted)] block">سعر الوحدة:</span>
+                    <span className="font-mono font-bold text-[var(--ink)]">
+                      {formatAmount(line.unitPrice)} ج.م
+                    </span>
+                  </div>
+                  <div className="text-left">
+                    <span className="text-[10px] text-[var(--muted)] block">إجمالي البند:</span>
+                    <b className="font-mono font-black text-sm text-indigo-700">
+                      {formatAmount(lineTotal)} ج.م
+                    </b>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <div className="p-6 text-center bg-[var(--panel)] border border-[var(--line)] rounded-xl text-[var(--muted)] text-xs">
+            {t("invoices.emptyLines", "لم يتم إضافة أصناف بعد. اختر المنتج والوحدة والكمية أعلاه لإضافته إلى الفاتورة.")}
+          </div>
+        )}
       </div>
 
       {/* Financial Summary & Payment Calculations */}
@@ -1197,9 +1346,9 @@ export function InvoiceForm({
       </div>
 
       {/* Protected Submit Button (Anti-Double-Click & Validation Ready) */}
-      <div className="flex justify-end pt-2">
+      <div className="flex justify-end pt-2 w-full">
         <button
-          className="primary px-8 py-3 text-sm min-w-[220px] font-black cursor-pointer rounded-xl"
+          className="primary px-8 py-3.5 text-sm w-full sm:w-auto min-w-[220px] font-black cursor-pointer rounded-xl flex items-center justify-center shadow-md active:scale-98 transition-all"
           type="submit"
           disabled={lines.length === 0 || isSubmitting}
         >

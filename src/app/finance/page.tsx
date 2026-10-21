@@ -268,7 +268,7 @@ export default async function FinancePage() {
           <span className="date-pill">إجمالي السيولة: {grandTotalCash.toLocaleString("en-US")} ج.م</span>
         </div>
 
-        <div className="table-wrap">
+        <div className="desktop-table-only table-wrap">
           <table>
             <thead>
               <tr>
@@ -332,6 +332,62 @@ export default async function FinancePage() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Cash Transactions Cards */}
+        <div className="mobile-cards-only space-y-2.5">
+          {txs.length ? (
+            txs.map((tx) => {
+              const isPositive = ["income", "transfer_in", "invoice_payment", "party_payment"].includes(tx.kind);
+              const boxName = allBoxes.find((box) => box.id === tx.cashboxId)?.name ?? "خزنة محذوفة";
+              return (
+                <div key={`mob-tx-${tx.id}`} className="p-3 bg-[var(--panel)] border border-[var(--line)] rounded-xl shadow-xs space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <b className="text-xs font-bold text-[var(--ink)] block">{boxName}</b>
+                      <span className="text-[11px] text-[var(--muted)] font-mono">
+                        {new Date(tx.createdAt).toLocaleString("en-US")}
+                      </span>
+                    </div>
+                    <span
+                      className={`inline-block px-2 py-0.5 rounded text-[11px] font-bold ${
+                        isPositive
+                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                          : "bg-rose-50 text-rose-700 border border-rose-200"
+                      }`}
+                    >
+                      {tx.kind === "income"
+                        ? "إيراد"
+                        : tx.kind === "expense"
+                        ? "مصروف"
+                        : tx.kind === "transfer_in"
+                        ? "تحويل وارد"
+                        : tx.kind === "transfer_out"
+                        ? "تحويل صادر"
+                        : tx.kind === "invoice_payment"
+                        ? "تحصيل فاتورة"
+                        : tx.kind === "party_payment"
+                        ? "سند عميل/مورد"
+                        : tx.kind}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2 py-1.5 px-2.5 bg-[var(--bg)] rounded-lg border border-[var(--line)]">
+                    <span className="text-xs text-[var(--muted)] font-semibold truncate max-w-[60%]">
+                      {tx.category ? `${tx.category} · ` : ""}{tx.notes ?? "بدون ملاحظات"}
+                    </span>
+                    <b className={`text-sm font-black font-mono shrink-0 ${isPositive ? "text-emerald-700" : "text-rose-600"}`}>
+                      {isPositive ? "+" : "−"} {Number(tx.amount).toLocaleString("en-US")} ج.م
+                    </b>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="p-6 text-center text-sm text-[var(--muted)] bg-[var(--panel)] border border-[var(--line)] rounded-xl">
+              لا توجد حركات مسجلة.
+            </div>
+          )}
         </div>
       </section>
     </main>

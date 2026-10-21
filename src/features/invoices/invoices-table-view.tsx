@@ -180,8 +180,8 @@ export function InvoicesTableView({ rows }: { rows: InvoiceItem[] }) {
         </div>
       </div>
 
-      {/* Invoices Table */}
-      <div className="table-wrap">
+      {/* Invoices Desktop Table (>= 768px) */}
+      <div className="desktop-table-only table-wrap">
         <table className="w-full min-w-[760px]">
           <thead>
             <tr>
@@ -293,6 +293,114 @@ export function InvoicesTableView({ rows }: { rows: InvoiceItem[] }) {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Invoices Mobile Card List (< 768px) */}
+      <div className="mobile-cards-only space-y-3">
+        {filtered.length ? (
+          filtered.map(({ invoice: row, partyName }) => {
+            const remaining = Math.max(0, Number(row.total) - Number(row.paid));
+            const dateObj = new Date(row.createdAt);
+            const localeCode = "en-US";
+
+            return (
+              <div key={row.id} className="p-4 bg-[var(--panel)] border border-[var(--line)] rounded-2xl shadow-xs space-y-3">
+                {/* Header: Number + Type + Status */}
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="font-mono text-xs font-black px-2.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">
+                      {row.number}
+                    </span>
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold border ${
+                        row.type === "sale"
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          : row.type === "purchase"
+                          ? "bg-purple-50 text-purple-700 border-purple-200"
+                          : row.type === "sale_return"
+                          ? "bg-amber-50 text-amber-700 border-amber-200"
+                          : "bg-rose-50 text-rose-700 border-rose-200"
+                      }`}
+                    >
+                      {row.type === "sale"
+                        ? t("invoices.salesBadge", "مبيعات")
+                        : row.type === "purchase"
+                        ? t("invoices.purchaseBadge", "مشتريات")
+                        : row.type === "sale_return"
+                        ? t("invoices.saleReturnBadge", "مرتجع بيع")
+                        : t("invoices.purchaseReturnBadge", "مرتجع شراء")}
+                    </span>
+                  </div>
+
+                  <span className={`status ${row.status} text-[11px]`}>
+                    {row.status === "paid"
+                      ? t("invoices.fullyPaid", "مدفوعة بالكامل")
+                      : row.status === "partial"
+                      ? t("invoices.partiallyPaid", "مدفوعة جزئياً")
+                      : t("invoices.unpaidStatus", "غير مدفوعة")}
+                  </span>
+                </div>
+
+                {/* Party Name & Date */}
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <span className="text-[11px] text-[var(--muted)] font-medium block">
+                      {row.type.includes("sale") ? "العميل:" : "المورد:"}
+                    </span>
+                    <b className="text-sm font-bold text-[var(--ink)] block">
+                      {partyName ?? (row.type.includes("sale") ? t("invoices.walkInCustomer", "عميل نقدي") : t("invoices.walkInSupplier", "مورد نقدي"))}
+                    </b>
+                  </div>
+                  <span className="text-[11px] text-[var(--muted)] font-mono text-left shrink-0">
+                    {dateObj.toLocaleDateString(localeCode, {
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+
+                {/* Financial figures strip */}
+                <div className="grid grid-cols-3 gap-2 p-2.5 bg-[var(--surface-muted)]/70 rounded-xl text-center text-xs">
+                  <div>
+                    <span className="text-[10px] text-[var(--muted)] block">الإجمالي</span>
+                    <b className="font-mono font-black text-[var(--ink)] block">
+                      {Number(row.total).toLocaleString(localeCode, { maximumFractionDigits: 1 })}
+                    </b>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-[var(--muted)] block">المدفوع</span>
+                    <b className="font-mono font-bold text-emerald-700 block">
+                      {Number(row.paid).toLocaleString(localeCode, { maximumFractionDigits: 1 })}
+                    </b>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-[var(--muted)] block">المتبقي</span>
+                    <b className={`font-mono font-bold block ${remaining > 0 ? "text-rose-600 font-black" : "text-emerald-700"}`}>
+                      {remaining > 0 ? remaining.toLocaleString(localeCode, { maximumFractionDigits: 1 }) : "0"}
+                    </b>
+                  </div>
+                </div>
+
+                {/* Action button */}
+                <div className="pt-1">
+                  <Link
+                    className="w-full py-2 px-3 rounded-xl border border-sky-300 bg-sky-50 hover:bg-sky-100 text-sky-800 flex items-center justify-center gap-1.5 text-xs font-bold transition-colors cursor-pointer"
+                    href={`/invoices/${row.id}`}
+                  >
+                    <Eye size={14} />
+                    <span>{t("invoices.openPrint", "فتح وتفاصيل الفاتورة وطباعتها")}</span>
+                  </Link>
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <div className="p-8 text-center bg-[var(--panel)] border border-[var(--line)] rounded-2xl text-[var(--muted)] text-xs">
+            {searchTerm ? t("common.noMatchingResults", "لا توجد فواتير تطابق معايير البحث الحالية.") : t("common.noData", "لا توجد فواتير مسجلة في هذا القسم.")}
+          </div>
+        )}
       </div>
     </div>
   );

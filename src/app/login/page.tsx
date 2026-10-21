@@ -27,7 +27,7 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
   return (
     <main className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-gradient-to-br from-slate-100 via-indigo-50/30 to-slate-200/60">
       <section
-        className="w-full max-w-[440px] bg-white border border-slate-200/90 rounded-3xl p-8 sm:p-10 text-right transition-all"
+        className="w-full max-w-[440px] bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-10 text-right transition-all"
         aria-labelledby="login-heading"
       >
         {/* Brand & Store Header */}

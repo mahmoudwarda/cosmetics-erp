@@ -156,56 +156,109 @@ export default async function StatementsPage({
         </div>
 
         {party ? (
-          <div className="table-wrap my-4">
-            <table>
-              <thead>
-                <tr>
-                  <th>التاريخ والوقت</th>
-                  <th>البيان والتفاصيل</th>
-                  <th className="text-center">مدين (+)</th>
-                  <th className="text-center">دائن (−)</th>
-                  <th className="text-center">الرصيد الجاري</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((entry) => (
-                  <tr key={entry.id}>
-                    <td className="text-xs text-[var(--muted)]">
-                      {entry.createdAt.getTime() === 0
-                        ? "رصيد افتتاحي سابق"
-                        : new Date(entry.createdAt).toLocaleString("en-US")}
-                    </td>
-                    <td className="font-semibold text-[var(--ink)]">
-                      {entry.notes ??
-                        (entry.kind === "sale"
-                          ? "فاتورة بيع"
-                          : entry.kind === "purchase"
-                          ? "فاتورة شراء"
-                          : entry.kind === "payment"
-                          ? "سند دفعة"
-                          : "حركة")}
-                    </td>
-                    <td className="text-center font-semibold">
-                      {Number(entry.debit) > 0 ? `${formatAmount(entry.debit)} ج.م` : "—"}
-                    </td>
-                    <td className="text-center font-semibold">
-                      {Number(entry.credit) > 0 ? `${formatAmount(entry.credit)} ج.م` : "—"}
-                    </td>
-                    <td className="text-center font-bold text-[var(--ink)]">
-                      {formatAmount(entry.balance)} ج.م
-                    </td>
-                  </tr>
-                ))}
-                {rows.length === 0 && (
+          <>
+            <div className="desktop-table-only table-wrap my-4">
+              <table>
+                <thead>
                   <tr>
-                    <td colSpan={5} className="table-empty">
-                      لا توجد حركات مالية مسجلة لهذا الحساب خلال الفترة المحددة.
-                    </td>
+                    <th>التاريخ والوقت</th>
+                    <th>البيان والتفاصيل</th>
+                    <th className="text-center">مدين (+)</th>
+                    <th className="text-center">دائن (−)</th>
+                    <th className="text-center">الرصيد الجاري</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {rows.map((entry) => (
+                    <tr key={entry.id}>
+                      <td className="text-xs text-[var(--muted)]">
+                        {entry.createdAt.getTime() === 0
+                          ? "رصيد افتتاحي سابق"
+                          : new Date(entry.createdAt).toLocaleString("en-US")}
+                      </td>
+                      <td className="font-semibold text-[var(--ink)]">
+                        {entry.notes ??
+                          (entry.kind === "sale"
+                            ? "فاتورة بيع"
+                            : entry.kind === "purchase"
+                            ? "فاتورة شراء"
+                            : entry.kind === "payment"
+                            ? "سند دفعة"
+                            : "حركة")}
+                      </td>
+                      <td className="text-center font-semibold">
+                        {Number(entry.debit) > 0 ? `${formatAmount(entry.debit)} ج.م` : "—"}
+                      </td>
+                      <td className="text-center font-semibold">
+                        {Number(entry.credit) > 0 ? `${formatAmount(entry.credit)} ج.م` : "—"}
+                      </td>
+                      <td className="text-center font-bold text-[var(--ink)]">
+                        {formatAmount(entry.balance)} ج.م
+                      </td>
+                    </tr>
+                  ))}
+                  {rows.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="table-empty">
+                        لا توجد حركات مالية مسجلة لهذا الحساب خلال الفترة المحددة.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="mobile-cards-only space-y-2.5 my-4">
+              {rows.length ? (
+                rows.map((entry) => (
+                  <div key={`mob-stmt-${entry.id}`} className="p-3 bg-[var(--panel)] border border-[var(--line)] rounded-xl shadow-xs space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <b className="text-xs font-bold text-[var(--ink)]">
+                        {entry.notes ??
+                          (entry.kind === "sale"
+                            ? "فاتورة بيع"
+                            : entry.kind === "purchase"
+                            ? "فاتورة شراء"
+                            : entry.kind === "payment"
+                            ? "سند دفعة"
+                            : "حركة")}
+                      </b>
+                      <span className="text-[11px] text-[var(--muted)] font-mono shrink-0">
+                        {entry.createdAt.getTime() === 0
+                          ? "رصيد افتتاحي"
+                          : new Date(entry.createdAt).toLocaleDateString("en-US")}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2 py-1.5 px-2 bg-[var(--bg)] rounded-lg text-center border border-[var(--line)]">
+                      <div>
+                        <span className="text-[10px] text-[var(--muted)] block">مدين (+)</span>
+                        <b className="text-xs text-rose-600 font-mono">
+                          {Number(entry.debit) > 0 ? `${formatAmount(entry.debit)}` : "—"}
+                        </b>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-[var(--muted)] block">دائن (−)</span>
+                        <b className="text-xs text-emerald-700 font-mono">
+                          {Number(entry.credit) > 0 ? `${formatAmount(entry.credit)}` : "—"}
+                        </b>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-[var(--muted)] block">الرصيد</span>
+                        <b className="text-xs text-[var(--ink)] font-mono">
+                          {formatAmount(entry.balance)}
+                        </b>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="p-6 text-center text-sm text-[var(--muted)] bg-[var(--panel)] border border-[var(--line)] rounded-xl">
+                  لا توجد حركات مسجلة لهذا الحساب.
+                </div>
+              )}
+            </div>
+          </>
         ) : (
           <div className="empty-state py-12">
             <div className="empty-icon">

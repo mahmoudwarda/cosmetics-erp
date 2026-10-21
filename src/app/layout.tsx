@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { PageTransition } from "@/components/page-transition";
 import { AppNavigation } from "@/components/app-navigation";
@@ -8,6 +8,14 @@ import { permissions, settings, users } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm";
 import { localLogoUrl } from "@/server/services/branding";
 import { getLocalNetworkUrl } from "@/server/network";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+  themeColor: "#3b49df",
+};
 
 export const metadata: Metadata = {
   title: "Cosmetics ERP | إدارة متجر التجميل",

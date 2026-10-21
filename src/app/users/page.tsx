@@ -190,7 +190,7 @@ export default async function UsersPage() {
           </div>
         </div>
 
-        <div className="table-wrap">
+        <div className="desktop-table-only table-wrap">
           <table>
             <thead>
               <tr>
@@ -330,6 +330,131 @@ export default async function UsersPage() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Users Cards */}
+        <div className="mobile-cards-only space-y-2.5">
+          {userRows.length ? (
+            userRows.map(({ user, roleName }) => (
+              <div key={`mob-user-${user.id}`} className="p-3 bg-[var(--panel)] border border-[var(--line)] rounded-xl shadow-xs space-y-2.5">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 font-bold text-xs flex items-center justify-center shrink-0 border border-indigo-200">
+                      {user.name.charAt(0)}
+                    </div>
+                    <div className="min-w-0">
+                      <b className="text-sm font-bold text-[var(--ink)] block truncate">{user.name}</b>
+                      <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
+                        <span className="font-mono text-[11px] px-1.5 py-0.5 rounded bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)]" dir="ltr">
+                          {user.username}
+                        </span>
+                        {user.id === currentUserId && (
+                          <span className="text-[10px] text-indigo-700 font-bold">
+                            ({translate("users.currentAccount", locale)})
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <span
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold shrink-0 ${
+                      user.active
+                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                        : "bg-rose-50 text-rose-700 border border-rose-200"
+                    }`}
+                  >
+                    {user.active ? <CheckCircle2 size={11} /> : <XCircle size={11} />}
+                    <span>{user.active ? translate("common.active", locale) : translate("common.suspended", locale)}</span>
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between gap-2 py-1.5 px-2.5 bg-[var(--bg)] rounded-lg border border-[var(--line)]">
+                  <span className="text-xs text-[var(--muted)] font-semibold">{translate("users.role", locale)}:</span>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                    <Shield size={11} />
+                    <span>{roleName}</span>
+                  </span>
+                </div>
+
+                <div className="pt-2 border-t border-[var(--line)] flex items-center justify-end gap-1.5 flex-wrap">
+                  <details className="row-editor">
+                    <summary className="h-8 px-2.5 rounded-lg border border-sky-200 bg-sky-50 text-sky-700 inline-flex items-center gap-1 text-xs font-bold cursor-pointer">
+                      <Edit size={12} />
+                      <span>{translate("users.editUser", locale)}</span>
+                    </summary>
+                    <form action={saveUser} className="form-grid">
+                      <CloseDisclosureButton title={`${translate("users.editUser", locale)}: ${user.name}`} />
+                      <input type="hidden" name="id" value={user.id} />
+                      <label>
+                        {locale === "en" ? "Full Name" : "الاسم الكامل"}
+                        <input name="name" defaultValue={user.name} required />
+                      </label>
+                      <label>
+                        {translate("users.username", locale)}
+                        <input name="username" defaultValue={user.username} required />
+                      </label>
+                      <label className="wide-field">
+                        {translate("users.role", locale)}
+                        <select name="roleId" defaultValue={user.roleId}>
+                          {roleRows.map((role) => (
+                            <option value={role.id} key={role.id}>
+                              {role.name}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <button className="primary">{translate("common.save", locale)}</button>
+                    </form>
+                  </details>
+
+                  <details className="row-editor">
+                    <summary className="h-8 px-2.5 rounded-lg border border-amber-200 bg-amber-50 text-amber-700 inline-flex items-center gap-1 text-xs font-bold cursor-pointer">
+                      <KeyRound size={12} />
+                      <span>{translate("users.password", locale)}</span>
+                    </summary>
+                    <form action={resetUserPassword} className="form-grid">
+                      <CloseDisclosureButton title={`${translate("users.resetPassword", locale)}: ${user.name}`} />
+                      <input type="hidden" name="id" value={user.id} />
+                      <label className="wide-field">
+                        {locale === "en" ? "New Password (min 10 chars)" : "كلمة المرور الجديدة (10 أحرف على الأقل)"}
+                        <input
+                          name="password"
+                          type="password"
+                          minLength={10}
+                          required
+                          autoComplete="new-password"
+                          placeholder="••••••••••"
+                        />
+                      </label>
+                      <button className="primary">{translate("users.resetPassword", locale)}</button>
+                    </form>
+                  </details>
+
+                  {user.id !== currentUserId && (
+                    <form action={toggleUserActive} className="inline-flex">
+                      <input type="hidden" name="id" value={user.id} />
+                      <button
+                        className={`h-8 px-2.5 rounded-lg border text-xs font-bold inline-flex items-center gap-1 cursor-pointer ${
+                          user.active
+                            ? "border-rose-200 bg-rose-50 text-rose-700"
+                            : "border-emerald-200 bg-emerald-50 text-emerald-700"
+                        }`}
+                        title={user.active ? (locale === "en" ? "Suspend user account" : "إيقاف الحساب مؤقتاً") : (locale === "en" ? "Activate user account" : "تفعيل الحساب مجدداً")}
+                      >
+                        {user.active ? <UserX size={12} /> : <UserCheck size={12} />}
+                        <span>{user.active ? translate("users.suspend", locale) : translate("users.activate", locale)}</span>
+                      </button>
+                    </form>
+                  )}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="p-6 text-center text-sm text-[var(--muted)] bg-[var(--panel)] border border-[var(--line)] rounded-xl">
+              {locale === "en" ? "No users registered yet." : "لا يوجد مستخدمون مسجلون."}
+            </div>
+          )}
         </div>
       </section>
 

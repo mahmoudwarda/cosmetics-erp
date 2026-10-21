@@ -347,7 +347,7 @@ export function InventoryTabsView({
           </div>
 
           {/* Products Table */}
-          <div className="table-wrap">
+          <div className="desktop-table-only table-wrap">
             <table className="w-full min-w-[800px]">
               <thead>
                 <tr>
@@ -587,6 +587,241 @@ export function InventoryTabsView({
                 )}
               </tbody>
             </table>
+          </div>
+
+          {/* Products Mobile Cards */}
+          <div className="mobile-cards-only space-y-3">
+            {filteredProducts.length ? (
+              filteredProducts.map((p) => {
+                const stockNum = Number(p.stock);
+                const isOut = stockNum <= 0;
+                const isLow = stockNum <= Number(p.reorderLevel);
+                const catName = p.categoryId ? catMap.get(p.categoryId) : null;
+                const unit = p.unitId ? unitMap.get(p.unitId) : null;
+                const unitFactor = unit ? Number(unit.factor) : 1;
+
+                let packagingText = "";
+                if (unitFactor > 1 && stockNum > 0) {
+                  const boxesCount = Math.floor(stockNum / unitFactor);
+                  const remainder = stockNum % unitFactor;
+                  packagingText = ` (${boxesCount} ${unit?.name || (locale === "en" ? "carton" : "كرتونة")}${
+                    remainder > 0 ? (locale === "en" ? ` & ${remainder} pcs` : ` و ${remainder} قطعة`) : ""
+                  })`;
+                }
+
+                return (
+                  <div key={`mob-${p.id}`} className="p-3.5 bg-[var(--panel)] border border-[var(--line)] rounded-xl shadow-sm space-y-2.5">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <b className="text-sm font-bold text-[var(--ink)] block truncate">{p.name}</b>
+                        <div className="flex items-center gap-1.5 flex-wrap mt-1">
+                          <span className="font-mono text-[11px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+                            {p.sku}
+                          </span>
+                          {catName && (
+                            <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200/70">
+                              {catName}
+                            </span>
+                          )}
+                          {unit && (
+                            <span className="text-[11px] text-indigo-700 font-semibold">
+                              {unit.name}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <span className={`status shrink-0 text-[11px] ${isOut ? "unpaid" : isLow ? "partial" : "paid"}`}>
+                        {isOut ? t("common.outOfStock") : isLow ? t("common.low") : t("common.available")}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2 py-2 px-2.5 bg-[var(--bg)] rounded-lg text-center border border-[var(--line)]">
+                      <div>
+                        <span className="text-[10px] text-[var(--muted)] block">{t("inventory.colPrice")}</span>
+                        <b className="text-xs font-bold text-[var(--ink)]">{Number(p.salePrice).toLocaleString(localeCode)} {t("common.egp")}</b>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-[var(--muted)] block">{t("inventory.colCost")}</span>
+                        <span className="text-xs text-[var(--muted)]">{Number(p.costPrice).toLocaleString(localeCode)} {t("common.egp")}</span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-[var(--muted)] block">{t("inventory.colStock")}</span>
+                        <b className={`text-xs font-extrabold ${isOut ? "text-rose-600" : isLow ? "text-amber-600" : "text-emerald-700"}`}>
+                          {stockNum.toLocaleString(localeCode)}
+                        </b>
+                      </div>
+                    </div>
+
+                    {packagingText && (
+                      <div className="text-[11px] text-[var(--muted)] text-center">
+                        {packagingText}
+                      </div>
+                    )}
+
+                    {(canCheck("edit") || canCheck("delete")) && (
+                      <div className="pt-2 border-t border-[var(--line)] flex items-center justify-end gap-2 flex-wrap">
+                        {canCheck("edit") && (
+                          <details className="row-editor">
+                            <summary className="h-8 px-2.5 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 inline-flex items-center gap-1 text-xs font-bold cursor-pointer">
+                              <Edit size={12} />
+                              <span>{t("common.edit")}</span>
+                            </summary>
+                            <form action={saveProductAction} className="form-grid">
+                              <CloseDisclosureButton title={`${t("common.edit")}: ${p.name}`} />
+                              <input type="hidden" name="id" value={p.id} />
+                              <label>
+                                {t("inventory.productName")}
+                                <input name="name" defaultValue={p.name} required />
+                              </label>
+                              <label>
+                                {t("inventory.sku")}
+                                <input name="sku" defaultValue={p.sku} required />
+                              </label>
+                              <label>
+                                {t("inventory.barcode")}
+                                <input name="barcode" defaultValue={p.barcode ?? ""} />
+                              </label>
+                              <label>
+                                {t("inventory.category")}
+                                <select name="categoryId" defaultValue={p.categoryId ?? ""}>
+                                  <option value="">{t("inventory.noCategory")}</option>
+                                  {categories.map((c) => (
+                                    <option key={c.id} value={c.id}>
+                                      {c.name}
+                                    </option>
+                                  ))}
+                                </select>
+                              </label>
+                              <label>
+                                {t("inventory.unit")}
+                                <select name="unitId" defaultValue={p.unitId ?? ""}>
+                                  <option value="">{t("inventory.defaultUnit")}</option>
+                                  {units.map((u) => (
+                                    <option key={u.id} value={u.id}>
+                                      {u.name} ({locale === "en" ? `Factor: ${Number(u.factor)} pcs` : `معامل التحويل: ${Number(u.factor)} قطعة`})
+                                    </option>
+                                  ))}
+                                </select>
+                              </label>
+                              <label>
+                                {t("inventory.costPrice")}
+                                <input
+                                  name="costPrice"
+                                  type="number"
+                                  step="0.01"
+                                  min="0"
+                                  defaultValue={p.costPrice}
+                                  required
+                                />
+                              </label>
+                              <label>
+                                {t("inventory.salePrice")}
+                                <input
+                                  name="salePrice"
+                                  type="number"
+                                  step="0.01"
+                                  min="0"
+                                  defaultValue={p.salePrice}
+                                  required
+                                />
+                              </label>
+                              <label>
+                                {t("inventory.reorderLevel")}
+                                <input
+                                  name="reorderLevel"
+                                  type="number"
+                                  step="1"
+                                  min="0"
+                                  defaultValue={p.reorderLevel}
+                                />
+                              </label>
+                              <label className="check-label">
+                                <input type="hidden" name="active" value="off" />
+                                <input
+                                  name="active"
+                                  type="checkbox"
+                                  value="on"
+                                  defaultChecked={p.active}
+                                />
+                                <span>{t("inventory.activeInSales")}</span>
+                              </label>
+                              <div className="form-actions">
+                                <button className="primary" type="submit">
+                                  {t("inventory.saveEdits")}
+                                </button>
+                              </div>
+                            </form>
+                          </details>
+                        )}
+
+                        {canCheck("edit") && (
+                          <details className="row-editor">
+                            <summary className="h-8 px-2.5 rounded-lg border border-sky-200 bg-sky-50 text-sky-700 inline-flex items-center gap-1 text-xs font-bold cursor-pointer">
+                              <SlidersHorizontal size={12} />
+                              <span>{t("inventory.adjustStock")}</span>
+                            </summary>
+                            <form action={adjustStockAction} className="inline-form">
+                              <CloseDisclosureButton title={`${t("inventory.adjustStockTitle")}: ${p.name}`} />
+                              <input type="hidden" name="productId" value={p.id} />
+                              <div className="p-2 bg-[var(--bg)] border border-[var(--line)] rounded-lg text-xs">
+                                <span>{t("inventory.currentRecordedStock")}: </span>
+                                <b>{Math.floor(Number(p.stock))} {t("common.piece")}</b>
+                              </div>
+                              <label>
+                                <span>{t("inventory.actualStockFound")} ({t("common.pieces")}):</span>
+                                <input
+                                  name="actualStock"
+                                  type="number"
+                                  step="1"
+                                  min="0"
+                                  placeholder={String(Math.floor(Number(p.stock)))}
+                                  required
+                                  autoFocus
+                                  className="font-mono font-bold"
+                                />
+                              </label>
+                              <label>
+                                <span>{t("inventory.reason")}:</span>
+                                <input
+                                  name="reason"
+                                  placeholder={t("inventory.reasonPlaceholder")}
+                                  defaultValue={locale === "en" ? "Inventory recount audit" : "جرد فعلي للمخزن"}
+                                  required
+                                />
+                              </label>
+                              <div className="form-actions">
+                                <button className="primary" type="submit">
+                                  {t("inventory.saveStockAdjustment")}
+                                </button>
+                              </div>
+                            </form>
+                          </details>
+                        )}
+
+                        {canCheck("delete") && (
+                          <form action={deleteProductAction}>
+                            <input type="hidden" name="id" value={p.id} />
+                            <ConfirmSubmitButton
+                              confirmMessage={locale === "en" ? `Are you sure you want to delete product "${p.name}"?` : `هل أنت متأكد من رغبتك في حذف الصنف «${p.name}»؟`}
+                              className="h-8 px-2.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 inline-flex items-center gap-1 text-xs font-bold cursor-pointer"
+                              title={t("common.delete")}
+                              ariaLabel={`${t("common.delete")} ${p.name}`}
+                            >
+                              <Trash2 size={12} />
+                              <span>{t("common.delete")}</span>
+                            </ConfirmSubmitButton>
+                          </form>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            ) : (
+              <div className="p-6 text-center text-sm text-[var(--muted)] bg-[var(--panel)] border border-[var(--line)] rounded-xl">
+                {t("inventory.emptyProducts")}
+              </div>
+            )}
           </div>
         </div>
       )}

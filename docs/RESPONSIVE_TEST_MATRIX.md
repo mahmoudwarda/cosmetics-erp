@@ -1,49 +1,60 @@
-# RESPONSIVE_TEST_MATRIX.md — Universal Viewport Acceptance Matrix
+# Responsive Test Matrix & Verification Report
 
-**Project:** لمسة جمال (Lamsat Gamal) — Cosmetics Supplies Warehouse ERP  
-**Target Viewports:**  
-- **320px:** Small Mobile (e.g. iPhone SE 1st gen, Galaxy Fold outer)  
-- **375px:** Standard Mobile (iPhone SE 2nd/3rd gen, iPhone 12/13 mini)  
-- **430px:** Large Mobile (iPhone 14/15/16 Pro Max, Pixel 8 Pro)  
-- **768px:** Tablet Portrait (iPad Mini, iPad 10th gen portrait)  
-- **1024px:** Tablet Landscape / Small Laptop (iPad Pro, small Chromebooks)  
-- **1280px:** Standard Laptop (MacBook Air 13", ThinkPad 14")  
-- **1440px:** Desktop (MacBook Pro 16", 1440p displays)  
-- **1920px:** Large Desktop (1080p/4K monitors)  
+## Target Viewports & Test Matrix
 
----
-
-## 1. Multi-Device Evaluation Matrix (Verified)
-
-| Route / Screen | 320px | 375px | 430px | 768px | 1024px | 1280px | 1440px | 1920px | Overall Status |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **`/login`** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | **VERIFIED** |
-| **`/` (Dashboard)** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | **VERIFIED** |
-| **`/inventory`** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | **VERIFIED** |
-| **`/invoices`** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | **VERIFIED** |
-| **`/invoices/new`** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | **VERIFIED** |
-| **`/invoices/[id]`** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | **VERIFIED** |
-| **`/parties`** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | **VERIFIED** |
-| **`/parties/[id]`** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | **VERIFIED** |
-| **`/statements`** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | **VERIFIED** |
-| **`/finance`** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | **VERIFIED** |
-| **`/reports`** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | **VERIFIED** |
-| **`/users`** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | **VERIFIED** |
-| **`/settings`** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | **VERIFIED** |
+| Device / Viewport | Width x Height | Orientation | Category | Key UI Behavior Verified | Result |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **iPhone SE / Small Phone** | 320px × 568px | Portrait | Mobile | No horizontal scroll, bottom nav visible, login card padded, cards stacked | **PASS** |
+| **Samsung Galaxy S8+** | 360px × 740px | Portrait | Mobile | 2-col KPI cards fit, line-item stepper buttons accessible, modal dialog fits viewport | **PASS** |
+| **iPhone 13 / 14 / 15** | 390px × 844px | Portrait | Mobile | Safe-area padding active, drawer navigation opens/closes cleanly, status pills wrap | **PASS** |
+| **iPhone 14 / 15 Pro Max** | 430px × 932px | Portrait | Mobile | Dual view renders mobile cards, large touch targets (42px min height) | **PASS** |
+| **iPad Mini / Foldable** | 600px × 960px | Portrait | Tablet | 2-col dashboard summary, form grids adapt to 2 columns | **PASS** |
+| **iPad Air / 10th Gen** | 768px × 1024px | Portrait | Tablet | Transition threshold between mobile cards and full data tables | **PASS** |
+| **iPad Pro 11"** | 820px × 1180px | Portrait/Landscape | Tablet | Full table view active with horizontal scroll guard, drawer nav accessible | **PASS** |
+| **iPad Pro 12.9"** | 1024px × 1366px | Landscape | Desktop Shell | Sticky desktop sidebar visible, topbar compact, 3-column financial boxes | **PASS** |
+| **Standard Laptop** | 1280px × 800px | Landscape | Laptop | 6-col dashboard KPIs, comfortable table padding, search bars aligned | **PASS** |
+| **Common Laptop** | 1366px × 768px | Landscape | Laptop | Balanced white space, sticky header, full invoice entry grid | **PASS** |
+| **FHD Desktop Monitor** | 1920px × 1080px | Landscape | Desktop Wide | Max-width constraints prevent over-stretched content, RTL margins clean | **PASS** |
 
 ---
 
-## 2. 12-Point Universal Verification Results
+## Route-Level Checklist
 
-1. [x] **No Page Horizontal Overflow:** Verified across all 14 routes. Table elements are encapsulated inside `.table-wrap` with `-webkit-overflow-scrolling: touch`. The document root body does not experience unwanted horizontal scrolling.
-2. [x] **No Overlapping Elements:** Header actions, status badges, and KPI grids wrap gracefully at breakpoints.
-3. [x] **Touch Target Sizing:** Mobile inputs, action buttons, and summaries enforce minimum 42–44px touch targets.
-4. [x] **No Inaccessible Actions:** Row edit, adjust, view, and delete actions are permanently accessible without hover dependencies.
-5. [x] **Modal & Disclosure Boundaries:** Enhanced `CloseDisclosureButton` provides `Escape` key dismissal and backdrop click support.
-6. [x] **Readable Numeric Data:** Tabular numerals (`tnum`) enabled globally; large currency figures render without truncation.
-7. [x] **Table Data Isolation:** Table containers isolate horizontal scrolling, preserving document integrity on 320px–430px viewports.
-8. [x] **App Navigation Visibility:** Mobile drawer is toggled via sticky top bar hamburger icon; desktop fixed rail operates smoothly with collapse toggle.
-9. [x] **Form Input Usability:** Form inputs enforce `font-size: 16px` on screens $\le 640\text{px}$ to prevent iOS Safari auto-zoom.
-10. [x] **Arabic RTL Natural Flow:** Directionality remains strict `dir="rtl"` with logical CSS properties (`ms-`, `me-`, `pe-`, `ps-`, `start-`, `end-`).
-11. [x] **State Representation:** Empty states, loading spinners, and error alerts (such as in `InvoiceForm`) are distinct and user-friendly.
-12. [x] **Print Isolation:** `@media print` rules hide side navigation, header action buttons, and drawers cleanly.
+- [x] **Login (`/login`)**:
+  - No viewport overflow at 320px.
+  - Password visibility toggle and touch submit button responsive.
+  - Local network share dialog modal adapts to narrow viewports.
+
+- [x] **Dashboard (`/`)**:
+  - Liquidation summary card adapts fluidly (1 col on mobile, 2 on tablet, 4 on desktop).
+  - 6 KPI cards maintain proportional typography on narrow screens.
+  - Recent Invoices table transitions to mobile cards on screens `< 768px`.
+
+- [x] **Inventory (`/inventory`)**:
+  - Dual-view implemented: full table on desktop, touch cards on mobile.
+  - Stock recount adjustments and product edit modals fit within mobile viewports (`max-h-[88vh]`, `w-[95vw]`).
+  - Search and category filters stack vertically on mobile.
+
+- [x] **Invoices (`/invoices`, `/invoices/new`, `/invoices/[id]`)**:
+  - Invoices list displays mobile cards with status badges and quick view/print buttons on `< 768px`.
+  - Invoice creation form line items feature touch steppers (+/- buttons) on mobile screens.
+  - Invoice print view retains exact A4 and 80mm thermal receipt styles for `@media print` while format switcher stacks on screen.
+
+- [x] **Parties & Customer Statements (`/parties`, `/statements`)**:
+  - Directory displays customer/supplier cards on mobile with direct `tel:` call links and balance badges.
+  - Statement ledger table transitions to debit/credit cards on mobile.
+
+- [x] **Finance (`/finance`)**:
+  - Cashbox cards adapt from 1 column on phones to 2 on tablets to 3 on desktop.
+  - Cash transaction ledger transitions to mobile cards with colored amount badges on `< 768px`.
+
+- [x] **Reports (`/reports`)**:
+  - Date filter quick pills wrap cleanly without horizontal spill.
+  - Visual donut chart and comparative progress bars adapt to mobile screen widths.
+
+- [x] **Users & Roles (`/users`)**:
+  - User accounts render as cards on mobile.
+  - Granular RBAC permissions matrix wraps cleanly across responsive column grids.
+
+- [x] **Settings (`/settings`)**:
+  - Store identity and theme appearance forms adapt between 1 and 2 columns.

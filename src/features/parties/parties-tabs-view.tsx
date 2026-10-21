@@ -289,7 +289,7 @@ export function PartiesTabsView({
           ========================================================================= */}
       {activeTab !== "statement" && (
         <div className="space-y-4">
-          <div className="table-wrap overflow-x-auto shadow-xs border border-[var(--line)] rounded-xl">
+          <div className="desktop-table-only table-wrap overflow-x-auto shadow-xs border border-[var(--line)] rounded-xl">
             <table>
               <thead>
                 <tr>
@@ -528,6 +528,210 @@ export function PartiesTabsView({
                 )}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Cards for Parties */}
+          <div className="mobile-cards-only space-y-3">
+            {filteredParties.length ? (
+              filteredParties.map((p) => {
+                const balance = balances[p.id] ?? Number(p.openingBalance);
+                const isDebit = balance > 0.005;
+                const isCredit = balance < -0.005;
+                const isZero = !isDebit && !isCredit;
+
+                return (
+                  <div key={`mob-party-${p.id}`} className="p-3.5 bg-[var(--panel)] border border-[var(--line)] rounded-xl shadow-sm space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <b className="text-sm font-bold text-[var(--ink)] block">{p.name}</b>
+                        {p.address && (
+                          <span className="text-xs text-[var(--muted)] flex items-center gap-1 mt-0.5">
+                            <MapPin size={11} className="text-slate-400 shrink-0" />
+                            <span>{p.address}</span>
+                          </span>
+                        )}
+                      </div>
+                      {p.type === "customer" ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 shrink-0">
+                          <Users size={12} />
+                          <span>{t("parties.customer", "عميل")}</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                          <Building2 size={12} />
+                          <span>{t("parties.supplier", "مورد")}</span>
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2 py-2 px-3 bg-[var(--bg)] rounded-lg border border-[var(--line)]">
+                      <div>
+                        <span className="text-[10px] text-[var(--muted)] block">{t("parties.contact", "رقم الهاتف")}</span>
+                        {p.phone ? (
+                          <a href={`tel:${p.phone}`} className="font-mono text-xs text-indigo-700 font-bold flex items-center gap-1">
+                            <Phone size={11} />
+                            <span dir="ltr">{p.phone}</span>
+                          </a>
+                        ) : (
+                          <span className="text-xs text-[var(--muted)]">—</span>
+                        )}
+                      </div>
+                      <div className="text-left">
+                        <span className="text-[10px] text-[var(--muted)] block">{t("parties.currentBalance", "الرصيد الجاري")}</span>
+                        <b
+                          className={`text-xs block font-black font-mono ${
+                            isDebit
+                              ? p.type === "customer"
+                                ? "text-rose-600"
+                                : "text-emerald-700"
+                              : isCredit
+                              ? p.type === "customer"
+                                ? "text-emerald-700"
+                                : "text-rose-600"
+                              : "text-slate-600"
+                          }`}
+                        >
+                          {Math.abs(balance).toLocaleString("en-US", { maximumFractionDigits: 2 })} {t("common.egp", "ج.م")}
+                        </b>
+                        <span className="text-[10px] text-[var(--muted)]">
+                          {isZero
+                            ? t("parties.settled", "خالص")
+                            : p.type === "customer"
+                            ? isDebit
+                              ? t("parties.hasDebt", "عليه دين")
+                              : t("parties.hasCredit", "له رصيد")
+                            : isDebit
+                            ? t("parties.weOwe", "مستحق له")
+                            : t("parties.owesUs", "مستحق عليه")}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 border-t border-[var(--line)] flex items-center justify-end gap-1.5 flex-wrap">
+                      <button
+                        type="button"
+                        onClick={() => setViewingParty(p)}
+                        className="h-8 px-2.5 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 inline-flex items-center gap-1 text-xs font-bold cursor-pointer"
+                      >
+                        <Eye size={12} />
+                        <span>{t("common.view", "عرض")}</span>
+                      </button>
+
+                      <Link
+                        href={`/parties?tab=statement&partyId=${p.id}`}
+                        className="h-8 px-2.5 rounded-lg border border-sky-200 bg-sky-50 text-sky-700 inline-flex items-center gap-1 text-xs font-bold"
+                      >
+                        <BookOpenText size={12} />
+                        <span>{t("parties.statementBtn", "كشف حساب")}</span>
+                      </Link>
+
+                      {canCheck("create") && (
+                        <details className="row-editor">
+                          <summary className="h-8 px-2.5 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 inline-flex items-center gap-1 text-xs font-bold cursor-pointer">
+                            <Coins size={12} />
+                            <span>{p.type === "customer" ? t("parties.cashReceipt", "قبض") : t("parties.cashPayment", "صرف")}</span>
+                          </summary>
+                          <form action={registerPaymentAction} className="inline-form">
+                            <CloseDisclosureButton
+                              title={`تسجيل سند ${p.type === "customer" ? "قبض" : "صرف"} لـ: ${p.name}`}
+                            />
+                            <input type="hidden" name="partyId" value={p.id} />
+                            <label>
+                              المبلغ (ج.م)
+                              <input name="amount" type="number" step="0.01" min="0.01" required />
+                            </label>
+                            <label>
+                              الصندوق / الخزينة
+                              <select name="cashboxId" required>
+                                {cashboxes.map((b) => (
+                                  <option key={b.id} value={b.id}>
+                                    {b.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                            <label>
+                              البيان / ملاحظات السند
+                              <input
+                                name="notes"
+                                defaultValue={p.type === "customer" ? "تحصيل دفعة حساب" : "سداد دفعة للمورد"}
+                              />
+                            </label>
+                            <div className="form-actions">
+                              <button className="primary" type="submit">
+                                حفظ وترحيل السند
+                              </button>
+                            </div>
+                          </form>
+                        </details>
+                      )}
+
+                      {canCheck("edit") && (
+                        <details className="row-editor">
+                          <summary className="h-8 px-2.5 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 inline-flex items-center gap-1 text-xs font-bold cursor-pointer">
+                            <Edit size={12} />
+                            <span>{t("common.edit", "تعديل")}</span>
+                          </summary>
+                          <form action={savePartyAction} className="form-grid">
+                            <CloseDisclosureButton title={`تعديل بيانات الحساب: ${p.name}`} />
+                            <input type="hidden" name="id" value={p.id} />
+                            <label>
+                              النوع
+                              <select name="type" defaultValue={p.type}>
+                                <option value="customer">عميل</option>
+                                <option value="supplier">مورد</option>
+                              </select>
+                            </label>
+                            <label>
+                              الاسم
+                              <input name="name" defaultValue={p.name} required />
+                            </label>
+                            <label>
+                              الهاتف
+                              <input name="phone" defaultValue={p.phone ?? ""} />
+                            </label>
+                            <label>
+                              البريد
+                              <input name="email" type="email" defaultValue={p.email ?? ""} />
+                            </label>
+                            <label>
+                              العنوان
+                              <input name="address" defaultValue={p.address ?? ""} />
+                            </label>
+                            <div className="form-actions">
+                              <button className="primary" type="submit">
+                                حفظ التعديلات
+                              </button>
+                            </div>
+                          </form>
+                        </details>
+                      )}
+
+                      {canCheck("delete") && (
+                        <form action={deletePartyAction} className="inline-flex">
+                          <input type="hidden" name="id" value={p.id} />
+                          <ConfirmSubmitButton
+                            confirmMessage={`هل أنت متأكد من رغبتك في حذف الحساب «${p.name}»؟`}
+                            className="h-8 px-2.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 inline-flex items-center gap-1 text-xs font-bold cursor-pointer"
+                            title={t("common.delete", "حذف")}
+                            ariaLabel={`حذف الحساب ${p.name}`}
+                          >
+                            <Trash2 size={12} />
+                            <span>{t("common.delete", "حذف")}</span>
+                          </ConfirmSubmitButton>
+                        </form>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="p-6 text-center text-sm text-[var(--muted)] bg-[var(--panel)] border border-[var(--line)] rounded-xl">
+                {searchTerm
+                  ? `لا توجد نتائج مطابقة للبحث عن «${searchTerm}».`
+                  : "لا توجد حسابات مسجلة في هذا القسم حالياً."}
+              </div>
+            )}
           </div>
         </div>
       )}

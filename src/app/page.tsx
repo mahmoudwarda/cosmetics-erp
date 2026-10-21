@@ -323,9 +323,9 @@ export default async function Home() {
       </header>
 
       {/* Executive Net Liquidation Value & Total Capital Worth Banner */}
-      <section className="mb-6 p-6 md:p-7 bg-gradient-to-br from-indigo-50/80 via-[var(--panel)] to-sky-50/60 border border-indigo-200 rounded-2xl relative overflow-hidden">
+      <section className="mb-6 p-4 sm:p-6 md:p-7 bg-gradient-to-br from-indigo-50/80 via-[var(--panel)] to-sky-50/60 border border-indigo-200 rounded-2xl relative overflow-hidden">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5 pb-5 border-b border-indigo-100">
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 w-full lg:w-auto">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="px-3 py-1 rounded-full text-xs font-black bg-indigo-100 text-indigo-800 border border-indigo-200">
                 {translate("dash.liquidationIndex", locale, "مؤشر التصفية الشامل للنشاط")}
@@ -334,7 +334,7 @@ export default async function Home() {
                 {translate("dash.liquidationSubtitle", locale, "حساب صافي رأس المال المسترد في حال تصفية أو إغلاق المشروع اليوم")}
               </span>
             </div>
-            <h2 className="text-xl md:text-2xl font-black text-[var(--ink)]">
+            <h2 className="text-lg sm:text-xl md:text-2xl font-black text-[var(--ink)]">
               {translate("dash.liquidationTitle", locale, "صافي قيمة تصفية المشروع الحالية (حقوق الملكية)")}
             </h2>
             <p className="text-xs text-[var(--muted)] max-w-2xl leading-relaxed">
@@ -342,16 +342,16 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-2.5 shrink-0">
-            <div className="p-4 bg-[var(--panel)] border-2 border-indigo-200 rounded-2xl text-right lg:text-left min-w-[240px]">
+          <div className="flex flex-col sm:flex-row lg:flex-col items-stretch sm:items-start lg:items-end gap-2.5 w-full sm:w-auto shrink-0">
+            <div className="p-3.5 sm:p-4 bg-[var(--panel)] border-2 border-indigo-200 rounded-2xl text-right lg:text-left w-full sm:w-auto min-w-0 sm:min-w-[220px]">
               <span className="text-xs text-[var(--muted)] font-bold block mb-1">
                 {translate("dash.immediateLiquidationAtCost", locale, "صافي التصفية الفورية (بالتكلفة):")}
               </span>
-              <b className="text-3xl md:text-4xl font-black text-indigo-700 font-mono tracking-tight block">
-                {netLiquidationAtCost.toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-sm font-bold text-indigo-600/70">{translate("common.egp", locale, "ج.م")}</small>
+              <b className="text-2xl sm:text-3xl md:text-4xl font-black text-indigo-700 font-mono tracking-tight block">
+                {netLiquidationAtCost.toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-xs sm:text-sm font-bold text-indigo-600/70">{translate("common.egp", locale, "ج.م")}</small>
               </b>
             </div>
-            <div className="text-xs text-emerald-800 font-semibold flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 rounded-xl">
+            <div className="text-xs text-emerald-800 font-semibold flex items-center justify-between sm:justify-start gap-1.5 bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 rounded-xl">
               <span>{translate("dash.liquidationAtRetail", locale, "التصفية بالبيع القطاعي:")}</span>
               <b className="text-emerald-700 font-black font-mono text-sm">
                 {netLiquidationAtRetail.toLocaleString(localeCode, { maximumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
@@ -361,87 +361,87 @@ export default async function Home() {
         </div>
 
         {/* 4 Pillars of Capital / Liquidation Equation */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 pt-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 pt-5">
           {/* Pillar 1: Cash in Hand - EMERALD THEME */}
-          <div className="p-4 bg-emerald-50/80 border border-emerald-200 rounded-2xl flex items-center justify-between">
+          <div className="p-3.5 sm:p-4 bg-emerald-50/80 border border-emerald-200 rounded-2xl flex items-center justify-between">
             <div>
               <span className="text-xs font-bold text-emerald-800 flex items-center gap-1.5">
                 <span className="w-5 h-5 rounded-full bg-emerald-200 text-emerald-800 flex items-center justify-center text-xs font-black">+</span>
                 <span>{translate("dash.cashboxLiquidity", locale, "سيولة الخزائن الفورية")}</span>
               </span>
-              <b className="text-xl md:text-2xl font-black text-emerald-800 block mt-1.5 font-mono">
+              <b className="text-lg sm:text-xl md:text-2xl font-black text-emerald-800 block mt-1.5 font-mono">
                 {totalCashBalance.toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-xs font-bold text-emerald-700/80">{translate("common.egp", locale, "ج.م")}</small>
               </b>
               <small className="text-[11px] text-emerald-700 font-medium">
                 {locale === "en" ? `In ${activeBoxesWithBalance.length} cashboxes` : `في ${activeBoxesWithBalance.length} خزائن نقدية`}
               </small>
             </div>
-            <div className="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-              <Wallet size={22} />
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+              <Wallet size={20} />
             </div>
           </div>
 
           {/* Pillar 2: Inventory at Cost - AMBER THEME */}
-          <div className="p-4 bg-amber-50/80 border border-amber-200 rounded-2xl flex items-center justify-between">
+          <div className="p-3.5 sm:p-4 bg-amber-50/80 border border-amber-200 rounded-2xl flex items-center justify-between">
             <div>
               <span className="text-xs font-bold text-amber-900 flex items-center gap-1.5">
                 <span className="w-5 h-5 rounded-full bg-amber-200 text-amber-900 flex items-center justify-center text-xs font-black">+</span>
                 <span>{translate("dash.inventoryAtCost", locale, "بضاعة المخزن (بالتكلفة)")}</span>
               </span>
-              <b className="text-xl md:text-2xl font-black text-amber-900 block mt-1.5 font-mono">
+              <b className="text-lg sm:text-xl md:text-2xl font-black text-amber-900 block mt-1.5 font-mono">
                 {inventoryCostValuation.toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-xs font-bold text-amber-800/80">{translate("common.egp", locale, "ج.م")}</small>
               </b>
               <small className="text-[11px] text-amber-800 font-medium">
                 {totalStockUnits.toLocaleString(localeCode)} {locale === "en" ? `pcs (${totalProductsCount} items)` : `قطعة (${totalProductsCount} صنف)`}
               </small>
             </div>
-            <div className="w-11 h-11 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
-              <Package size={22} />
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+              <Package size={20} />
             </div>
           </div>
 
           {/* Pillar 3: Customer Receivables - SKY THEME */}
-          <div className="p-4 bg-sky-50/80 border border-sky-200 rounded-2xl flex items-center justify-between">
+          <div className="p-3.5 sm:p-4 bg-sky-50/80 border border-sky-200 rounded-2xl flex items-center justify-between">
             <div>
               <span className="text-xs font-bold text-sky-900 flex items-center gap-1.5">
                 <span className="w-5 h-5 rounded-full bg-sky-200 text-sky-900 flex items-center justify-center text-xs font-black">+</span>
                 <span>{translate("dash.marketReceivables", locale, "فلوسنا بالسوق (آجل العملاء)")}</span>
               </span>
-              <b className="text-xl md:text-2xl font-black text-sky-900 block mt-1.5 font-mono">
+              <b className="text-lg sm:text-xl md:text-2xl font-black text-sky-900 block mt-1.5 font-mono">
                 {customerReceivablesTotal.toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-xs font-bold text-sky-800/80">{translate("common.egp", locale, "ج.م")}</small>
               </b>
               <small className="text-[11px] text-sky-800 font-medium">
                 {locale === "en" ? "Receivables from customers" : "ديون مستحقة لنا بالخارج"}
               </small>
             </div>
-            <div className="w-11 h-11 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
-              <Clock size={22} />
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
+              <Clock size={20} />
             </div>
           </div>
 
           {/* Pillar 4: Supplier Payables - ROSE THEME */}
-          <div className="p-4 bg-rose-50/80 border border-rose-200 rounded-2xl flex items-center justify-between">
+          <div className="p-3.5 sm:p-4 bg-rose-50/80 border border-rose-200 rounded-2xl flex items-center justify-between">
             <div>
               <span className="text-xs font-bold text-rose-900 flex items-center gap-1.5">
                 <span className="w-5 h-5 rounded-full bg-rose-200 text-rose-900 flex items-center justify-center text-xs font-black">−</span>
                 <span>{translate("dash.supplierPayables", locale, "مستحقات الموردين (علينا)")}</span>
               </span>
-              <b className="text-xl md:text-2xl font-black text-rose-700 block mt-1.5 font-mono">
+              <b className="text-lg sm:text-xl md:text-2xl font-black text-rose-700 block mt-1.5 font-mono">
                 {supplierPayablesTotal.toLocaleString(localeCode, { maximumFractionDigits: 2 })} <small className="text-xs font-bold text-rose-600/80">{translate("common.egp", locale, "ج.م")}</small>
               </b>
               <small className="text-[11px] text-rose-800 font-medium">
                 {locale === "en" ? "Payable obligations" : "التزامات واجبة السداد"}
               </small>
             </div>
-            <div className="w-11 h-11 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
-              <Landmark size={22} />
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
+              <Landmark size={20} />
             </div>
           </div>
         </div>
       </section>
 
       {/* 6 High-Performance Enterprise Operational KPI Cards (Themed & Enlarged) */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3.5 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-2.5 sm:gap-3.5 mb-6">
         {/* Card 1: Today Sales - BLUE THEME */}
         <div className="p-4 bg-blue-50/70 border border-blue-200 rounded-2xl relative overflow-hidden flex flex-col justify-between">
           <div className="flex items-center justify-between mb-2">
@@ -716,7 +716,8 @@ export default async function Home() {
             </Link>
           </div>
 
-          <div className="table-wrap">
+          {/* Desktop Table View (>= 768px) */}
+          <div className="desktop-table-only table-wrap">
             <table>
               <thead>
                 <tr>
@@ -791,6 +792,70 @@ export default async function Home() {
                 )}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card List View (< 768px) */}
+          <div className="mobile-cards-only space-y-2.5">
+            {recentInvoices.length ? (
+              recentInvoices.map((i) => {
+                return (
+                  <div key={i.number} className="p-3.5 bg-[var(--surface-muted)]/70 border border-[var(--line)] rounded-xl space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-indigo-50/80 text-indigo-700 border border-indigo-200">
+                          {i.number}
+                        </span>
+                        <span
+                          className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold border ${
+                            i.type === "sale"
+                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                              : i.type === "purchase"
+                              ? "bg-purple-50 text-purple-700 border-purple-200"
+                              : "bg-amber-50 text-amber-700 border-amber-200"
+                          }`}
+                        >
+                          {i.type === "sale"
+                            ? translate("invoices.salesBadge", locale, "بيع")
+                            : i.type === "purchase"
+                            ? translate("invoices.purchaseBadge", locale, "شراء")
+                            : translate("invoices.saleReturnBadge", locale, "مرتجع")}
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-[var(--muted)] font-mono">
+                        {new Date(i.createdAt).toLocaleDateString(localeCode, { month: "short", day: "numeric" })}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-xs text-[var(--ink)] truncate max-w-[170px]">
+                        {i.partyName ?? (locale === "en" ? "Cash / Walk-in" : "نقدي / صالة")}
+                      </span>
+                      <b className="font-black text-sm text-[var(--ink)] font-mono">
+                        {Number(i.total).toLocaleString(localeCode, { maximumFractionDigits: 2 })} {translate("common.egp", locale, "ج.م")}
+                      </b>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1 border-t border-[var(--line)]/60">
+                      <span className={`status ${i.status} text-[11px]`}>
+                        {i.status === "paid"
+                          ? translate("invoices.fullyPaid", locale, "مدفوعة بالكامل")
+                          : i.status === "partial"
+                          ? translate("invoices.partiallyPaid", locale, "سداد جزئي")
+                          : translate("invoices.unpaidStatus", locale, "غير مدفوعة")}
+                      </span>
+                      <Link href={`/invoices/${i.id}`} className="secondary py-1 px-3 text-xs font-bold rounded-lg inline-flex items-center gap-1">
+                        <span>{translate("common.view", locale, "عرض الفاتورة")}</span>
+                        <ArrowUpRight size={13} />
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="text-center py-6 text-xs text-[var(--muted)]">
+                {locale === "en" ? "No invoices recorded yet. Use 'New Invoice' button to begin." : "لا توجد فواتير مسجلة بعد. استخدم زر «فاتورة جديدة» لبدء التسجيل."}
+              </div>
+            )}
           </div>
         </article>
 

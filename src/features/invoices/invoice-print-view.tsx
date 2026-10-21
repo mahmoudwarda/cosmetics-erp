@@ -79,8 +79,8 @@ export function InvoicePrintView({ data }: { data: InvoiceData }) {
   return (
     <div className="space-y-4">
       {/* Format Selector Bar (Hidden on Print) */}
-      <div className="print-hide flex flex-wrap items-center justify-between gap-3 p-3 bg-[var(--panel)] border border-[var(--line)] rounded-xl">
-        <div className="flex items-center gap-1.5 p-1 bg-[var(--bg)] border border-[var(--line)] rounded-lg text-xs font-bold">
+      <div className="print-hide flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3 bg-[var(--panel)] border border-[var(--line)] rounded-xl">
+        <div className="flex flex-wrap items-center gap-1.5 p-1 bg-[var(--bg)] border border-[var(--line)] rounded-lg text-xs font-bold">
           <button
             type="button"
             onClick={() => setFormat("a4")}
@@ -125,7 +125,7 @@ export function InvoicePrintView({ data }: { data: InvoiceData }) {
           <button
             type="button"
             onClick={() => handlePrint(format)}
-            className="primary px-4 py-1.5 text-xs inline-flex items-center gap-1.5 font-bold shadow-xs cursor-pointer"
+            className="primary w-full sm:w-auto px-4 py-2 text-xs inline-flex items-center justify-center gap-1.5 font-bold shadow-xs cursor-pointer rounded-lg"
           >
             <Printer size={15} />
             <span>{t("invoices.printThis", "طباعة هذا النموذج")}</span>
@@ -137,7 +137,7 @@ export function InvoicePrintView({ data }: { data: InvoiceData }) {
           FORMAT 1: A4 Commercial Tax Invoice
           ========================================================================= */}
       {format === "a4" && (
-        <article className="panel invoice-paper p-6 md:p-8">
+        <article className="panel invoice-paper p-4 sm:p-6 md:p-8">
           <header className="paper-header pb-6 border-b border-[var(--line)]">
             <div className="flex items-center gap-4">
               {invoiceLogo ? (
