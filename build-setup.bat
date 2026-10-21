@@ -6,5 +6,5 @@ call npm run build
 if errorlevel 1 exit /b 1
 powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\package-windows.ps1"
 if errorlevel 1 exit /b 1
-echo Installer created under dist-installer\Cosmetics-ERP-Setup.exe
+echo Installer created under dist-installer\Apex-Software-ERP-Setup.exe
 pause

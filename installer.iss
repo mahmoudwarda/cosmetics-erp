@@ -26,6 +26,7 @@ Name: "arabic"; MessagesFile: "compiler:Languages\Arabic.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "إنشاء اختصار على سطح المكتب"; GroupDescription: "اختصارات إضافية:"; Flags: checkedonce
+Name: "autostart"; Description: "تشغيل النظام تلقائياً في الخلفية عند فتح الويندوز (موصى به)"; GroupDescription: "خيارات التشغيل:"; Flags: checkedonce
 
 [Dirs]
 Name: "{app}\data"; Permissions: users-modify
@@ -34,12 +35,16 @@ Name: "{app}\data"; Permissions: users-modify
 Source: "{#PayloadDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\تشغيل-السيستم.bat"; WorkingDir: "{app}"
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\تشغيل-السيستم.bat"; WorkingDir: "{app}"; Tasks: desktopicon
+Name: "{autoprograms}\{#MyAppName}\{#MyAppName}"; Filename: "{sys}\wscript.exe"; Parameters: """{app}\Apex-ERP.vbs"""; WorkingDir: "{app}"
+Name: "{autoprograms}\{#MyAppName}\حالة النظام"; Filename: "{app}\حالة-السيستم.bat"; WorkingDir: "{app}"
+Name: "{autoprograms}\{#MyAppName}\إيقاف النظام"; Filename: "{app}\إيقاف-السيستم.bat"; WorkingDir: "{app}"
+Name: "{autodesktop}\{#MyAppName}"; Filename: "{sys}\wscript.exe"; Parameters: """{app}\Apex-ERP.vbs"""; WorkingDir: "{app}"; Tasks: desktopicon
+Name: "{commonstartup}\{#MyAppName}"; Filename: "{sys}\wscript.exe"; Parameters: """{app}\Apex-ERP.vbs"""; WorkingDir: "{app}"; Tasks: autostart
 
 [Run]
 Filename: "netsh"; Parameters: "advfirewall firewall add rule name=\"ApexSoftwareERP-LAN\" dir=in action=allow protocol=TCP localport=3001 profile=private"; Flags: runhidden
-Filename: "{app}\تشغيل-السيستم.bat"; Description: "تشغيل النظام الآن"; Flags: postinstall nowait skipifsilent runasoriginaluser
+Filename: "{sys}\wscript.exe"; Parameters: """{app}\Apex-ERP.vbs"""; Description: "تشغيل النظام في الخلفية الآن"; Flags: postinstall nowait skipifsilent runasoriginaluser
 
 [UninstallRun]
+Filename: "powershell.exe"; Parameters: "-NoLogo -NoProfile -ExecutionPolicy Bypass -File ""{app}\scripts\stop-windows.ps1"""; Flags: runhidden
 Filename: "netsh"; Parameters: "advfirewall firewall delete rule name=\"ApexSoftwareERP-LAN\""; Flags: runhidden

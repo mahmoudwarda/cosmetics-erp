@@ -20,8 +20,25 @@ New-Item -ItemType Directory -Force -Path (Join-Path $payload ".next-bundle\stat
 Copy-Item -Path (Join-Path $projectRoot ".next-bundle\static\*") -Destination (Join-Path $payload ".next-bundle\static") -Recurse -Force
 Copy-Item -Path (Join-Path $projectRoot "public\*") -Destination (Join-Path $payload "public") -Recurse -Force
 Copy-Item -Path (Join-Path $projectRoot "drizzle\*") -Destination (Join-Path $payload "drizzle") -Recurse -Force
-Copy-Item -LiteralPath (Join-Path $PSScriptRoot "migrate-runtime.mjs"), (Join-Path $PSScriptRoot "seed-runtime.mjs"), (Join-Path $PSScriptRoot "start-windows.ps1") -Destination (Join-Path $payload "scripts") -Force
-Copy-Item -LiteralPath (Join-Path $projectRoot "start-windows.bat") -Destination $payload -Force
+
+# Copy Scripts
+$scriptsToCopy = @("migrate-runtime.mjs", "seed-runtime.mjs", "start-windows.ps1", "stop-windows.ps1", "status-windows.ps1", "get-ip.bat")
+foreach ($s in $scriptsToCopy) {
+  $src = Join-Path $PSScriptRoot $s
+  if (Test-Path $src) {
+    Copy-Item -LiteralPath $src -Destination (Join-Path $payload "scripts") -Force
+  }
+}
+
+# Copy Root Launchers and Utilities
+$rootFiles = @("Apex-ERP.vbs", "start-windows.bat", "تشغيل-السيستم.bat", "إيقاف-السيستم.bat", "حالة-السيستم.bat")
+foreach ($rf in $rootFiles) {
+  $src = Join-Path $projectRoot $rf
+  if (Test-Path $src) {
+    Copy-Item -LiteralPath $src -Destination $payload -Force
+  }
+}
+
 Copy-Item -LiteralPath $nodeSource -Destination (Join-Path $payload "runtime\node.exe") -Force
 
 $pgDestination = Join-Path $payload "runtime\postgresql"
@@ -39,7 +56,10 @@ New-Item -ItemType Directory -Force -Path $output | Out-Null
 & $iscc (Join-Path $projectRoot "installer.iss")
 if ($LASTEXITCODE -ne 0) { throw "Inno Setup failed with exit code $LASTEXITCODE." }
 
-$setup = Join-Path $output "Cosmetics-ERP-Setup.exe"
+$setup = Join-Path $output "Apex-Software-ERP-Setup.exe"
+if (-not (Test-Path $setup)) { 
+  $setup = Join-Path $output "Cosmetics-ERP-Setup.exe"
+}
 if (-not (Test-Path $setup)) { throw "Inno Setup reported success but did not create the installer." }
 Write-Host "Installer ready: $setup"
 Write-Host "Payload size: $([math]::Round((Get-ChildItem $payload -Recurse -File | Measure-Object Length -Sum).Sum / 1MB)) MB"
