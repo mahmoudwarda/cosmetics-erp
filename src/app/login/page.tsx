@@ -40,10 +40,10 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
             )}
           </div>
           <h1 id="login-heading" className="text-2xl font-black text-slate-900 mb-1 tracking-tight">
-            {organization?.name ?? "لمسة جمال"}
+            {organization?.name ?? "Apex Software"}
           </h1>
           <p className="text-xs text-slate-500 font-medium">
-            نظام إدارة المخزون، المبيعات ونقاط البيع السحابية والمحلية
+            نظام Apex Software لإدارة المخزون، المبيعات ونقاط البيع السحابية والمحلية
           </p>
         </div>
 

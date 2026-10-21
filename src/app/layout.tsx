@@ -18,15 +18,15 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Cosmetics ERP | إدارة متجر التجميل",
-  description: "نظام متكامل لإدارة مخزون ومبيعات متجر مستحضرات التجميل",
+  title: "Apex Software ERP | نظام إدارة الأعمال والمخازن",
+  description: "نظام متكامل لإدارة المخزون والمبيعات والمشتريات والحسابات - Apex Software",
   manifest: "/manifest.webmanifest",
 };
 
 import { I18nProvider, Locale } from "@/lib/i18n-client";
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  let organizationName = "لمسة جمال",
+  let organizationName = "Apex Software",
     logoPath: string | null = null,
     locale: Locale = "ar",
     theme = "system",

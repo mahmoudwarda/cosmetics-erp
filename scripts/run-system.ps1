@@ -8,7 +8,7 @@ $logfile = Join-Path $projectRoot "data\postgres-server.log"
 $pgctl = Join-Path $pgroot "bin\pg_ctl.exe"
 
 Write-Host "==========================================" -ForegroundColor Cyan
-Write-Host "   Starting Cosmetic ERP (لمسة جمال)      " -ForegroundColor Cyan
+Write-Host "   Starting Apex Software ERP             " -ForegroundColor Cyan
 Write-Host "==========================================" -ForegroundColor Cyan
 
 # 1. Start PostgreSQL if not already running

@@ -78,7 +78,7 @@ export default async function Home() {
     .from(settings)
     .where(eq(settings.id, 1))
     .limit(1);
-  const organizationName = organization?.name ?? (organization?.locale === "en" ? "Beauty Touch" : "لمسة جمال");
+  const organizationName = organization?.name ?? "Apex Software";
   const locale = (organization?.locale ?? "ar") as Locale;
   const localeCode = "en-US";
 

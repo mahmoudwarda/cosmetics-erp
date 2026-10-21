@@ -155,7 +155,7 @@ export function InvoicePrintView({ data }: { data: InvoiceData }) {
                 </div>
               )}
               <div>
-                <h2 className="text-xl font-black text-[var(--ink)]">{org?.organizationName ?? "لمسة جمال"}</h2>
+                <h2 className="text-xl font-black text-[var(--ink)]">{org?.organizationName ?? "Apex Software"}</h2>
                 <p className="text-xs font-bold text-[var(--muted)] mt-1">
                   {invoice.type === "sale"
                     ? "فاتورة مبيعات ضريبية تجارية"
@@ -284,7 +284,7 @@ export function InvoicePrintView({ data }: { data: InvoiceData }) {
                 />
               </div>
             )}
-            <h2 className="text-base font-black">{org?.organizationName ?? "لمسة جمال"}</h2>
+            <h2 className="text-base font-black">{org?.organizationName ?? "Apex Software"}</h2>
             <p className="text-[11px] mt-0.5">
               {invoice.type === "sale" ? "إيصال مبيعات نقدية" : "إيصال توريد"}
             </p>

@@ -1,10 +1,10 @@
 @echo off
 chcp 65001 >nul
-title نظام لمسة جمال - السيرفر المحلي
+title Apex Software ERP - السيرفر المحلي
 cd /d "%~dp0"
 
 echo =====================================================================
-echo                نظام إدارة النشاط التجاري (لمسة جمال)
+echo                Apex Software ERP - نظام إدارة النشاط التجاري
 echo =====================================================================
 echo.
 
@@ -12,9 +12,9 @@ rem Prefer bundled Node.js runtime if present
 if exist "%~dp0runtime\node\node.exe" set "PATH=%~dp0runtime\node;%PATH%"
 
 rem 1. Allow port 3001 in Windows Firewall (Silent)
-netsh advfirewall firewall show rule name="CosmeticsERP_3001" >nul 2>nul
+netsh advfirewall firewall show rule name="ApexSoftwareERP_3001" >nul 2>nul
 if %errorlevel% neq 0 (
-    netsh advfirewall firewall add rule name="CosmeticsERP_3001" dir=in action=allow protocol=TCP localport=3001 >nul 2>nul
+    netsh advfirewall firewall add rule name="ApexSoftwareERP_3001" dir=in action=allow protocol=TCP localport=3001 >nul 2>nul
 )
 
 echo [1/3] بدء تشغيل قاعدة البيانات المحلية (PostgreSQL Portable)...
