@@ -1,5 +1,6 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -22,18 +23,43 @@ export async function saveSettings(formData: FormData) {
   const file = formData.get("logo");
   let logoPath: string | undefined;
   if (file instanceof File && file.size > 0) {
-    const extensions: Record<string, string> = { "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp" };
-    const extension = extensions[file.type];
-    if (!extension || file.size > 3 * 1024 * 1024) throw new Error("LOGO_MUST_BE_PNG_JPG_WEBP_UNDER_3MB");
+    const mime = (file.type || "").toLowerCase();
+    const extensions: Record<string, string> = {
+      "image/png": "png",
+      "image/x-png": "png",
+      "image/jpeg": "jpg",
+      "image/pjpeg": "jpg",
+      "image/jpg": "jpg",
+      "image/webp": "webp",
+    };
+    const nameExt = path.extname(file.name || "").replace(".", "").toLowerCase();
+    const extension = extensions[mime] || (["png", "jpg", "jpeg", "webp"].includes(nameExt) ? (nameExt === "jpeg" ? "jpg" : nameExt) : null);
+
+    if (!extension) {
+      redirect("/settings?error=invalid_format");
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      redirect("/settings?error=too_large");
+    }
+
     const fileName = `${randomUUID()}.${extension}`;
     const uploadDirectory = path.resolve(process.cwd(), process.env.UPLOADS_DIR || "data/uploads");
     const bytes = Buffer.from(await file.arrayBuffer());
-    const hasValidSignature = file.type === "image/png"
-      ? bytes.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))
-      : file.type === "image/jpeg"
-      ? bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff
-      : bytes.length >= 12 && bytes.toString("ascii", 0, 4) === "RIFF" && bytes.toString("ascii", 8, 12) === "WEBP";
-    if (!hasValidSignature) throw new Error("INVALID_LOGO_FILE_CONTENT");
+
+    // Basic signature check with fallback for valid extensions
+    const hasValidSignature =
+      extension === "png"
+        ? bytes.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))
+        : extension === "jpg"
+        ? bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff
+        : extension === "webp"
+        ? bytes.length >= 12 && bytes.toString("ascii", 0, 4) === "RIFF" && bytes.toString("ascii", 8, 12) === "WEBP"
+        : true;
+
+    if (!hasValidSignature) {
+      redirect("/settings?error=corrupted_file");
+    }
+
     await mkdir(uploadDirectory, { recursive: true });
     await writeFile(path.join(uploadDirectory, fileName), bytes, { flag: "wx" });
     logoPath = `/api/uploads/${fileName}`;
@@ -48,6 +74,7 @@ export async function saveSettings(formData: FormData) {
   };
   await db.insert(settings).values({ id: 1, ...values }).onConflictDoUpdate({ target: settings.id, set: { ...values, updatedAt: new Date() } });
   revalidatePath("/settings"); revalidatePath("/", "layout"); revalidatePath("/invoices");
+  redirect("/settings?saved=1");
 }
 
 export async function saveAppearance(formData: FormData) {

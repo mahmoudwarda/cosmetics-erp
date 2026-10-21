@@ -6,6 +6,11 @@ const nextConfig: NextConfig = {
   distDir: ".next-bundle",
   output: "standalone",
   allowedDevOrigins: ["192.168.*.*", "localhost", "127.0.0.1", "*.local"],
-  experimental: { cpus: 1 },
+  experimental: {
+    cpus: 1,
+    serverActions: {
+      bodySizeLimit: "10mb",
+    },
+  },
 };
 export default nextConfig;

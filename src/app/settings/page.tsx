@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import { ArrowRight, Building2, Palette } from "lucide-react";
+import { ArrowRight, Building2, Palette, CheckCircle2, AlertCircle } from "lucide-react";
 import { getSessionUserId } from "@/server/auth/session";
 import { db } from "@/server/db";
 import { settings, users } from "@/server/db/schema";
@@ -9,10 +9,16 @@ import { saveAppearance, saveSettings } from "@/features/settings/actions";
 import { requirePermission } from "@/server/permissions";
 import { localLogoUrl } from "@/server/services/branding";
 
-export default async function SettingsPage() {
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string; saved?: string }>;
+}) {
   const userId = await getSessionUserId();
   if (!userId) redirect("/login");
   await requirePermission("settings", "view");
+
+  const { error, saved } = await searchParams;
 
   const [[row], [user]] = await Promise.all([
     db.select().from(settings).where(eq(settings.id, 1)).limit(1),
@@ -33,6 +39,27 @@ export default async function SettingsPage() {
           <span>الرئيسية</span>
         </Link>
       </header>
+
+      {/* Feedback Messages */}
+      {saved && (
+        <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-2.5 text-xs font-bold mb-4">
+          <CheckCircle2 size={18} className="shrink-0 text-emerald-600" />
+          <span>تم حفظ وتحديث بيانات وشعار المؤسسة بنجاح!</span>
+        </div>
+      )}
+
+      {error && (
+        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 flex items-center gap-2.5 text-xs font-bold mb-4">
+          <AlertCircle size={18} className="shrink-0 text-rose-600" />
+          <span>
+            {error === "too_large"
+              ? "حجم الصورة كبير جداً. يرجى اختيار صورة أصغر من 10 ميجابايت."
+              : error === "invalid_format"
+              ? "صيغة الملف غير مدعومة. يرجى استخدام صورة بصيغة PNG أو JPG أو WebP."
+              : "حدث خطأ أثناء قراءة ملف الصورة. يرجى التأكد من سلامة الملف والمحاولة مرة أخرى."}
+          </span>
+        </div>
+      )}
 
       {/* Organization Identity Settings */}
       <section className="panel settings-panel">
@@ -64,7 +91,7 @@ export default async function SettingsPage() {
           </label>
           <input type="hidden" name="taxRate" value="0" />
           <label className="wide-field">
-            شعار المتجر (PNG / JPG / WebP • حتى 3MB)
+            شعار المتجر (PNG / JPG / WebP • حتى 10MB)
             <input name="logo" type="file" accept="image/png,image/jpeg,image/webp" />
           </label>
           {row?.logoPath && (
