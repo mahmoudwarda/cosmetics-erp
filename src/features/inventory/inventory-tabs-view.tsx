@@ -145,66 +145,68 @@ export function InventoryTabsView({
     <div className="space-y-4">
       {/* Top Main Navigation Tabs */}
       <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between border-b border-[var(--line)] pb-3">
-        <div className="flex items-center gap-1.5 p-1 bg-[var(--bg)] border border-[var(--line)] rounded-xl font-bold text-xs shrink-0">
-          <button
-            type="button"
-            onClick={() => setActiveTab("products")}
-            className={`px-3.5 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
-              activeTab === "products"
-                ? "bg-indigo-600 text-white shadow-xs"
-                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
-            }`}
-          >
-            <Package size={14} />
-            <span>{t("inventory.productsTab")}</span>
-            <span
-              className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                activeTab === "products" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+        <div className="w-full sm:w-auto overflow-x-auto pb-1 scrollbar-none">
+          <div className="inline-flex items-center gap-1.5 p-1 bg-[var(--bg)] border border-[var(--line)] rounded-xl font-bold text-xs shrink-0 flex-nowrap min-w-full sm:min-w-0">
+            <button
+              type="button"
+              onClick={() => setActiveTab("products")}
+              className={`px-3.5 py-1.5 rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer font-bold whitespace-nowrap shrink-0 flex-1 sm:flex-initial ${
+                activeTab === "products"
+                  ? "bg-indigo-600 text-white shadow-xs"
+                  : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
               }`}
             >
-              {products.length}
-            </span>
-          </button>
+              <Package size={14} />
+              <span>{t("inventory.productsTab")}</span>
+              <span
+                className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                  activeTab === "products" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+                }`}
+              >
+                {products.length}
+              </span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab("categories")}
-            className={`px-3.5 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
-              activeTab === "categories"
-                ? "bg-indigo-600 text-white shadow-xs"
-                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
-            }`}
-          >
-            <FolderTree size={14} />
-            <span>{t("inventory.categoriesTab")}</span>
-            <span
-              className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                activeTab === "categories" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+            <button
+              type="button"
+              onClick={() => setActiveTab("categories")}
+              className={`px-3.5 py-1.5 rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer font-bold whitespace-nowrap shrink-0 flex-1 sm:flex-initial ${
+                activeTab === "categories"
+                  ? "bg-indigo-600 text-white shadow-xs"
+                  : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
               }`}
             >
-              {categories.length}
-            </span>
-          </button>
+              <FolderTree size={14} />
+              <span>{t("inventory.categoriesTab")}</span>
+              <span
+                className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                  activeTab === "categories" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+                }`}
+              >
+                {categories.length}
+              </span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab("units")}
-            className={`px-3.5 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
-              activeTab === "units"
-                ? "bg-indigo-600 text-white shadow-xs"
-                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
-            }`}
-          >
-            <Boxes size={14} />
-            <span>{t("inventory.unitsTab")}</span>
-            <span
-              className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                activeTab === "units" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+            <button
+              type="button"
+              onClick={() => setActiveTab("units")}
+              className={`px-3.5 py-1.5 rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer font-bold whitespace-nowrap shrink-0 flex-1 sm:flex-initial ${
+                activeTab === "units"
+                  ? "bg-indigo-600 text-white shadow-xs"
+                  : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
               }`}
             >
-              {units.length}
-            </span>
-          </button>
+              <Boxes size={14} />
+              <span>{t("inventory.unitsTab")}</span>
+              <span
+                className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                  activeTab === "units" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+                }`}
+              >
+                {units.length}
+              </span>
+            </button>
+          </div>
         </div>
 
         {/* Global Action Triggers depending on active tab */}
@@ -854,7 +856,7 @@ export function InventoryTabsView({
           )}
 
           {/* Categories Full Table */}
-          <div className="table-wrap">
+          <div className="desktop-table-only table-wrap">
             <table>
               <thead>
                 <tr>
@@ -947,6 +949,97 @@ export function InventoryTabsView({
               </tbody>
             </table>
           </div>
+
+          {/* Categories Mobile Cards */}
+          <div className="mobile-cards-only space-y-2.5">
+            {categories.length ? (
+              categories.map((c, idx) => {
+                const count = catCounts.get(c.id) ?? 0;
+                const isEditing = editingCatId === c.id;
+
+                return (
+                  <div key={`mob-cat-${c.id}`} className="p-3.5 bg-[var(--panel)] border border-[var(--line)] rounded-xl shadow-xs space-y-2.5">
+                    {isEditing ? (
+                      <form action={updateCategoryAction} className="space-y-2">
+                        <input type="hidden" name="id" value={c.id} />
+                        <label className="block">
+                          <span className="text-xs text-[var(--muted)] font-semibold block mb-1">{t("inventory.colCategory")}:</span>
+                          <input
+                            name="name"
+                            defaultValue={c.name}
+                            required
+                            className="w-full text-xs py-2 px-3 rounded-lg border border-indigo-400 font-bold"
+                            autoFocus
+                          />
+                        </label>
+                        <div className="flex items-center gap-2 justify-end">
+                          <button type="submit" className="primary px-3 py-1.5 text-xs flex items-center gap-1 font-bold">
+                            <Check size={12} />
+                            <span>{t("common.save")}</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setEditingCatId(null)}
+                            className="secondary px-3 py-1.5 text-xs font-bold"
+                          >
+                            {t("common.cancel")}
+                          </button>
+                        </div>
+                      </form>
+                    ) : (
+                      <>
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="w-6 h-6 rounded-md bg-indigo-50 text-indigo-700 font-bold text-xs flex items-center justify-center border border-indigo-200">
+                              {idx + 1}
+                            </span>
+                            <b className="text-sm font-bold text-[var(--ink)]">{c.name}</b>
+                          </div>
+                          <span className="font-mono font-bold text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 shrink-0">
+                            {count} {locale === "en" ? "items" : "صنف"}
+                          </span>
+                        </div>
+
+                        {(canCheck("edit") || canCheck("delete")) && (
+                          <div className="pt-2 border-t border-[var(--line)] flex items-center justify-end gap-2">
+                            {canCheck("edit") && (
+                              <button
+                                type="button"
+                                onClick={() => setEditingCatId(c.id)}
+                                className="h-8 px-3 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 inline-flex items-center gap-1 text-xs font-bold cursor-pointer"
+                              >
+                                <Edit size={12} />
+                                <span>{t("common.edit")}</span>
+                              </button>
+                            )}
+
+                            {canCheck("delete") && (
+                              <form action={deleteCategoryAction} className="inline-flex">
+                                <input type="hidden" name="id" value={c.id} />
+                                <ConfirmSubmitButton
+                                  confirmMessage={locale === "en" ? `Are you sure you want to delete category "${c.name}"?` : `هل أنت متأكد من رغبتك في حذف قسم «${c.name}»؟`}
+                                  className="h-8 px-3 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 inline-flex items-center gap-1 text-xs font-bold cursor-pointer"
+                                  title={t("common.delete")}
+                                  ariaLabel={`${t("common.delete")} ${c.name}`}
+                                >
+                                  <Trash2 size={12} />
+                                  <span>{t("common.delete")}</span>
+                                </ConfirmSubmitButton>
+                              </form>
+                            )}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                );
+              })
+            ) : (
+              <div className="p-6 text-center text-sm text-[var(--muted)] bg-[var(--panel)] border border-[var(--line)] rounded-xl">
+                {t("inventory.emptyCategories")}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -990,7 +1083,7 @@ export function InventoryTabsView({
           )}
 
           {/* Units Full Table */}
-          <div className="table-wrap">
+          <div className="desktop-table-only table-wrap">
             <table>
               <thead>
                 <tr>
@@ -1093,6 +1186,112 @@ export function InventoryTabsView({
                 )}
               </tbody>
             </table>
+          </div>
+
+          {/* Units Mobile Cards */}
+          <div className="mobile-cards-only space-y-2.5">
+            {units.length ? (
+              units.map((u, idx) => {
+                const count = unitCounts.get(u.id) ?? 0;
+                const isEditing = editingUnitId === u.id;
+
+                return (
+                  <div key={`mob-unit-${u.id}`} className="p-3.5 bg-[var(--panel)] border border-[var(--line)] rounded-xl shadow-xs space-y-2.5">
+                    {isEditing ? (
+                      <form action={updateUnitAction} className="space-y-2">
+                        <input type="hidden" name="id" value={u.id} />
+                        <label className="block">
+                          <span className="text-xs text-[var(--muted)] font-semibold block mb-1">{t("inventory.newUnitName")}:</span>
+                          <input
+                            name="name"
+                            defaultValue={u.name}
+                            required
+                            className="w-full text-xs py-2 px-3 rounded-lg border border-indigo-400 font-bold"
+                          />
+                        </label>
+                        <label className="block">
+                          <span className="text-xs text-[var(--muted)] font-semibold block mb-1">{t("inventory.unitPackagingFactor")}:</span>
+                          <input
+                            name="factor"
+                            type="number"
+                            min="1"
+                            defaultValue={u.factor}
+                            required
+                            className="w-full text-xs py-2 px-3 rounded-lg border border-indigo-400 font-bold font-mono"
+                          />
+                        </label>
+                        <div className="flex items-center gap-2 justify-end">
+                          <button type="submit" className="primary px-3 py-1.5 text-xs flex items-center gap-1 font-bold">
+                            <Check size={12} />
+                            <span>{t("common.save")}</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setEditingUnitId(null)}
+                            className="secondary px-3 py-1.5 text-xs font-bold"
+                          >
+                            {t("common.cancel")}
+                          </button>
+                        </div>
+                      </form>
+                    ) : (
+                      <>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="w-6 h-6 rounded-md bg-indigo-50 text-indigo-700 font-bold text-xs flex items-center justify-center border border-indigo-200">
+                              {idx + 1}
+                            </span>
+                            <div>
+                              <b className="text-sm font-bold text-[var(--ink)] block">{u.name}</b>
+                              <span className="text-xs font-mono font-bold text-indigo-700 block mt-0.5">
+                                {Number(u.factor)} {t("common.pieces")}
+                              </span>
+                            </div>
+                          </div>
+                          <span className="font-mono font-bold text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 shrink-0">
+                            {count} {locale === "en" ? "items" : "صنف"}
+                          </span>
+                        </div>
+
+                        {(canCheck("edit") || canCheck("delete")) && (
+                          <div className="pt-2 border-t border-[var(--line)] flex items-center justify-end gap-2">
+                            {canCheck("edit") && (
+                              <button
+                                type="button"
+                                onClick={() => setEditingUnitId(u.id)}
+                                className="h-8 px-3 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 inline-flex items-center gap-1 text-xs font-bold cursor-pointer"
+                              >
+                                <Edit size={12} />
+                                <span>{t("common.edit")}</span>
+                              </button>
+                            )}
+
+                            {canCheck("delete") && (
+                              <form action={deleteUnitAction} className="inline-flex">
+                                <input type="hidden" name="id" value={u.id} />
+                                <ConfirmSubmitButton
+                                  confirmMessage={locale === "en" ? `Are you sure you want to delete unit "${u.name}"? It will be unlinked from existing products.` : `هل أنت متأكد من حذف وحدة «${u.name}»؟ سيتم فك ارتباطها عن الأصناف المسجلة.`}
+                                  className="h-8 px-3 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 inline-flex items-center gap-1 text-xs font-bold cursor-pointer"
+                                  title={t("common.delete")}
+                                  ariaLabel={`${t("common.delete")} ${u.name}`}
+                                >
+                                  <Trash2 size={12} />
+                                  <span>{t("common.delete")}</span>
+                                </ConfirmSubmitButton>
+                              </form>
+                            )}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                );
+              })
+            ) : (
+              <div className="p-6 text-center text-sm text-[var(--muted)] bg-[var(--panel)] border border-[var(--line)] rounded-xl">
+                {t("inventory.emptyUnits")}
+              </div>
+            )}
           </div>
         </div>
       )}

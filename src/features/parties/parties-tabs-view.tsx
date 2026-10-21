@@ -165,98 +165,100 @@ export function PartiesTabsView({
     <div className="space-y-4">
       {/* Primary Navigation & Filter Chips Row (High Contrast & Clear Badges) */}
       <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between print-hide">
-        <div className="flex flex-wrap items-center gap-2 p-1.5 bg-[var(--bg)] border border-[var(--line-strong)] rounded-xl font-bold text-xs shadow-xs">
-          <button
-            type="button"
-            onClick={() => setActiveTab("all")}
-            className={`px-3.5 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
-              activeTab === "all"
-                ? "bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-500/20"
-                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
-            }`}
-          >
-            <span>{t("common.all", "الكل")}</span>
-            <span
-              className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
-                activeTab === "all" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+        <div className="w-full lg:w-auto overflow-x-auto pb-1 scrollbar-none">
+          <div className="inline-flex items-center gap-2 p-1.5 bg-[var(--bg)] border border-[var(--line-strong)] rounded-xl font-bold text-xs shadow-xs flex-nowrap shrink-0 min-w-full sm:min-w-0">
+            <button
+              type="button"
+              onClick={() => setActiveTab("all")}
+              className={`px-3.5 py-2 rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer font-bold whitespace-nowrap shrink-0 ${
+                activeTab === "all"
+                  ? "bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-500/20"
+                  : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
               }`}
             >
-              {parties.length}
-            </span>
-          </button>
+              <span>{t("common.all", "الكل")}</span>
+              <span
+                className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                  activeTab === "all" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+                }`}
+              >
+                {parties.length}
+              </span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab("customers")}
-            className={`px-3.5 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
-              activeTab === "customers"
-                ? "bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-500/20"
-                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
-            }`}
-          >
-            <Users size={14} className={activeTab === "customers" ? "text-white" : "text-indigo-600"} />
-            <span>{t("parties.customers", "العملاء")}</span>
-            <span
-              className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
-                activeTab === "customers" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+            <button
+              type="button"
+              onClick={() => setActiveTab("customers")}
+              className={`px-3.5 py-2 rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer font-bold whitespace-nowrap shrink-0 ${
+                activeTab === "customers"
+                  ? "bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-500/20"
+                  : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
               }`}
             >
-              {customers.length}
-            </span>
-          </button>
+              <Users size={14} className={activeTab === "customers" ? "text-white" : "text-indigo-600"} />
+              <span>{t("parties.customers", "العملاء")}</span>
+              <span
+                className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                  activeTab === "customers" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+                }`}
+              >
+                {customers.length}
+              </span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab("suppliers")}
-            className={`px-3.5 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
-              activeTab === "suppliers"
-                ? "bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-500/20"
-                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
-            }`}
-          >
-            <Building2 size={14} className={activeTab === "suppliers" ? "text-white" : "text-emerald-600"} />
-            <span>{t("parties.suppliers", "الموردون")}</span>
-            <span
-              className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
-                activeTab === "suppliers" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+            <button
+              type="button"
+              onClick={() => setActiveTab("suppliers")}
+              className={`px-3.5 py-2 rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer font-bold whitespace-nowrap shrink-0 ${
+                activeTab === "suppliers"
+                  ? "bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-500/20"
+                  : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
               }`}
             >
-              {suppliers.length}
-            </span>
-          </button>
+              <Building2 size={14} className={activeTab === "suppliers" ? "text-white" : "text-emerald-600"} />
+              <span>{t("parties.suppliers", "الموردون")}</span>
+              <span
+                className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                  activeTab === "suppliers" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+                }`}
+              >
+                {suppliers.length}
+              </span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab("debtors")}
-            className={`px-3.5 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
-              activeTab === "debtors"
-                ? "bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-500/20"
-                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
-            }`}
-          >
-            <AlertCircle size={14} className={activeTab === "debtors" ? "text-white" : "text-rose-600"} />
-            <span>{t("parties.debtors", "عليهم مديونية / مستحقات")}</span>
-            <span
-              className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
-                activeTab === "debtors" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+            <button
+              type="button"
+              onClick={() => setActiveTab("debtors")}
+              className={`px-3.5 py-2 rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer font-bold whitespace-nowrap shrink-0 ${
+                activeTab === "debtors"
+                  ? "bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-500/20"
+                  : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
               }`}
             >
-              {debtors.length}
-            </span>
-          </button>
+              <AlertCircle size={14} className={activeTab === "debtors" ? "text-white" : "text-rose-600"} />
+              <span>{t("parties.debtors", "عليهم مديونية / مستحقات")}</span>
+              <span
+                className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                  activeTab === "debtors" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 border border-slate-200"
+                }`}
+              >
+                {debtors.length}
+              </span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab("statement")}
-            className={`px-3.5 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
-              activeTab === "statement"
-                ? "bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-500/20"
-                : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
-            }`}
-          >
-            <BookOpenText size={14} className={activeTab === "statement" ? "text-white" : "text-indigo-600"} />
-            <span>{t("parties.statement", "كشف الحساب المالي")}</span>
-          </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("statement")}
+              className={`px-3.5 py-2 rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer font-bold whitespace-nowrap shrink-0 ${
+                activeTab === "statement"
+                  ? "bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-500/20"
+                  : "bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--surface-muted)] border border-[var(--line)]"
+              }`}
+            >
+              <BookOpenText size={14} className={activeTab === "statement" ? "text-white" : "text-indigo-600"} />
+              <span>{t("parties.statement", "كشف الحساب المالي")}</span>
+            </button>
+          </div>
         </div>
 
         {/* Live Search Bar for Directory Tables */}
